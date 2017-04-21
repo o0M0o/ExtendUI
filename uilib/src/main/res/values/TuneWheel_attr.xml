@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TuneWheel">
+        <attr name="twPostUnit" format="string" />
+        <attr name="twPrvUnit" format="string" />
+
+        <attr name="twLineDivider" format="integer" />
+        <attr name="twShortLineCount" format="integer" />
+        <attr name="twMaxValue" format="integer" />
+        <attr name="twMinValue" format="integer" />
+        <attr name="twCurValue" format="integer"  />
+
+        <attr name="twTextSize" format="integer" />
+        <attr name="twLongLineHeight" format="integer" />
+        <attr name="twShortLineHeight" format="integer" />
+    </declare-styleable>
+</resources>
