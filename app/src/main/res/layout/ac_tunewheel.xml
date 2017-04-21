@@ -6,18 +6,102 @@
     android:layout_height="match_parent"
     tools:context="wxm.extendui.tunewheel.ACTuneWheel">
 
-    <wxm.uilib.tunewheel.TuneWheel
-        android:id="@+id/tw_h_1"
-        android:background="@drawable/bg_wheel"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_org_h"
+        android:padding="8dp"
+        android:background="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:twShortLineCount="1"
-        app:twLineDivider="16"
-        app:twTextSize="9"
-        app:twLongLineHeight="16"
-        app:twShortLineHeight="8"
         android:layout_width="0dp"
-        android:layout_height="62dp" />
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/tv_org_h_tag"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/text_fit"
+            android:text="水平状态"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_org_h_val"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/red"
+            android:text="50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <wxm.uilib.tunewheel.TuneWheel
+            android:id="@+id/tw_h_1"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_wheel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_org_h_tag"
+            app:twMinValue="0"
+            app:twMaxValue="99"
+            app:twCurValue="50"
+            app:twLineDivider="16"
+            app:twLongLineHeight="16"
+            app:twShortLineCount="1"
+            app:twShortLineHeight="8"
+            app:twTextSize="9" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_org_v"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_org_h"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="96dp"
+        android:layout_height="0dp" >
+
+        <TextView
+            android:id="@+id/tv_org_v_tag"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/text_fit"
+            android:text="垂直状态"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_org_v_val"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tw_v_1"
+            app:layout_constraintBottom_toBottomOf="@+id/tw_v_1"
+            android:textColor="@color/red"
+            android:text="50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <wxm.uilib.tunewheel.TuneWheel
+            android:id="@+id/tw_v_1"
+            android:layout_width="56dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_wheel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_org_v_tag"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:twOrientation="vertical"
+            app:twMinValue="0"
+            app:twMaxValue="99"
+            app:twCurValue="50"
+            app:twLineDivider="6"
+            app:twLongLineHeight="16"
+            app:twShortLineCount="1"
+            app:twShortLineHeight="7"
+            app:twTextSize="7" />
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>
