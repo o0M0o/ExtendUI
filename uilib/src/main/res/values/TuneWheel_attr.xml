@@ -6,6 +6,8 @@
             <enum name="horizontal" value="2"/>
         </attr>
 
+        <attr name="twUseCurTag" format="boolean" />
+
         <attr name="twPostUnit" format="string" />
         <attr name="twPrvUnit" format="string" />
 
@@ -16,7 +18,7 @@
         <attr name="twCurValue" format="integer"  />
 
         <attr name="twTextSize" format="integer" />
-        <attr name="twLongLineHeight" format="integer" />
-        <attr name="twShortLineHeight" format="integer" />
+        <attr name="twLongLineLength" format="integer" />
+        <attr name="twShortLineLength" format="integer" />
     </declare-styleable>
 </resources>

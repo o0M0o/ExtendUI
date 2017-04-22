@@ -96,6 +96,8 @@ public class TuneWheel extends View {
 
     private int mAttrOrientation;
 
+    private boolean mAttrUseCurTag;
+
     /**
      * 固定变量
      */
@@ -231,14 +233,15 @@ public class TuneWheel extends View {
             mAttrCurValue = array.getInt(R.styleable.TuneWheel_twCurValue, 50);
 
             mAttrTextSize = array.getInt(R.styleable.TuneWheel_twTextSize, 14);
-            mAttrLongLineHeight = array.getInt(R.styleable.TuneWheel_twLongLineHeight, 24);
-            mAttrShortLineHeight = array.getInt(R.styleable.TuneWheel_twShortLineHeight, 16);
+            mAttrLongLineHeight = array.getInt(R.styleable.TuneWheel_twLongLineLength, 24);
+            mAttrShortLineHeight = array.getInt(R.styleable.TuneWheel_twShortLineLength, 16);
 
             mAttrOrientation = array.getInt(R.styleable.TuneWheel_twOrientation, EM_HORIZONTAL);
+
+            mAttrUseCurTag = array.getBoolean(R.styleable.TuneWheel_twUseCurTag, true);
         } finally {
             array.recycle();
         }
-
 
         // for helper
         mLUHelper = new LocalUtility();
@@ -390,7 +393,7 @@ public class TuneWheel extends View {
                     }
                 }
 
-                if (0 == i)
+                if (mAttrUseCurTag && (0 == i))
                     canvas.drawText(tw_tag,
                             helper.countLeftStart(tw_tag, (ln_long_x_e + mWidth) / 2, textWidth_big),
                             yPosition + textWidth_big / 2, tp_big);
@@ -498,20 +501,14 @@ public class TuneWheel extends View {
                         canvas.drawText(tw_tag,
                                 helper.countLeftStart(tw_tag, xPosition, textWidth),
                                 text_bottom_pos, tp_normal);
-
-                        if (0 == i)
-                            canvas.drawText(tw_tag,
-                                    helper.countLeftStart(tw_tag, xPosition, textWidth),
-                                    text_top_pos, tp_big);
                     } else {
                         canvas.drawLine(xPosition, ln_short_s_y, xPosition, ln_short_e_y, linePaint);
-
-                        if (0 == i) {
-                            canvas.drawText(tw_tag,
-                                    helper.countLeftStart(tw_tag, xPosition, textWidth),
-                                    text_top_pos, tp_big);
-                        }
                     }
+
+                    if (mAttrUseCurTag && (0 == i))
+                        canvas.drawText(tw_tag,
+                                helper.countLeftStart(tw_tag, xPosition, textWidth),
+                                text_top_pos, tp_big);
                 }
             }
 
