@@ -70,121 +70,45 @@ public class TuneWheel extends View {
 
 
 
-    private int mLastX, mLastY, mMove;
-    private int mWidth, mHeight;
+    int mLastX, mLastY, mMove;
+    int mWidth, mHeight;
 
-    private int mMinVelocity;
-    private Scroller mScroller;
-    private VelocityTracker mVelocityTracker;
+    int mMinVelocity;
+    Scroller mScroller;
+    VelocityTracker mVelocityTracker;
 
     private OnValueChangeListener mListener;
 
     /**
      * 可设置属性
      */
-    private String mAttrSZPostUnit;
-    private String mAttrSZPrvUnit;
-    private int mAttrMinValue;
-    private int mAttrMaxValue;
-    private int mAttrCurValue;
+    String mAttrSZPostUnit;
+    String mAttrSZPrvUnit;
+    int mAttrMinValue;
+    int mAttrMaxValue;
+    int mAttrCurValue;
 
-    private int mAttrTextSize;
-    private int mAttrLongLineHeight;
-    private int mAttrShortLineHeight;
-    private int mAttrShortLineCount;
-    private int mAttrLineDivider;
-
-    private int mAttrOrientation;
-
-    private boolean mAttrUseCurTag;
+    boolean mAttrUseCurTag;
+    int mAttrTextSize;
+    int mAttrLongLineHeight;
+    int mAttrShortLineHeight;
+    int mAttrShortLineCount;
+    int mAttrLineDivider;
+    int mAttrOrientation;
 
     /**
      * 固定变量
      */
-    private int TEXT_COLOR_HOT;
-    private int TEXT_COLOR_NORMAL;
-    private int LINE_COLOR_CURSOR;
-    private float DISPLAY_DENSITY;
-
-
-    /**
-     * 本地辅助类
-     */
-    private class LocalUtility {
-        private void countVelocityTrackerH(MotionEvent event) {
-            mVelocityTracker.computeCurrentVelocity(1000);
-            float xVelocity = mVelocityTracker.getXVelocity();
-            if (Math.abs(xVelocity) > mMinVelocity) {
-                mScroller.fling(0, 0, (int) xVelocity, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
-            }
-        }
-
-        private void countVelocityTrackerV(MotionEvent event) {
-            mVelocityTracker.computeCurrentVelocity(1000);
-            float yVelocity = mVelocityTracker.getYVelocity();
-            if (Math.abs(yVelocity) > mMinVelocity) {
-                mScroller.fling(0, 0, 0, (int) yVelocity, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
-            }
-        }
-
-        private void changeMoveAndValueH() {
-            int tValue = (int) (mMove / getDPToPX(mAttrLineDivider));
-            if (Math.abs(tValue) > 0) {
-                mAttrCurValue += tValue;
-                mMove -= tValue * getDPToPX(mAttrLineDivider);
-                if (mAttrCurValue <= mAttrMinValue || mAttrCurValue > mAttrMaxValue) {
-                    mAttrCurValue = mAttrCurValue <= mAttrMinValue ? mAttrMinValue : mAttrMaxValue;
-                    mMove = 0;
-                    mScroller.forceFinished(true);
-                }
-                notifyValueChange();
-            }
-            postInvalidate();
-        }
-
-        private void changeMoveAndValueV() {
-            int tValue = (int) (mMove / getDPToPX(mAttrLineDivider));
-            if (Math.abs(tValue) > 0) {
-                mAttrCurValue += tValue;
-                mMove -= tValue * getDPToPX(mAttrLineDivider);
-                if (mAttrCurValue <= mAttrMinValue || mAttrCurValue > mAttrMaxValue) {
-                    mAttrCurValue = mAttrCurValue <= mAttrMinValue ? mAttrMinValue : mAttrMaxValue;
-                    mMove = 0;
-                    mScroller.forceFinished(true);
-                }
-                notifyValueChange();
-            }
-            postInvalidate();
-        }
-
-        private void countMoveEnd() {
-            int roundMove = Math.round(mMove / getDPToPX(mAttrLineDivider));
-            mAttrCurValue = mAttrCurValue + roundMove;
-            mAttrCurValue = Math.min(Math.max(mAttrMinValue, mAttrCurValue), mAttrMaxValue);
-
-            mLastY = 0;
-            mLastX = 0;
-            mMove = 0;
-
-            notifyValueChange();
-            postInvalidate();
-        }
-
-        /**
-         * 把dp翻译为px
-         * @param dp    val for dp
-         * @return      val for px
-         */
-        private float getDPToPX(float dp) {
-            return DISPLAY_DENSITY * dp;
-        }
-    }
+    int TEXT_COLOR_HOT;
+    int TEXT_COLOR_NORMAL;
+    int LINE_COLOR_CURSOR;
+    float DISPLAY_DENSITY;
 
 
     /**
      * 默认值翻译为tag
      */
-    private TagTranslate mTTTranslator = new TagTranslate() {
+    TagTranslate mTTTranslator = new TagTranslate() {
         @Override
         public String translateTWTag(int val) {
             return mAttrSZPrvUnit + String.valueOf(val) + mAttrSZPostUnit;
@@ -193,7 +117,7 @@ public class TuneWheel extends View {
 
 
     // 辅助类实例
-    private LocalUtility    mLUHelper;
+    private TWHelper    mLUHelper;
 
 
     public TuneWheel(Context context, AttributeSet attrs) {
@@ -244,7 +168,8 @@ public class TuneWheel extends View {
         }
 
         // for helper
-        mLUHelper = new LocalUtility();
+        mLUHelper = EM_HORIZONTAL == mAttrOrientation ? new TWHorizontalHelper(this)
+                                        : new TWVerticalHelper(this);
     }
 
     /**
@@ -308,349 +233,79 @@ public class TuneWheel extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        if(EM_HORIZONTAL == mAttrOrientation)
-            drawScaleLineH(canvas);
-        else
-            drawScaleLineV(canvas);
+        mLUHelper.drawScaleLine(canvas);
     }
 
-    /**
-     * 垂直模式下绘制刻度线
-     *
-     * @param canvas context
-     */
-    private void drawScaleLineV(Canvas canvas) {
-        class utility {
-            /**
-             * 计算显示位置
-             * @param tag           tag
-             * @param xPosition     起始x坐标
-             * @param textWidth     字体宽度
-             * @return 偏移坐标
-             */
-            private float countLeftStart(String tag, float xPosition, float textWidth) {
-                return xPosition - ((tag.length() * textWidth) / 2);
-            }
-
-            /**
-             * 中间的红色指示线
-             * @param canvas     画布
-             * @param s_x        起始x坐标
-             * @param e_x        结束x坐标
-             */
-            private void drawMiddleLine(Canvas canvas, float s_x, float e_x) {
-                int indexWidth = 12;
-
-                Paint redPaint = new Paint();
-                redPaint.setStrokeWidth(indexWidth);
-                redPaint.setColor(LINE_COLOR_CURSOR);
-                canvas.drawLine(s_x,  mHeight / 2, e_x, mHeight / 2, redPaint);
-            }
-        }
-        utility helper = new utility();
-
-
-        canvas.save();
-
-        Paint linePaint = new Paint();
-        linePaint.setStrokeWidth(2);
-        linePaint.setColor(TEXT_COLOR_NORMAL);
-
-        TextPaint tp_normal = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        tp_normal.setTextSize(mLUHelper.getDPToPX(mAttrTextSize));
-
-        TextPaint tp_big = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        tp_big.setTextSize(mLUHelper.getDPToPX(mAttrTextSize + 2));
-        tp_big.setColor(TEXT_COLOR_HOT);
-
-        int height = mHeight, drawCount = 0;
-        float textWidth = Layout.getDesiredWidth("0", tp_normal);
-        float textWidth_big = Layout.getDesiredWidth("0", tp_big);
-
-        float w_middle = getWidth() / 2;
-        float long_x_dif = mLUHelper.getDPToPX(mAttrLongLineHeight /2);
-        float short_x_dif = mLUHelper.getDPToPX(mAttrShortLineHeight /2);
-        float ln_long_x_s = w_middle - long_x_dif;
-        float ln_long_x_e = w_middle + long_x_dif;
-        float ln_short_x_s = w_middle - short_x_dif;
-        float ln_short_x_e = w_middle + short_x_dif;
-
-        for (int i = 0; drawCount <= 4 * height; i++) {
-            float yPosition = (height / 2 - mMove) + mLUHelper.getDPToPX(i * mAttrLineDivider);
-            if (yPosition + getPaddingRight() < height) {
-                int cur_v = mAttrCurValue + i;
-                String tw_tag = mTTTranslator.translateTWTag(cur_v);
-                if (cur_v <= mAttrMaxValue) {
-                    if ((cur_v - mAttrMinValue) % (mAttrShortLineCount + 1) == 0) {
-                        canvas.drawLine(ln_long_x_s, yPosition,  ln_long_x_e, yPosition, linePaint);
-
-                        canvas.drawText(tw_tag,
-                                helper.countLeftStart(tw_tag, ln_long_x_s / 2, textWidth),
-                                yPosition + textWidth / 2, tp_normal);
-                    } else {
-                        canvas.drawLine(ln_short_x_s,  yPosition, ln_short_x_e, yPosition, linePaint);
-                    }
-                }
-
-                if (mAttrUseCurTag && (0 == i))
-                    canvas.drawText(tw_tag,
-                            helper.countLeftStart(tw_tag, (ln_long_x_e + mWidth) / 2, textWidth_big),
-                            yPosition + textWidth_big / 2, tp_big);
-            }
-
-            if (0 != i) {
-                yPosition = (height / 2 - mMove) - mLUHelper.getDPToPX(i * mAttrLineDivider);
-                if (yPosition > getPaddingLeft()) {
-                    int cur_v = mAttrCurValue - i;
-                    if (cur_v >= mAttrMinValue) {
-                        if ((cur_v - mAttrMinValue) % (mAttrShortLineCount + 1) == 0) {
-                            String tw_tag = mTTTranslator.translateTWTag(cur_v);
-                            canvas.drawLine(ln_long_x_s, yPosition,  ln_long_x_e, yPosition, linePaint);
-
-                            canvas.drawText(tw_tag,
-                                    helper.countLeftStart(tw_tag, ln_long_x_s / 2, textWidth),
-                                    yPosition + textWidth / 2, tp_normal);
-                        } else {
-                            canvas.drawLine(ln_short_x_s,  yPosition, ln_short_x_e, yPosition, linePaint);
-                        }
-                    }
-                }
-            }
-
-            drawCount += mLUHelper.getDPToPX(2 * mAttrLineDivider);
-        }
-
-        helper.drawMiddleLine(canvas, ln_long_x_s, ln_long_x_e);
-        canvas.restore();
-    }
-
-
-    /**
-     * 水平模式下绘制刻度线
-     *
-     * @param canvas context
-     */
-    private void drawScaleLineH(Canvas canvas) {
-        class utility {
-            /**
-             * 计算显示位置
-             * @param tag           tag
-             * @param xPosition     起始x坐标
-             * @param textWidth     字体宽度
-             * @return 偏移坐标
-             */
-            private float countLeftStart(String tag, float xPosition, float textWidth) {
-                return xPosition - ((tag.length() * textWidth) / 2);
-            }
-
-            /**
-             * 中间的红色指示线
-             * @param canvas     画布
-             * @param s_y        起始Y坐标
-             * @param e_y        结束Y坐标
-             */
-            private void drawMiddleLine(Canvas canvas, float s_y, float e_y) {
-                int indexWidth = 12;
-
-                Paint redPaint = new Paint();
-                redPaint.setStrokeWidth(indexWidth);
-                redPaint.setColor(LINE_COLOR_CURSOR);
-                canvas.drawLine(mWidth / 2, s_y, mWidth / 2, e_y, redPaint);
-            }
-        }
-        utility helper = new utility();
-
-
-        canvas.save();
-
-        Paint linePaint = new Paint();
-        linePaint.setStrokeWidth(2);
-        linePaint.setColor(TEXT_COLOR_NORMAL);
-
-        TextPaint tp_normal = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        tp_normal.setTextSize(mLUHelper.getDPToPX(mAttrTextSize));
-
-        TextPaint tp_big = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        tp_big.setTextSize(mLUHelper.getDPToPX(mAttrTextSize + 2));
-        tp_big.setColor(TEXT_COLOR_HOT);
-
-        int width = mWidth, drawCount = 0;
-        float xPosition;
-        float textWidth = Layout.getDesiredWidth("0", tp_normal);
-        float textWidth_big = Layout.getDesiredWidth("0", tp_big);
-
-        float h_middle = getHeight() / 2;
-        float ln_long_s_y = h_middle - mLUHelper.getDPToPX(mAttrLongLineHeight /2);
-        float ln_long_e_y = h_middle + mLUHelper.getDPToPX(mAttrLongLineHeight /2);
-        float ln_short_s_y = h_middle - mLUHelper.getDPToPX(mAttrShortLineHeight /2);
-        float ln_short_e_y = h_middle + mLUHelper.getDPToPX(mAttrShortLineHeight /2);
-
-        float text_top_pos = ln_long_s_y / 2 + textWidth_big / 2;
-        float text_bottom_pos = (getHeight() + ln_long_e_y) / 2 + textWidth / 2;
-
-        for (int i = 0; drawCount <= 4 * width; i++) {
-            xPosition = (width / 2 - mMove) + mLUHelper.getDPToPX(i * mAttrLineDivider);
-            if (xPosition + getPaddingRight() < mWidth) {
-                int cur_v = mAttrCurValue + i;
-                if (cur_v <= mAttrMaxValue) {
-                    String tw_tag = mTTTranslator.translateTWTag(cur_v);
-                    if ((cur_v - mAttrMinValue) % (mAttrShortLineCount + 1) == 0) {
-                        canvas.drawLine(xPosition, ln_long_s_y, xPosition, ln_long_e_y, linePaint);
-
-                        canvas.drawText(tw_tag,
-                                helper.countLeftStart(tw_tag, xPosition, textWidth),
-                                text_bottom_pos, tp_normal);
-                    } else {
-                        canvas.drawLine(xPosition, ln_short_s_y, xPosition, ln_short_e_y, linePaint);
-                    }
-
-                    if (mAttrUseCurTag && (0 == i))
-                        canvas.drawText(tw_tag,
-                                helper.countLeftStart(tw_tag, xPosition, textWidth),
-                                text_top_pos, tp_big);
-                }
-            }
-
-            if (0 != i) {
-                xPosition = (width / 2 - mMove) - mLUHelper.getDPToPX(i * mAttrLineDivider);
-                if (xPosition > getPaddingLeft()) {
-                    int cur_v = mAttrCurValue - i;
-                    if (cur_v >= mAttrMinValue) {
-                        if ((cur_v - mAttrMinValue) % (mAttrShortLineCount + 1) == 0) {
-                            String tw_tag = mTTTranslator.translateTWTag(cur_v);
-                            canvas.drawLine(xPosition, ln_long_s_y, xPosition,
-                                    ln_long_e_y, linePaint);
-
-                            canvas.drawText(tw_tag,
-                                    helper.countLeftStart(tw_tag, xPosition, textWidth),
-                                    text_bottom_pos, tp_normal);
-                        } else {
-                            canvas.drawLine(xPosition, ln_short_s_y, xPosition, ln_short_e_y, linePaint);
-                        }
-                    }
-                }
-            }
-
-            drawCount += mLUHelper.getDPToPX(2 * mAttrLineDivider);
-        }
-
-        helper.drawMiddleLine(canvas, ln_long_s_y, ln_long_e_y);
-        canvas.restore();
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(EM_HORIZONTAL == mAttrOrientation)
-            return doTouchH(event);
+        int position = EM_HORIZONTAL == mAttrOrientation ? (int)event.getX() : (int)event.getY();
+        if (mVelocityTracker == null) {
+            mVelocityTracker = VelocityTracker.obtain();
+        }
+        mVelocityTracker.addMovement(event);
 
-        return doTouchV(event);
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mScroller.forceFinished(true);
+
+                if(EM_HORIZONTAL == mAttrOrientation)
+                    mLastX = position;
+                else
+                    mLastY = position;
+
+                mMove = 0;
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                if(EM_HORIZONTAL == mAttrOrientation)
+                    mMove += (mLastX - position);
+                else
+                    mMove += (mLastY - position);
+
+                mLUHelper.changeMoveAndValue();
+                break;
+
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                mLUHelper.countMoveEnd();
+                mLUHelper.countVelocityTracker(event);
+                return false;
+
+            default:
+                break;
+        }
+
+        if(EM_HORIZONTAL == mAttrOrientation)
+            mLastX = position;
+        else
+            mLastY = position;
+        return true;
     }
 
     @Override
     public void computeScroll() {
         super.computeScroll();
 
-        if(EM_HORIZONTAL == mAttrOrientation)
-            doScrollH();
-        else
-            doScrollV();
-    }
-
-    private boolean doTouchH(MotionEvent ev) {
-        int action = ev.getAction();
-        int xPosition = (int) ev.getX();
-
-        if (mVelocityTracker == null) {
-            mVelocityTracker = VelocityTracker.obtain();
-        }
-        mVelocityTracker.addMovement(ev);
-
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                mScroller.forceFinished(true);
-
-                mLastX = xPosition;
-                mMove = 0;
-                break;
-
-            case MotionEvent.ACTION_MOVE:
-                mMove += (mLastX - xPosition);
-                mLUHelper.changeMoveAndValueH();
-                break;
-
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                mLUHelper.countMoveEnd();
-                mLUHelper.countVelocityTrackerH(ev);
-                return false;
-
-            default:
-                break;
-        }
-
-        mLastX = xPosition;
-        return true;
-    }
-
-    private boolean doTouchV(MotionEvent ev) {
-        int action = ev.getAction();
-        int yPosition = (int) ev.getY();
-
-        if (mVelocityTracker == null) {
-            mVelocityTracker = VelocityTracker.obtain();
-        }
-        mVelocityTracker.addMovement(ev);
-
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                mScroller.forceFinished(true);
-
-                mLastY = yPosition;
-                mMove = 0;
-                break;
-
-            case MotionEvent.ACTION_MOVE:
-                mMove += (mLastY - yPosition);
-                mLUHelper.changeMoveAndValueV();
-                break;
-
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                mLUHelper.countMoveEnd();
-                mLUHelper.countVelocityTrackerV(ev);
-                return false;
-
-            default:
-                break;
-        }
-
-        mLastY = yPosition;
-        return true;
-    }
-
-    private void doScrollH()    {
         if (mScroller.computeScrollOffset()) {
-            if (mScroller.getCurrX() == mScroller.getFinalX()) { // over
-                mLUHelper.countMoveEnd();
+            if (EM_HORIZONTAL == mAttrOrientation) {
+                if (mScroller.getCurrX() == mScroller.getFinalX()) { // over
+                    mLUHelper.countMoveEnd();
+                } else {
+                    int xPosition = mScroller.getCurrX();
+                    mMove += (mLastX - xPosition);
+                    mLUHelper.changeMoveAndValue();
+                    mLastX = xPosition;
+                }
             } else {
-                int xPosition = mScroller.getCurrX();
-                mMove += (mLastX - xPosition);
-                mLUHelper.changeMoveAndValueH();
-                mLastX = xPosition;
-            }
-        }
-    }
-
-    private void doScrollV()    {
-        if (mScroller.computeScrollOffset()) {
-            if (mScroller.getCurrY() == mScroller.getFinalY()) { // over
-                mLUHelper.countMoveEnd();
-            } else {
-                int yPosition = mScroller.getCurrY();
-                mMove += (mLastY - yPosition);
-                mLUHelper.changeMoveAndValueV();
-                mLastY = yPosition;
+                if (mScroller.getCurrY() == mScroller.getFinalY()) { // over
+                    mLUHelper.countMoveEnd();
+                } else {
+                    int yPosition = mScroller.getCurrY();
+                    mMove += (mLastY - yPosition);
+                    mLUHelper.changeMoveAndValue();
+                    mLastY = yPosition;
+                }
             }
         }
     }
@@ -658,7 +313,7 @@ public class TuneWheel extends View {
     /**
      * 数据变化后调用监听器
      */
-    private void notifyValueChange() {
+    void notifyValueChange() {
         if (null != mListener) {
             mListener.onValueChange(mAttrCurValue, mTTTranslator.translateTWTag(mAttrCurValue));
         }
