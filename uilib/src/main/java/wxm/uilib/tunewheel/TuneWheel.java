@@ -68,8 +68,6 @@ public class TuneWheel extends View {
     }
 
 
-
-
     int mLastX, mLastY, mMove;
     int mWidth, mHeight;
 
