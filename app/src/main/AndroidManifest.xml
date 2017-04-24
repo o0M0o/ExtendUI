@@ -19,7 +19,8 @@
         <activity
             android:name=".twostatebutton.ACTwoStateButton"
             android:exported="true" />
+        <activity android:name=".DistanceMeter.ACDistanceMeter"
+            android:exported="true" />
     </application>
-
 
 </manifest>
