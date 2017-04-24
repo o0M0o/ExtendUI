@@ -1,4 +1,4 @@
-package wxm.uilib.tunewheel;
+package wxm.uilib.TuneWheel;
 
 
 import android.annotation.SuppressLint;
@@ -7,10 +7,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Build;
-import android.text.Layout;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -25,13 +22,10 @@ import wxm.uilib.utility.UtilFun;
 
 
 /**
- * 卷尺控件类。由于时间比较紧，只有下班后有时间，因此只实现了基本功能。<br>
- * 细节问题包括滑动过程中widget边缘的刻度显示问题等<br>
- * <p>
- * 周末有时间会继续更新<br>
+ * 卷尺控件类
+ * 用户滑动此控件来选择数值
  *
- * @author ttdevs
- * @version create：2014年8月26日
+ * @author  wang xiaoming
  */
 @SuppressLint("ClickableViewAccessibility")
 public class TuneWheel extends View {
@@ -113,10 +107,8 @@ public class TuneWheel extends View {
         }
     };
 
-
     // 辅助类实例
     private TWHelper    mLUHelper;
-
 
     public TuneWheel(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -142,6 +134,12 @@ public class TuneWheel extends View {
         // for parameter
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.TuneWheel);
         try {
+            // for helper
+            mAttrOrientation = array.getInt(R.styleable.TuneWheel_twOrientation, EM_HORIZONTAL);
+            mLUHelper = EM_HORIZONTAL == mAttrOrientation ? new TWHorizontalHelper(this)
+                                : new TWVerticalHelper(this);
+
+            // for prv and post unit tag
             String sz_unit = array.getString(R.styleable.TuneWheel_twPostUnit);
             mAttrSZPostUnit = UtilFun.StringIsNullOrEmpty(sz_unit) ? "" : sz_unit;
 
@@ -154,20 +152,15 @@ public class TuneWheel extends View {
             mAttrMaxValue = array.getInt(R.styleable.TuneWheel_twMaxValue, 100);
             mAttrCurValue = array.getInt(R.styleable.TuneWheel_twCurValue, 50);
 
-            mAttrTextSize = array.getInt(R.styleable.TuneWheel_twTextSize, 14);
+            mAttrTextSize = array.getDimensionPixelSize(R.styleable.TuneWheel_twTextSize,
+                                    (int)mLUHelper.getDPToPX(12));
             mAttrLongLineHeight = array.getInt(R.styleable.TuneWheel_twLongLineLength, 24);
             mAttrShortLineHeight = array.getInt(R.styleable.TuneWheel_twShortLineLength, 16);
-
-            mAttrOrientation = array.getInt(R.styleable.TuneWheel_twOrientation, EM_HORIZONTAL);
 
             mAttrUseCurTag = array.getBoolean(R.styleable.TuneWheel_twUseCurTag, true);
         } finally {
             array.recycle();
         }
-
-        // for helper
-        mLUHelper = EM_HORIZONTAL == mAttrOrientation ? new TWHorizontalHelper(this)
-                                        : new TWVerticalHelper(this);
     }
 
     /**

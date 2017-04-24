@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DistanceMeter">
+        <!-- 前后缀信息 -->
+        <attr name="dmPostUnit" format="string" />
+        <attr name="dmPrvUnit" format="string" />
+
+        <!-- 长线间模数，长线数 -->
+        <attr name="dmModeType" format="integer" />
+        <attr name="dmLongLineCount" format="integer" />
+
+        <!-- 展示的最大/最小值范围 -->
+        <attr name="dmMaxValue" format="integer" />
+        <attr name="dmMinValue" format="integer" />
+
+        <!-- 标签字体大小 -->
+        <attr name="dmTextSize" format="dimension" />
+
+        <!-- 长短线高度 -->
+        <attr name="dmShortLineHeight" format="integer" />
+        <attr name="dmLongLineHeight" format="integer" />
+
+        <!-- 基线高度，底区高度 -->
+        <attr name="dmBaseLineWidth" format="integer" />
+        <attr name="dmBaseLineBottomPadding" format="integer" />
+    </declare-styleable>
+</resources>

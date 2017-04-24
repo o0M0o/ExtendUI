@@ -19,11 +19,11 @@
 
         <wxm.uilib.TwoStateButton.TwoStateButton
             android:id="@+id/tb_def"
+            app:sbTextSize="8sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:clickable="true"
             app:sbIsOn="true"
-            android:layout_width="64dp"
+            android:layout_width="52dp"
             android:layout_height="wrap_content"/>
 
         <TextView
@@ -52,13 +52,13 @@
 
         <wxm.uilib.TwoStateButton.TwoStateButton
             android:id="@+id/tb_one_background"
+            app:sbTextSize="8sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:clickable="true"
-            app:sbBackGroundOff="@drawable/small_button_off_shape"
-            app:sbBackGroundOn="@drawable/small_button_off_shape"
+            app:sbBackGroundOff="@drawable/button_off_shape"
+            app:sbBackGroundOn="@drawable/button_off_shape"
             app:sbIsOn="true"
-            android:layout_width="64dp"
+            android:layout_width="52dp"
             android:layout_height="wrap_content"/>
 
         <TextView

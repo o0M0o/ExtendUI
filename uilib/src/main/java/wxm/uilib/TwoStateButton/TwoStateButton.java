@@ -18,10 +18,11 @@ import wxm.uilib.utility.UtilFun;
 
 
 /**
- *  on-off button
- *
+ *  双状态button
+ *  按下按键后，按键的外观会切换到另一种状态
+ *  适合表达“on-off”切换按键
  * @author      wxm
- * @version create：2017/03/28
+ * @version create：2017/04/24
  */
 public class TwoStateButton extends ConstraintLayout {
     private final static String LOG_TAG = "SmallButton";
@@ -39,15 +40,11 @@ public class TwoStateButton extends ConstraintLayout {
 
     private boolean mAttrIsOn;
 
-    /**
-     * 固定变量
-     */
-    private float DISPLAY_DENSITY;
-
     public TwoStateButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.vw_two_state_button, this);
         mTVTag = (TextView)findViewById(R.id.tv_tag);
+        this.setClickable(true);
 
         initCompent(context, attrs);
     }
@@ -84,7 +81,10 @@ public class TwoStateButton extends ConstraintLayout {
         int text_size = 12;
         int text_color_def;
         Resources res = context.getResources();
-        DISPLAY_DENSITY = res.getDisplayMetrics().density;
+        /*
+      固定变量
+     */
+        float DISPLAY_DENSITY = res.getDisplayMetrics().density;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Resources.Theme te = context.getTheme();
             text_color_def = res.getColor(R.color.text_fit, te);
@@ -96,7 +96,8 @@ public class TwoStateButton extends ConstraintLayout {
         boolean b_ok = true;
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.TwoStateButton);
         try {
-            text_size = array.getInt(R.styleable.TwoStateButton_sbTextSize, 12);
+            text_size = array.getDimensionPixelSize(R.styleable.TwoStateButton_sbTextSize,
+                                        (int) DISPLAY_DENSITY * 12);
             text_color = array.getColor(R.styleable.TwoStateButton_sbTextColor, text_color_def);
 
             mAttrTextOn = array.getString(R.styleable.TwoStateButton_sbTextOn);
@@ -120,16 +121,16 @@ public class TwoStateButton extends ConstraintLayout {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 Resources.Theme te = context.getTheme();
                 if (null == mAttrBackGroundOn)
-                    mAttrBackGroundOn = res.getDrawable(R.drawable.small_button_on_shape, te);
+                    mAttrBackGroundOn = res.getDrawable(R.drawable.ts_button_on, te);
 
                 if (null == mAttrBackGroundOff)
-                    mAttrBackGroundOff = res.getDrawable(R.drawable.small_button_off_shape, te);
+                    mAttrBackGroundOff = res.getDrawable(R.drawable.ts_button_off, te);
             } else {
                 if (null == mAttrBackGroundOn)
-                    mAttrBackGroundOn = res.getDrawable(R.drawable.small_button_on_shape);
+                    mAttrBackGroundOn = res.getDrawable(R.drawable.ts_button_on);
 
                 if (null == mAttrBackGroundOff)
-                    mAttrBackGroundOff = res.getDrawable(R.drawable.small_button_off_shape);
+                    mAttrBackGroundOff = res.getDrawable(R.drawable.ts_button_off);
             }
 
             mTVTag.setTextColor(text_color);

@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <wxm.uilib.tunewheel.TuneWheel
+        <wxm.uilib.TuneWheel.TuneWheel
             android:id="@+id/tw_h_1"
             android:layout_width="0dp"
             android:layout_height="56dp"
@@ -41,7 +41,7 @@
             app:twLongLineLength="16"
             app:twShortLineCount="1"
             app:twShortLineLength="8"
-            app:twTextSize="9" />
+            app:twTextSize="9sp" />
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -69,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <wxm.uilib.tunewheel.TuneWheel
+        <wxm.uilib.TuneWheel.TuneWheel
             android:id="@+id/tw_v_1"
             android:layout_width="56dp"
             android:layout_height="0dp"
@@ -87,7 +87,7 @@
             app:twLongLineLength="16"
             app:twShortLineCount="1"
             app:twShortLineLength="7"
-            app:twTextSize="7" />
+            app:twTextSize="7sp" />
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -112,7 +112,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <wxm.uilib.tunewheel.TuneWheel
+        <wxm.uilib.TuneWheel.TuneWheel
             android:id="@+id/tw_h_2"
             android:layout_width="0dp"
             android:layout_height="48dp"
@@ -132,7 +132,7 @@
             app:twLongLineLength="18"
             app:twShortLineCount="3"
             app:twShortLineLength="9"
-            app:twTextSize="7" />
+            app:twTextSize="7sp" />
     </android.support.constraint.ConstraintLayout>
 
 
@@ -159,7 +159,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <wxm.uilib.tunewheel.TuneWheel
+        <wxm.uilib.TuneWheel.TuneWheel
             android:id="@+id/tw_h_3"
             android:layout_width="0dp"
             android:layout_height="48dp"
@@ -178,7 +178,7 @@
             app:twLongLineLength="18"
             app:twShortLineCount="0"
             app:twShortLineLength="9"
-            app:twTextSize="7" />
+            app:twTextSize="7sp" />
     </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

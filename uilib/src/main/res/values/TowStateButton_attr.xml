@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="TwoStateButton">
+        <!-- 按键上文字的颜色和大小 -->
         <attr name="sbTextColor" format="color" />
-        <attr name="sbTextSize" format="integer" />
+        <attr name="sbTextSize" format="dimension" />
 
+        <!-- 按键状态文字 -->
         <attr name="sbTextOn" format="string" />
         <attr name="sbTextOff" format="string" />
 
+        <!-- 按键默认状态 -->
         <attr name="sbIsOn" format="boolean" />
 
+        <!-- 按键背景资源 -->
         <attr name="sbBackGroundOn" format="reference" />
         <attr name="sbBackGroundOff" format="reference" />
     </declare-styleable>

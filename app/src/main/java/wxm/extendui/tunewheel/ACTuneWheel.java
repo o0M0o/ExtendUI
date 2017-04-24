@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import wxm.extendui.R;
-import wxm.uilib.tunewheel.TuneWheel;
+import wxm.uilib.TuneWheel.TuneWheel;
 
 /**
  * 展示TuneWheel

@@ -1,4 +1,4 @@
-package wxm.uilib.tunewheel;
+package wxm.uilib.TuneWheel;
 
 import android.graphics.Canvas;
 import android.view.MotionEvent;

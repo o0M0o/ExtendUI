@@ -1,4 +1,4 @@
-package wxm.uilib.tunewheel;
+package wxm.uilib.TuneWheel;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -62,10 +62,10 @@ class TWVerticalHelper extends TWHelper {
         linePaint.setColor(mTWObj.TEXT_COLOR_NORMAL);
 
         TextPaint tp_normal = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        tp_normal.setTextSize(getDPToPX(mTWObj.mAttrTextSize));
+        tp_normal.setTextSize(mTWObj.mAttrTextSize);
 
         TextPaint tp_big = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        tp_big.setTextSize(getDPToPX(mTWObj.mAttrTextSize + 2));
+        tp_big.setTextSize(mTWObj.mAttrTextSize);
         tp_big.setColor(mTWObj.TEXT_COLOR_HOT);
 
         int height = mTWObj.mHeight, drawCount = 0;
