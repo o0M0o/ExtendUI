@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="wxm.extendui.IconButton.ACIconButton">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp">
+
+        <wxm.uilib.IconButton.IconButton
+            android:id="@+id/ib_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rl_action_shape"
+            app:ibActName="删除"
+            app:ibActNameColor="@color/text_fit"
+            app:ibIcon="@drawable/ic_delete"
+            app:ibIconHeight="24dp"
+            app:ibIconWidth="24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <wxm.uilib.IconButton.IconButton
+            android:id="@+id/ib_show1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/rl_action_shape"
+            android:paddingBottom="4dp"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:paddingTop="4dp"
+            app:ibActName="删除1"
+            app:ibActNameColor="@color/text_fit"
+            app:ibIcon="@drawable/ic_delete"
+            app:ibIconHeight="24dp"
+            app:ibIconWidth="24dp"
+            app:ibOrientation="vertical"
+            app:layout_constraintStart_toEndOf="@id/ib_show"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

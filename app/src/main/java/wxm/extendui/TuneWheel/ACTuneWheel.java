@@ -1,4 +1,4 @@
-package wxm.extendui.tunewheel;
+package wxm.extendui.TuneWheel;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

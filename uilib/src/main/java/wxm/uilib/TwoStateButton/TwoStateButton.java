@@ -10,6 +10,7 @@ import android.os.Build;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.widget.TextView;
 
@@ -134,7 +135,7 @@ public class TwoStateButton extends ConstraintLayout {
             }
 
             mTVTag.setTextColor(text_color);
-            mTVTag.setTextSize(text_size);
+            mTVTag.setTextSize(TypedValue.COMPLEX_UNIT_PX, text_size);
             mTVTag.setText(mAttrIsOn ? mAttrTextOn : mAttrTextOff);
             setBackground(mAttrIsOn ? mAttrBackGroundOn : mAttrBackGroundOff);
         }

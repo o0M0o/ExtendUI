@@ -1,4 +1,4 @@
-package wxm.extendui.twostatebutton;
+package wxm.extendui.TwoStateButton;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

@@ -11,6 +11,7 @@ import android.graphics.Path;
 import android.text.Layout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public class DistanceMeter extends View {
             mAttrMaxValue = array.getInt(R.styleable.DistanceMeter_dmMaxValue, 100);
 
             mAttrTextSize = array.getDimensionPixelSize(R.styleable.DistanceMeter_dmTextSize,
-                                    (int)(DISPLAY_DENSITY * 14));
+                                    (int)(DISPLAY_DENSITY * 12));
             mAttrShortLineHeight = array.getInt(R.styleable.DistanceMeter_dmShortLineHeight, 4);
             mAttrLongLineHeight = array.getInt(R.styleable.DistanceMeter_dmLongLineHeight, 8);
             mAttrBaseLineWidth = array.getInt(R.styleable.DistanceMeter_dmBaseLineWidth, 4);
@@ -123,7 +124,7 @@ public class DistanceMeter extends View {
 
             // get other
             TextPaint tp_normal = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-            tp_normal.setTextSize(mAttrTextSize * DISPLAY_DENSITY);
+            tp_normal.setTextSize(mAttrTextSize);
             DISPLAY_TEXT_WIDH = Layout.getDesiredWidth("0", tp_normal);
         } finally {
             array.recycle();
@@ -214,6 +215,7 @@ public class DistanceMeter extends View {
 
                 // 根据游标调整有效值范围
                 // 设定显示范围为 20 ~ 80%
+                /*
                 if(!mALTags.isEmpty()) {
                     LinkedList<Float> ls_val = new LinkedList<>();
                     for (DistanceMeterTag mt : mALTags) {
@@ -228,6 +230,7 @@ public class DistanceMeter extends View {
                     mAttrMaxValue = Math.max(mAttrLongLineCount + mAttrMinValue,
                                     (int)n_max + big_unit);
                 }
+                */
 
                 // 获得显示值
                 int mTotalValue = mAttrMaxValue - mAttrMinValue;
@@ -263,7 +266,7 @@ public class DistanceMeter extends View {
 
                 TextPaint tp_normal = new TextPaint(Paint.ANTI_ALIAS_FLAG);
                 tp_normal.setColor(getResources().getColor(R.color.text_fit));
-                tp_normal.setTextSize(mAttrTextSize * DISPLAY_DENSITY);
+                tp_normal.setTextSize(mAttrTextSize);
 
                 // for axis
                 float b_start = mVWHeight - DISPLAY_DENSITY * mAttrBaseLineBottomPadding;
@@ -318,7 +321,7 @@ public class DistanceMeter extends View {
                     canvas.drawPath(p, linePaint);
 
                     tp_normal.setColor(mt.mCRTagColor);
-                    tp_normal.setTextSize(mAttrTextSize * DISPLAY_DENSITY);
+                    tp_normal.setTextSize(mAttrTextSize);
                     canvas.drawText(mt.mSZTagName,
                             x - mt.mSZTagName.length() * DISPLAY_TEXT_WIDH / 2,
                             text_top_pos, tp_normal);

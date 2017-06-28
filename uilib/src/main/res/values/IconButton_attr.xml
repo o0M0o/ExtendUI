@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="IconButton">
+        <attr name="ibOrientation">
+            <enum name="vertical" value="1"/>
+            <enum name="horizontal" value="2"/>
+        </attr>
+
+        <attr name="ibActName" format="string" />
+        <attr name="ibActNameSize" format="dimension" />
+        <attr name="ibActNameColor" format="color" />
+
+        <attr name="ibIcon" format="reference" />
+        <attr name="ibIconWidth" format="dimension" />
+        <attr name="ibIconHeight" format="dimension" />
+    </declare-styleable>
+</resources>

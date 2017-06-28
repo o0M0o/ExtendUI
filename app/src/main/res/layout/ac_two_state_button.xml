@@ -5,7 +5,7 @@
     android:padding="8dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="wxm.extendui.twostatebutton.ACTwoStateButton">
+    tools:context="wxm.extendui.TwoStateButton.ACTwoStateButton">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cl_bts"
@@ -19,7 +19,7 @@
 
         <wxm.uilib.TwoStateButton.TwoStateButton
             android:id="@+id/tb_def"
-            app:sbTextSize="8sp"
+            app:sbTextSize="12sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:sbIsOn="true"
@@ -52,7 +52,7 @@
 
         <wxm.uilib.TwoStateButton.TwoStateButton
             android:id="@+id/tb_one_background"
-            app:sbTextSize="8sp"
+            app:sbTextSize="12sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:sbBackGroundOff="@drawable/button_off_shape"
