@@ -1,1 +1,1 @@
-Hello andriod_ExtendUI
+This is extened lib for android app
