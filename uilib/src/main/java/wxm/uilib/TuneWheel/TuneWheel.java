@@ -3,11 +3,9 @@ package wxm.uilib.TuneWheel;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -115,16 +113,8 @@ public class TuneWheel extends View {
 
         // for color
         TEXT_COLOR_NORMAL = Color.BLACK;
-
-        Resources res = context.getResources();
-        Resources.Theme te = context.getTheme();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            TEXT_COLOR_HOT = res.getColor(R.color.firebrick, te);
-            LINE_COLOR_CURSOR = res.getColor(R.color.trans_red, te);
-        } else {
-            TEXT_COLOR_HOT = res.getColor(R.color.firebrick);
-            LINE_COLOR_CURSOR = res.getColor(R.color.trans_red);
-        }
+        TEXT_COLOR_HOT = UtilFun.getColor(context, R.color.firebrick);
+        LINE_COLOR_CURSOR = UtilFun.getColor(context, R.color.trans_red);
 
         // for others
         mScroller = new Scroller(getContext());

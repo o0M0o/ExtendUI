@@ -138,9 +138,6 @@ public class ImageUtil {
         //循环获得bitmap所有像素点
         int mBitmapWidth = mBitmap.getWidth();
         int mBitmapHeight = mBitmap.getHeight();
-        int mArrayColorLengh = mBitmapWidth * mBitmapHeight;
-        int[] mArrayColor = new int[mArrayColorLengh];
-        int count = 0;
         for (int i = 0; i < mBitmapHeight; i++) {
             for (int j = 0; j < mBitmapWidth; j++) {
                 //获得Bitmap 图片中每一个点的color颜色值

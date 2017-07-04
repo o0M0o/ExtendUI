@@ -11,12 +11,9 @@ import android.graphics.Path;
 import android.text.Layout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -265,7 +262,7 @@ public class DistanceMeter extends View {
                 LongLinePaint.setColor(TEXT_COLOR_NORMAL);
 
                 TextPaint tp_normal = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-                tp_normal.setColor(getResources().getColor(R.color.text_fit));
+                tp_normal.setColor(UtilFun.getColor(getContext(), R.color.text_fit));
                 tp_normal.setTextSize(mAttrTextSize);
 
                 // for axis

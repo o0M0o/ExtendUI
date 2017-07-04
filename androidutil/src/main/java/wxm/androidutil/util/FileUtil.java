@@ -13,6 +13,7 @@ public class FileUtil {
      * 删除目录
      * @param path  待删除目录路径
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void DeleteDirectory(String path)  {
         File f = new File(path);
         if(f.isDirectory()) {

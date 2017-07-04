@@ -3,7 +3,6 @@ package wxm.uilib.IconButton;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -111,17 +110,6 @@ public class IconButton extends ConstraintLayout {
         mIVIcon.setImageResource(mAttrActIconID);
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-    }
-
-
     /**
      * 初始化自身
      * @param context   上下文
@@ -141,7 +129,7 @@ public class IconButton extends ConstraintLayout {
             mAttrActIconID = array.getResourceId(R.styleable.IconButton_ibIcon, R.drawable.ic_look);
 
             // for name
-            int def_color = context.getResources().getColor(R.color.text_fit);
+            int def_color = UtilFun.getColor(context, R.color.text_fit);
             mAttrActNameSize = array.getDimensionPixelSize(R.styleable.IconButton_ibActNameSize,
                                     UtilFun.dip2px(context, 12));
             mAttrActNameColor = array.getColor(R.styleable.IconButton_ibActNameColor, def_color);

@@ -26,8 +26,10 @@ public class AssetUtil {
             int lenght = in.available();
             byte[]  buffer = new byte[lenght];
 
-            in.read(buffer);
-            result = EncodingUtils.getString(buffer, encode);
+            int read = in.read(buffer);
+            if(read == lenght) {
+                result = EncodingUtils.getString(buffer, encode);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

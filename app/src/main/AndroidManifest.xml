@@ -22,7 +22,7 @@
         <activity
             android:name=".DistanceMeter.ACDistanceMeter"
             android:exported="true" />
-        <activity android:name=".IconButton.ACIconButton"></activity>
+        <activity android:name=".IconButton.ACIconButton" />
     </application>
 
 </manifest>

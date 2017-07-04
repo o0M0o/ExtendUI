@@ -23,8 +23,7 @@ public abstract class FrgUtilitySupportBase extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflaterView(inflater, container, savedInstanceState);
-        return v;
+        return inflaterView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -84,12 +83,14 @@ public abstract class FrgUtilitySupportBase extends Fragment {
     /**
      * 和activity附着
      */
+    @SuppressWarnings("EmptyMethod")
     protected void enterActivity()  {
     }
 
      /**
      * 在结束前清理工作
      */
+    @SuppressWarnings("EmptyMethod")
     protected void leaveActivity()  {
     }
 }

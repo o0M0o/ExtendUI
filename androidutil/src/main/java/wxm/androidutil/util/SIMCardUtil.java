@@ -19,10 +19,6 @@ public class SIMCardUtil {
      * 使用Context.getSystemService(Context.TELEPHONY_SERVICE)来获取这个类的实例。
      */
     private TelephonyManager telephonyManager;
-    /**
-     * 国际移动用户识别码
-     */
-    private String IMSI;
 
     public SIMCardUtil(Context context) {
         telephonyManager = (TelephonyManager) context
@@ -49,7 +45,7 @@ public class SIMCardUtil {
     public String getProvidersName() {
         String ProvidersName = null;
         // 返回唯一的用户ID;就是这张卡的编号神马的
-        IMSI = telephonyManager.getSubscriberId();
+        String IMSI = telephonyManager.getSubscriberId();
         // IMSI号前面3位460是国家，紧接着后面2位00 02是中国移动，01是中国联通，03是中国电信。
         System.out.println(IMSI);
         if (IMSI.startsWith("46000") || IMSI.startsWith("46002")) {

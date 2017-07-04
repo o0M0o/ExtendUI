@@ -4,9 +4,7 @@ package wxm.uilib.TwoStateButton;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -66,11 +64,6 @@ public class TwoStateButton extends ConstraintLayout {
         return mTVTag.getText().toString();
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-    }
-
     /**
      * 初始化自身
      * @param context   上下文
@@ -82,16 +75,10 @@ public class TwoStateButton extends ConstraintLayout {
         int text_size = 12;
         int text_color_def;
         Resources res = context.getResources();
-        /*
-      固定变量
-     */
+
+        /*  固定变量    */
         float DISPLAY_DENSITY = res.getDisplayMetrics().density;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Resources.Theme te = context.getTheme();
-            text_color_def = res.getColor(R.color.text_fit, te);
-        } else  {
-            text_color_def = res.getColor(R.color.text_fit);
-        }
+        text_color_def = UtilFun.getColor(context, R.color.text_fit);
         text_color = text_color_def;
 
         boolean b_ok = true;
@@ -119,20 +106,11 @@ public class TwoStateButton extends ConstraintLayout {
         }
 
         if(b_ok) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Resources.Theme te = context.getTheme();
-                if (null == mAttrBackGroundOn)
-                    mAttrBackGroundOn = res.getDrawable(R.drawable.ts_button_on, te);
+            if (null == mAttrBackGroundOn)
+                mAttrBackGroundOn = UtilFun.getDrawable(context, R.drawable.ts_button_on);
 
-                if (null == mAttrBackGroundOff)
-                    mAttrBackGroundOff = res.getDrawable(R.drawable.ts_button_off, te);
-            } else {
-                if (null == mAttrBackGroundOn)
-                    mAttrBackGroundOn = res.getDrawable(R.drawable.ts_button_on);
-
-                if (null == mAttrBackGroundOff)
-                    mAttrBackGroundOff = res.getDrawable(R.drawable.ts_button_off);
-            }
+            if (null == mAttrBackGroundOff)
+                mAttrBackGroundOff = UtilFun.getDrawable(context, R.drawable.ts_button_off);
 
             mTVTag.setTextColor(text_color);
             mTVTag.setTextSize(TypedValue.COMPLEX_UNIT_PX, text_size);

@@ -234,18 +234,11 @@ public class DragGridView extends GridView{
      * @param y
      * @return
      */
-    private boolean isTouchInItem(View dragView, int x, int y){
+    private boolean isTouchInItem(View dragView, int x, int y) {
         int leftOffset = dragView.getLeft();
         int topOffset = dragView.getTop();
-        if(x < leftOffset || x > leftOffset + dragView.getWidth()){
-            return false;
-        }
-
-        if(y < topOffset || y > topOffset + dragView.getHeight()){
-            return false;
-        }
-
-        return true;
+        return !(x < leftOffset || x > leftOffset + dragView.getWidth())
+                    && !(y < topOffset || y > topOffset + dragView.getHeight());
     }
 
 
@@ -282,7 +275,7 @@ public class DragGridView extends GridView{
     private void createDragImage(Bitmap bitmap, int downX , int downY){
         mWindowLayoutParams = new WindowManager.LayoutParams();
         mWindowLayoutParams.format = PixelFormat.TRANSLUCENT; //图片之外的其他地方透明
-        mWindowLayoutParams.gravity = Gravity.TOP | Gravity.LEFT;
+        mWindowLayoutParams.gravity = Gravity.TOP | Gravity.START;
         mWindowLayoutParams.x = downX - mPoint2ItemLeft + mOffset2Left;
         mWindowLayoutParams.y = downY - mPoint2ItemTop + mOffset2Top - mStatusHeight;
         mWindowLayoutParams.alpha = 0.55f; //透明度
@@ -391,7 +384,7 @@ public class DragGridView extends GridView{
      * @return
      */
     private static int getStatusHeight(Context context){
-        int statusHeight = 0;
+        int statusHeight;
         Rect localRect = new Rect();
         ((Activity) context).getWindow().getDecorView().getWindowVisibleDisplayFrame(localRect);
         statusHeight = localRect.top;

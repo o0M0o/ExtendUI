@@ -3,6 +3,7 @@ package wxm.androidutil.Dialog;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
 
@@ -44,24 +45,10 @@ public abstract class DlgOKOrNOBase extends DialogFragment {
         mListener.add(nl);
     }
 
-
-    /**
-     * 处理NoticeDialogListener实例
-     @Override
-     public void onAttach(Activity activity) {
-     super.onAttach(activity);
-     try {
-     mListener = (DialogResultListener) activity;
-     } catch (ClassCastException e) {
-     throw new ClassCastException(
-     activity.toString() + " must implement DialogResultListener");
-     }
-     }
-     */
-
     /**
      * 在DialogFragment的show方法执行后，系统会调用此方法
      */
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         mVWDlg = InitDlgView();

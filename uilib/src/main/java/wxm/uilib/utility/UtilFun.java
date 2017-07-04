@@ -1,6 +1,12 @@
 package wxm.uilib.utility;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 
 import java.util.List;
 
@@ -48,5 +54,43 @@ public class UtilFun {
     public static int px2dip(Context context, float pxValue){
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int)(pxValue / scale + 0.5f);
+    }
+
+    /**
+     * 获取颜色的工具函数
+     * @param ct    context
+     * @param id    颜色id
+     * @return      颜色值
+     */
+    @SuppressWarnings("deprecation")
+    @ColorInt
+    public static int getColor(Context ct, @ColorRes int id)    {
+        int ret;
+        Resources res = ct.getResources();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ret = res.getColor(id, ct.getTheme());
+        } else {
+            ret = res.getColor(id);
+        }
+
+        return  ret;
+    }
+
+    /**
+     * 获取Drawable的工具函数
+     * @param id    id for drawable
+     * @return      drawable
+     */
+    @SuppressWarnings("deprecation")
+    public static Drawable getDrawable(Context ct, @DrawableRes int id)    {
+        Drawable ret;
+        Resources res = ct.getResources();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ret = res.getDrawable(id, ct.getTheme());
+        } else {
+            ret = res.getDrawable(id);
+        }
+
+        return  ret;
     }
 }

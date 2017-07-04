@@ -160,7 +160,7 @@ public class UtilFun {
      * @return 结果
      */
     public static String CalenderToString(Calendar cl)  {
-        String ret = String.format(Locale.CHINA,
+        return String.format(Locale.CHINA,
                 "%d-%02d-%02d %02d:%02d:%02d"
                 ,cl.get(Calendar.YEAR)
                 ,cl.get(Calendar.MONTH) + 1
@@ -168,7 +168,6 @@ public class UtilFun {
                 ,cl.get(Calendar.HOUR_OF_DAY)
                 ,cl.get(Calendar.MINUTE)
                 ,cl.get(Calendar.SECOND));
-        return ret;
     }
 
     /**
