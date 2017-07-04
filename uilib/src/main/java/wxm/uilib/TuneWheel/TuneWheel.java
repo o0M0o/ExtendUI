@@ -15,8 +15,9 @@ import android.widget.Scroller;
 
 import java.util.Map;
 
+import wxm.androidutil.util.UiUtil;
+import wxm.androidutil.util.UtilFun;
 import wxm.uilib.R;
-import wxm.uilib.utility.UtilFun;
 
 
 /**
@@ -113,8 +114,8 @@ public class TuneWheel extends View {
 
         // for color
         TEXT_COLOR_NORMAL = Color.BLACK;
-        TEXT_COLOR_HOT = UtilFun.getColor(context, R.color.firebrick);
-        LINE_COLOR_CURSOR = UtilFun.getColor(context, R.color.trans_red);
+        TEXT_COLOR_HOT = UiUtil.getColor(context, R.color.firebrick);
+        LINE_COLOR_CURSOR = UiUtil.getColor(context, R.color.trans_red);
 
         // for others
         mScroller = new Scroller(getContext());

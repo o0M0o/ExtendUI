@@ -12,8 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import wxm.androidutil.util.UiUtil;
+import wxm.androidutil.util.UtilFun;
 import wxm.uilib.R;
-import wxm.uilib.utility.UtilFun;
 
 
 /**
@@ -122,16 +123,16 @@ public class IconButton extends ConstraintLayout {
         try {
             // for icon
             mAttrActIconWidth = array.getDimensionPixelSize(R.styleable.IconButton_ibIconWidth,
-                                    UtilFun.dip2px(context, 32));
+                                    UiUtil.dip2px(context, 32));
             mAttrActIconHeight = array.getDimensionPixelSize(R.styleable.IconButton_ibIconHeight,
-                                    UtilFun.dip2px(context, 32));
+                                    UiUtil.dip2px(context, 32));
 
             mAttrActIconID = array.getResourceId(R.styleable.IconButton_ibIcon, R.drawable.ic_look);
 
             // for name
-            int def_color = UtilFun.getColor(context, R.color.text_fit);
+            int def_color = UiUtil.getColor(context, R.color.text_fit);
             mAttrActNameSize = array.getDimensionPixelSize(R.styleable.IconButton_ibActNameSize,
-                                    UtilFun.dip2px(context, 12));
+                                    UiUtil.dip2px(context, 12));
             mAttrActNameColor = array.getColor(R.styleable.IconButton_ibActNameColor, def_color);
 
             mAttrActName = array.getString(R.styleable.IconButton_ibActName);

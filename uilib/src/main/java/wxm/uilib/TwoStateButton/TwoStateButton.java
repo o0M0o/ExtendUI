@@ -12,8 +12,9 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.widget.TextView;
 
+import wxm.androidutil.util.UiUtil;
+import wxm.androidutil.util.UtilFun;
 import wxm.uilib.R;
-import wxm.uilib.utility.UtilFun;
 
 
 /**
@@ -78,7 +79,7 @@ public class TwoStateButton extends ConstraintLayout {
 
         /*  固定变量    */
         float DISPLAY_DENSITY = res.getDisplayMetrics().density;
-        text_color_def = UtilFun.getColor(context, R.color.text_fit);
+        text_color_def = UiUtil.getColor(context, R.color.text_fit);
         text_color = text_color_def;
 
         boolean b_ok = true;
@@ -107,10 +108,10 @@ public class TwoStateButton extends ConstraintLayout {
 
         if(b_ok) {
             if (null == mAttrBackGroundOn)
-                mAttrBackGroundOn = UtilFun.getDrawable(context, R.drawable.ts_button_on);
+                mAttrBackGroundOn = UiUtil.getDrawable(context, R.drawable.ts_button_on);
 
             if (null == mAttrBackGroundOff)
-                mAttrBackGroundOff = UtilFun.getDrawable(context, R.drawable.ts_button_off);
+                mAttrBackGroundOff = UiUtil.getDrawable(context, R.drawable.ts_button_off);
 
             mTVTag.setTextColor(text_color);
             mTVTag.setTextSize(TypedValue.COMPLEX_UNIT_PX, text_size);
