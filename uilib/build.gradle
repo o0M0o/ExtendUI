@@ -13,6 +13,19 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
+
+    sourceSets {
+        main {
+            res.srcDirs =
+                    [
+                            'src/main/res',
+                            'src/main/res/layouts/calendar',
+                            'src/main/res/layouts/other',
+                            'src/main/res/layouts'
+                    ]
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false

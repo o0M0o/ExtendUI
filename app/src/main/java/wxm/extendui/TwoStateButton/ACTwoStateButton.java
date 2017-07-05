@@ -12,7 +12,6 @@ import wxm.extendui.R;
 import wxm.uilib.TwoStateButton.TwoStateButton;
 
 public class ACTwoStateButton extends AppCompatActivity {
-
     @BindView(R.id.tv_def_tag)
     TextView            mTVTag;
 

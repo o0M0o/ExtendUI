@@ -23,6 +23,8 @@
             android:name=".DistanceMeter.ACDistanceMeter"
             android:exported="true" />
         <activity android:name=".IconButton.ACIconButton" />
+        <activity android:name=".SimpleCalendar.ACSimpleCalendar"
+            android:exported="true" />
     </application>
 
 </manifest>
