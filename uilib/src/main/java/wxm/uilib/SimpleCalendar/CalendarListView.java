@@ -61,7 +61,6 @@ public class CalendarListView extends FrameLayout {
     protected CalendarView calendarView;
     protected LinearLayout weekBar;
     private GestureDetector gestureDetector;
-    private String currentSelectedDate;
     private float startY;
     private float downY;
     private float dy;
@@ -94,8 +93,13 @@ public class CalendarListView extends FrameLayout {
         this.calendarView.setCalendarItemAdapter(calendarItemAdapter);
     }
 
-    public String getCurrentSelectedDate() {
-        return currentSelectedDate;
+    /**
+     * get selected date
+     * example : 2017-01-28
+     * @return  date
+     */
+    public String getSelectedDate() {
+        return calendarView.getSelectedDate();
     }
 
     public void setOnMonthChangedListener(OnMonthChangedListener onMonthChangedListener) {
@@ -116,6 +120,22 @@ public class CalendarListView extends FrameLayout {
         return weekBar;
     }
 
+    public void changeMonth(String month)   {
+        String cur_month = calendarView.getCurrentMonth();
+        changeMonth(CalendarHelper.getDiffMonthByYearMonth(cur_month, month));
+    }
+
+    protected void changeMonth(int diffMonth) {
+        String currentDate = calendarView.getCurrentMonth() + "-01";
+        if (diffMonth != 0) {
+            calendarView.changeMonth(diffMonth, currentDate, status);
+        } else {
+            if (status == Status.LIST_OPEN) {
+                calendarView.animateCalendarViewToDate(currentDate);
+            }
+            calendarView.animateSelectedViewToDate(currentDate);
+        }
+    }
 
     protected void initListener() {
         calendarView.setOnDateSelectedListener(new CalendarView.OnDateSelectedListener() {

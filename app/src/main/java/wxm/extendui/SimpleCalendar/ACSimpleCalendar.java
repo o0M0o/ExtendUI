@@ -3,17 +3,11 @@ package wxm.extendui.SimpleCalendar;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import wxm.extendui.R;
 import wxm.uilib.SimpleCalendar.CalendarListView;
-import wxm.uilib.TuneWheel.TuneWheel;
 
 /**
  * 展示SimpleCalendar
@@ -43,12 +37,16 @@ public class ACSimpleCalendar extends AppCompatActivity {
         mHGVDays.setCalendarListViewAdapter(mCSIAdapter);
 
         mHGVDays.setOnMonthChangedListener(yearMonth -> {
-            Log.d("SimpleCalendar", "OnMonthChangedListener, yearMonth = " + yearMonth);
+            Log.d("SimpleCalendar",
+                    "OnMonthChangedListener, yearMonth = " + yearMonth
+                            + " selectedDate = " + mHGVDays.getSelectedDate());
 
         });
 
         mHGVDays.setOnCalendarViewItemClickListener((View, selectedDate) -> {
-            Log.d("SimpleCalendar", "OnCalendarViewItemClick, selectedDate = " + selectedDate);
+            Log.d("SimpleCalendar",
+                    "OnCalendarViewItemClick, para-selectedDate = " + selectedDate
+                        + " selectedDate = " + mHGVDays.getSelectedDate());
         });
     }
 }
