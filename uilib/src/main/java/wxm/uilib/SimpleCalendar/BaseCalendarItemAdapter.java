@@ -17,7 +17,6 @@ import wxm.uilib.R;
 
 /**
  * 日历节点适配器
- *
  * @param <T> 日历节点数据
  */
 public class BaseCalendarItemAdapter<T extends BaseCalendarItemModel> extends BaseAdapter {
@@ -25,7 +24,7 @@ public class BaseCalendarItemAdapter<T extends BaseCalendarItemModel> extends Ba
 
     protected Context mContext;
     //key:date("yyyy-MM-dddd"),value: you custom CalendarItemModel must extend BaseCalendarItemModel
-    protected TreeMap<String, T> dayModelList = new TreeMap<>();
+    private TreeMap<String, T> dayModelList = new TreeMap<>();
     //list to keep dayModelList's key that convenient for get key by index.
     protected List<String> indexToTimeMap = new ArrayList<>();
 
