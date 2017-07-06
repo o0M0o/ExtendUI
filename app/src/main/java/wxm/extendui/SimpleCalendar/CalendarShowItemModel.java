@@ -12,7 +12,6 @@ public class CalendarShowItemModel extends BaseCalendarItemModel {
     public int getRecordCount() {
                               return mRecordCount;
                                                   }
-
     public void setRecordCount(int mRecordCount) {
                                                this.mRecordCount = mRecordCount;
                                                                                 }

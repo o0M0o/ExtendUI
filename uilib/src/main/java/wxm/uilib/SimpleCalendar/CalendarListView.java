@@ -18,11 +18,44 @@ import wxm.uilib.R;
 
 /**
  * for calendar
- * Created by kelin on 16-7-21.
+ * Created by ookoo on 2017/07/06.
  */
 public class CalendarListView extends FrameLayout {
     private static final int WEEK_ITEM_TEXT_SIZE = 12;
     private static final int RED_FF725F = 0xffff725f;
+
+    enum Status {
+        // when ListView been push to Top,the status is LIST_OPEN.
+        LIST_OPEN,
+        // when ListView stay original position ,the status is LIST_CLOSE.
+        LIST_CLOSE,
+        // when VIEW is dragging.
+        DRAGGING,
+        //when dragging end,the both CalendarView and ListView will animate to specify position.
+        ANIMATING,
+    }
+
+    public interface OnCalendarViewItemClickListener {
+        /**
+         * <p>when item of Calendar View was clicked will be trigger. </p>
+         *
+         * @param View               the view(Calendar View Item) that was clicked.
+         * @param selectedDate       the date has been selected is "yyyy-MM-dd" type
+         *
+         */
+        void onDateSelected(View View, String selectedDate);
+    }
+
+    public interface OnMonthChangedListener {
+        /**
+         * when month of calendar view has changed. it include user manually fling CalendarView to change
+         * month,also include when user scroll ListView then beyond the current month.it will change month
+         * of CalendarView automatically.
+         *
+         * @param yearMonth the date has been selected is "yyyy-MM-dd" type
+         */
+        void onMonthChanged(String yearMonth);
+    }
 
     protected FrameLayout   mFLContent;
     protected CalendarView calendarView;
@@ -37,7 +70,6 @@ public class CalendarListView extends FrameLayout {
     protected BaseCalendarItemAdapter calendarItemAdapter;
 
     private OnCalendarViewItemClickListener onCalendarViewItemClickListener;
-
 
     public CalendarListView(final Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -55,7 +87,7 @@ public class CalendarListView extends FrameLayout {
 
 
     /**
-     * @param calendarItemAdapter this adapter is for CalendarView
+     * @param calendarItemAdapter adapter is for CalendarView
      */
     public void setCalendarListViewAdapter(BaseCalendarItemAdapter calendarItemAdapter) {
         this.calendarItemAdapter = calendarItemAdapter;
@@ -86,27 +118,6 @@ public class CalendarListView extends FrameLayout {
 
 
     protected void initListener() {
-                /*
-        calendarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int global_height = CalendarListView.this.getHeight();
-                int wb_height = weekBar.getHeight();
-                int cv_height = calendarView.getHeight();
-                int rl_height = global_height - wb_height - cv_height;
-                Log.d("initListener",
-                        "rl_height = " + rl_height + ", global = " + global_height
-                                + ", cv = "  + cv_height);
-
-                ViewGroup.LayoutParams fl_para = mFLContent.getLayoutParams();
-                if(fl_para.height != rl_height) {
-                    fl_para.height = rl_height;
-                    mFLContent.setLayoutParams(fl_para);
-                }
-            }
-        });
-                */
-
         calendarView.setOnDateSelectedListener(new CalendarView.OnDateSelectedListener() {
             @Override
             public void onDateSelected(CalendarView calendarView, View view, String time, int pos) {
@@ -116,26 +127,6 @@ public class CalendarListView extends FrameLayout {
             }
         });
     }
-
-    public void changeMonth(String month)   {
-        String cur_month = calendarView.getCurrentMonth();
-        int dif = CalendarHelper.getDiffMonthByYearMonth(cur_month, month);
-
-        currentSelectedDate = month + "-01";
-        changeMonth(dif);
-    }
-
-    protected void changeMonth(int diffMonth) {
-        if (diffMonth != 0) {
-            calendarView.changeMonth(diffMonth, currentSelectedDate, status);
-        } else {
-            if (status == Status.LIST_OPEN) {
-                calendarView.animateCalendarViewToDate(currentSelectedDate);
-            }
-            calendarView.animateSelectedViewToDate(currentSelectedDate);
-        }
-    }
-
 
     protected void initWeekBar() {
         weekBar = (LinearLayout) findViewById(R.id.week_bar);
@@ -267,7 +258,6 @@ public class CalendarListView extends FrameLayout {
         objectAnimator2.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-
             }
 
             @Override
@@ -277,12 +267,10 @@ public class CalendarListView extends FrameLayout {
 
             @Override
             public void onAnimationCancel(Animator animation) {
-
             }
 
             @Override
             public void onAnimationRepeat(Animator animation) {
-
             }
         });
     }
@@ -306,54 +294,16 @@ public class CalendarListView extends FrameLayout {
 
             @Override
             public void onAnimationCancel(Animator animation) {
-
             }
 
             @Override
             public void onAnimationRepeat(Animator animation) {
-
             }
         });
     }
 
 
-    public interface OnCalendarViewItemClickListener {
-        /**
-         * <p>when item of Calendar View was clicked will be trigger. </p>
-         *
-         * @param View               the view(Calendar View Item) that was clicked.
-         * @param selectedDate       the date has been selected is "yyyy-MM-dd" type
-         *
-         */
-        void onDateSelected(View View, String selectedDate);
 
-        enum SelectedDateRegion {
-            BEFORE,
-            AFTER,
-            INSIDE,
-        }
 
-    }
 
-    public interface OnMonthChangedListener {
-        /**
-         * when month of calendar view has changed. it include user manually fling CalendarView to change
-         * month,also include when user scroll ListView then beyond the current month.it will change month
-         * of CalendarView automatically.
-         *
-         * @param yearMonth the date has been selected is "yyyy-MM-dd" type
-         */
-        void onMonthChanged(String yearMonth);
-    }
-
-    public enum Status {
-        // when ListView been push to Top,the status is LIST_OPEN.
-        LIST_OPEN,
-        // when ListView stay original position ,the status is LIST_CLOSE.
-        LIST_CLOSE,
-        // when VIEW is dragging.
-        DRAGGING,
-        //when dragging end,the both CalendarView and ListView will animate to specify position.
-        ANIMATING,
-    }
 }

@@ -1,9 +1,25 @@
 package wxm.uilib.SimpleCalendar;
 
 /**
+ * class for Calendar Item
  * Created by kelin on 16-7-20.
  */
 public class BaseCalendarItemModel {
+    // if is not the current month ,this item's background should be gloomy，because it is not belong to active month.
+    private boolean isCurrentMonth;
+    // calendar item would show this number to show what date it is.
+    private String dayNumber;
+    private long timeMill;
+    private boolean isToday;
+    private boolean isHoliday;
+    private Status status;
+
+    public enum Status {
+        NONE,
+        DISABLE,
+        SELECTED,
+    }
+
     public boolean isCurrentMonth() {
         return isCurrentMonth;
     }
@@ -50,20 +66,5 @@ public class BaseCalendarItemModel {
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    // if is not the current month ,this item's background should be gloomy，because it is not belong to active month.
-    private boolean isCurrentMonth;
-    // calendar item would show this number to show what date it is.
-    private String dayNumber;
-    private long timeMill;
-    private boolean isToday;
-    private boolean isHoliday;
-    private Status status;
-
-    public enum Status {
-        NONE,
-        DISABLE,
-        SELECTED,
     }
 }

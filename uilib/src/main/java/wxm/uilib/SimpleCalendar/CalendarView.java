@@ -23,12 +23,28 @@ import java.util.TreeMap;
 import wxm.uilib.R;
 
 /**
- * for CalendarView
+ * class for calendar
+ * Created by ookoo on 2017/07/06
  */
 public class CalendarView extends FrameLayout {
+    static class SelectedRowColumn {
+        int row;
+        int column;
+    }
+
+    interface OnDateSelectedListener {
+        /**
+         * @param calendarView current view
+         * @param view         the view(Calendar View Item) that was clicked.
+         * @param time         the date has been selected with "yyyy-MM-dd" format
+         * @param pos          position in GridView
+         */
+        void onDateSelected(CalendarView calendarView, View view, String time, int pos);
+    }
+
     private static final int ROW_ITEM_COUNT = 7;
     private static final int COLUMN_ITEM_COUNT = 5;
-    private static final int ITEM_HEIGHT = 40;
+
     public static int mItemWidth = 0;
     public static int mItemHeight = 0;
     private TreeMap<String, BaseCalendarItemModel> dayModelTreeMap;
@@ -185,7 +201,6 @@ public class CalendarView extends FrameLayout {
     }
 
     private TreeMap<String, BaseCalendarItemModel> getDefaultCalendarDataListByYearMonth(String yearMonth) {
-
         int calendarViewRow = COLUMN_ITEM_COUNT;
         int calendarViewColumn = ROW_ITEM_COUNT;
 
@@ -231,7 +246,6 @@ public class CalendarView extends FrameLayout {
         return dayModelList;
 
     }
-
 
     protected void changeMonth(int offset, final String date, final CalendarListView.Status status) {
         this.selectedDate = date;
@@ -357,22 +371,4 @@ public class CalendarView extends FrameLayout {
         selectedRowColumn.row = (diff / ROW_ITEM_COUNT);
         return selectedRowColumn;
     }
-
-
-    public static class SelectedRowColumn {
-        public int row;
-        public int column;
-    }
-
-    public interface OnDateSelectedListener {
-        /**
-         * @param calendarView current view
-         * @param view         the view(Calendar View Item) that was clicked.
-         * @param time         the date has been selected with "yyyy-MM-dd" format
-         * @param pos          position in GridView
-         */
-        void onDateSelected(CalendarView calendarView, View view, String time, int pos);
-    }
-
-
 }
