@@ -2,7 +2,7 @@ package wxm.uilib.SimpleCalendar;
 
 /**
  * class for Calendar Item
- * Created by kelin on 16-7-20.
+ * Created by ookoo on 2017/07/07
  */
 public class BaseCalendarItemModel {
     // if is not the current month ,this item's background should be gloomy，because it is not belong to active month.
