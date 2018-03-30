@@ -120,4 +120,12 @@ public abstract class BaseAppCompatActivity
     public void setBackIconRID(int mDIDBack) {
         this.mDIDBack = mDIDBack;
     }
+
+    protected void setFrg(Fragment frg) {
+        mFGHolder = frg;
+    }
+
+    protected void setSupportFrg(android.support.v4.app.Fragment  frg) {
+        mFGSupportHolder = frg;
+    }
 }
