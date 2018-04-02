@@ -1,20 +1,16 @@
 package wxm.extendui.WebView;
 
 
-import wxm.androidutil.ExActivity.BaseAppCompatActivity;
+import android.os.Bundle;
+
+import wxm.androidutil.Switcher.ACSwitcherActivity;
 
 /**
  * test webview frg
  */
-public class ACWebView extends BaseAppCompatActivity {
+public class ACWebView extends ACSwitcherActivity<FrgWebViewImp> {
     @Override
-    protected void leaveActivity() {
-        finish();
-    }
-
-    @Override
-    protected void initFrgHolder() {
-        LOG_TAG = "ACPageSwitcher";
-        mFGHolder = new FrgWebViewImp();
+    protected void setupFragment(Bundle savedInstanceState) {
+        addFragment(new FrgWebViewImp());
     }
 }

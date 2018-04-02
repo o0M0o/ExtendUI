@@ -15,7 +15,7 @@ import wxm.androidutil.FrgUtility.FrgUtilitySupportBase;
  * base UI for show data
  * Created by wxm on 2016/9/27.
  */
-public abstract class FrgSwitcher<T>
+public abstract class FrgSupportSwitcher<T>
         extends FrgUtilitySupportBase {
     private final static String CHILD_HOT = "child_hot";
     protected ArrayList<T>  mFrgArr = new ArrayList<>();
@@ -47,11 +47,7 @@ public abstract class FrgSwitcher<T>
     }
 
     @Override
-    protected void initUiComponent(View view) {
-    }
-
-    @Override
-    protected void loadUI() {
+    protected void loadUI(Bundle savedInstanceState) {
         loadHotFrg();
     }
 

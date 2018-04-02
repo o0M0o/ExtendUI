@@ -14,7 +14,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import wxm.androidutil.FrgUtility.FrgUtilityBase;
 import wxm.androidutil.FrgUtility.FrgUtilitySupportBase;
 import wxm.androidutil.R;
 import wxm.androidutil.util.UtilFun;
@@ -30,17 +29,13 @@ public abstract class FrgSupportWebView extends FrgUtilitySupportBase {
     private Object pagePara;
 
     @Override
+    @SuppressLint("SetJavaScriptEnabled")
     protected View inflaterView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
         LOG_TAG = "FrgWebView";
         View rootView = layoutInflater.inflate(R.layout.frg_webview, viewGroup, false);
         mWVPage = UtilFun.cast_t(rootView.findViewById(R.id.wv_page));
         mPBLoad = UtilFun.cast_t(rootView.findViewById(R.id.pb_load));
-        return rootView;
-    }
 
-    @SuppressLint("SetJavaScriptEnabled")
-    @Override
-    protected void initUiComponent(View view) {
         mWVPage.getSettings().setDefaultTextEncodingName("utf-8");
         mWVPage.getSettings().setJavaScriptEnabled(true);
         mWVPage.setWebViewClient(new WebViewClient() {
@@ -50,6 +45,11 @@ public abstract class FrgSupportWebView extends FrgUtilitySupportBase {
                 onWVPageFinished(mWVPage, pagePara);
             }
         });
+        return rootView;
+    }
+
+    @Override
+    protected void loadUI(Bundle savedInstanceState) {
     }
 
     /**

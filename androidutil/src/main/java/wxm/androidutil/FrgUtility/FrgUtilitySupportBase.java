@@ -8,18 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * 工具Fragment基础类（兼容V4)
+ * derived class for fragment(support V4)
  * Created by ookoo on 2016/11/16.
  */
 public abstract class FrgUtilitySupportBase extends Fragment {
-    protected String LOG_TAG = "FrgUtilitySupportBase";
+    protected String LOG_TAG = "FrgUtilityBase";
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState)     {
         super.onActivityCreated(savedInstanceState);
+        LOG_TAG = getClass().getSimpleName();
+
         enterActivity();
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,14 +30,14 @@ public abstract class FrgUtilitySupportBase extends Fragment {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         if (null != view) {
-            initUiComponent(view);
+            loadUI(savedInstanceState);
         }
     }
 
     @Override
     public void onResume()  {
         super.onResume();
-        loadUI();
+        loadUI(null);
     }
 
     @Override
@@ -46,49 +47,42 @@ public abstract class FrgUtilitySupportBase extends Fragment {
     }
 
     /**
-     * 刷新UI
+     * refresh UI
      */
     public void refreshUI()    {
         View v = getView();
         if(null != v) {
-            initUiComponent(v);
-            loadUI();
+            loadUI(null);
         }
     }
 
     /**
-     * 加载视图
-     * 在initView前调用
-     * @param inflater                  para
-     * @param container                 para
-     * @param savedInstanceState        para
-     * @return   inflated view
+     * realize this in derived class
+     * @param inflater                  inflater for view
+     * @param container                 view holder
+     * @param savedInstanceState        If non-null, this fragment is being re-constructed
+     *                                  from a previous saved state as given here.
+     * @return                          inflated view
      */
     protected abstract View inflaterView(LayoutInflater inflater, ViewGroup container,
-                                       Bundle savedInstanceState);
-
+                                         Bundle savedInstanceState);
 
     /**
-     * 初始化视图
-     * 在inflatView后调用
-     * @param v                 init for view
+     * load ui
+     * @param savedInstanceState        If non-null, this fragment is being re-constructed
+     *                                  from a previous saved state as given here.
      */
-    protected abstract void initUiComponent(View v);
+    protected abstract void loadUI(Bundle savedInstanceState);
 
     /**
-     * 初始化视图UI内容
-     */
-    protected abstract void loadUI();
-
-    /**
-     * 和activity附着
+     * invoked after enter activity
      */
     @SuppressWarnings("EmptyMethod")
     protected void enterActivity()  {
     }
 
-     /**
-     * 在结束前清理工作
+    /**
+     * invoked after leave activity
      */
     @SuppressWarnings("EmptyMethod")
     protected void leaveActivity()  {

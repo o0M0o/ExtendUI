@@ -14,7 +14,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import wxm.androidutil.FrgUtility.FrgUtilityBase;
+import wxm.androidutil.FrgUtility.FrgUtilitySupportBase;
 import wxm.androidutil.R;
 import wxm.androidutil.util.UtilFun;
 
@@ -22,7 +22,7 @@ import wxm.androidutil.util.UtilFun;
  * fragment for webView
  * Created by ookoo on 2017/2/15.
  */
-public abstract class FrgWebView extends FrgUtilityBase {
+public abstract class FrgWebView extends FrgUtilitySupportBase {
     WebView mWVPage;
     ProgressBar mPBLoad;
 

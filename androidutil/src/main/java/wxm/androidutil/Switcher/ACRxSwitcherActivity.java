@@ -3,7 +3,6 @@ package wxm.androidutil.Switcher;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
@@ -34,10 +33,23 @@ public abstract class ACRxSwitcherActivity<T>
         setContentView(wxm.androidutil.R.layout.ac_base);
 
         LOG_TAG = this.getClass().getSimpleName();
-
         ButterKnife.bind(this);
-        initUi(savedInstanceState);
 
+        // for left menu(go back)
+        Toolbar toolbar = ButterKnife.findById(this, wxm.androidutil.R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(getBackIconRID());
+        toolbar.setNavigationOnClickListener(v -> leaveActivity());
+
+        // for Fragment
+        if (null != mALFrg && savedInstanceState != null) {
+            mHotFrgIdx = savedInstanceState.getInt(CHILD_HOT, 0);
+        } else  {
+            mALFrg = new ArrayList<>();
+            mHotFrgIdx = 0;
+        }
+
+        setupFragment(savedInstanceState);
         if(null == savedInstanceState)  {
             loadHotFragment();
         }
@@ -72,7 +84,7 @@ public abstract class ACRxSwitcherActivity<T>
      */
     public void switchFragment() {
         if(!(isFinishing() || isDestroyed())) {
-            swapToFragmentByIdx((mHotFrgIdx + 1) % mALFrg.size());
+            switchToFragmentByIdx((mHotFrgIdx + 1) % mALFrg.size());
         }
     }
 
@@ -84,7 +96,7 @@ public abstract class ACRxSwitcherActivity<T>
         if(!(isFinishing() || isDestroyed())) {
             for (T frg : mALFrg) {
                 if (frg == sb && frg != mALFrg.get(mHotFrgIdx)) {
-                    swapToFragmentByIdx(mALFrg.indexOf(frg));
+                    switchToFragmentByIdx(mALFrg.indexOf(frg));
                     break;
                 }
             }
@@ -115,24 +127,11 @@ public abstract class ACRxSwitcherActivity<T>
 
 
     /**
-     * invoke this to setup ui
-     * @param savedInstanceState    param for ui
+     * invoke this to load fragment
+     * @param savedInstanceState    If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
      */
-    protected void initUi(Bundle savedInstanceState) {
-        // for left menu(go back)
-        Toolbar toolbar = ButterKnife.findById(this, wxm.androidutil.R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(getBackIconRID());
-        toolbar.setNavigationOnClickListener(v -> leaveActivity());
-
-        // for Fragment
-        if (null != mALFrg && savedInstanceState != null) {
-            mHotFrgIdx = savedInstanceState.getInt(CHILD_HOT, 0);
-        } else  {
-            mALFrg = new ArrayList<>();
-            mHotFrgIdx = 0;
-        }
-    }
+    protected abstract void setupFragment(Bundle savedInstanceState);
 
     /**
      * leave activity
@@ -166,7 +165,7 @@ public abstract class ACRxSwitcherActivity<T>
      * swap to fragment by idx
      * @param idx       swap in fragment idx
      */
-    private void swapToFragmentByIdx(int idx)    {
+    private void switchToFragmentByIdx(int idx)    {
         if(idx >= 0  && idx < mALFrg.size()) {
             mHotFrgIdx = idx;
             loadHotFragment();

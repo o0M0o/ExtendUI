@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
  * Created by wxm on 2018/03/30.
  */
 public abstract class ACSwitcherActivity<T>
-        extends AppCompatActivity {
+        extends AppCompatActivity       {
     private final static String CHILD_HOT = "child_hot";
     protected String LOG_TAG = "ACSwitcherActivity";
 
@@ -31,11 +31,24 @@ public abstract class ACSwitcherActivity<T>
         super.onCreate(savedInstanceState);
         setContentView(wxm.androidutil.R.layout.ac_base);
 
-        LOG_TAG = this.getClass().getSimpleName();
-
+        LOG_TAG = getClass().getSimpleName();
         ButterKnife.bind(this);
-        initUi(savedInstanceState);
 
+        // for left menu(go back)
+        Toolbar toolbar = ButterKnife.findById(this, wxm.androidutil.R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(getBackIconRID());
+        toolbar.setNavigationOnClickListener(v -> leaveActivity());
+
+        // for Fragment
+        if (null != mALFrg && savedInstanceState != null) {
+            mHotFrgIdx = savedInstanceState.getInt(CHILD_HOT, 0);
+        } else  {
+            mALFrg = new ArrayList<>();
+            mHotFrgIdx = 0;
+        }
+
+        setupFragment(savedInstanceState);
         if(null == savedInstanceState)  {
             loadHotFragment();
         }
@@ -70,7 +83,7 @@ public abstract class ACSwitcherActivity<T>
      */
     public void switchFragment() {
         if(!(isFinishing() || isDestroyed())) {
-            swapToFragmentByIdx((mHotFrgIdx + 1) % mALFrg.size());
+            switchToFragmentByIdx((mHotFrgIdx + 1) % mALFrg.size());
         }
     }
 
@@ -82,7 +95,7 @@ public abstract class ACSwitcherActivity<T>
         if(!(isFinishing() || isDestroyed())) {
             for (T frg : mALFrg) {
                 if (frg == sb && frg != mALFrg.get(mHotFrgIdx)) {
-                    swapToFragmentByIdx(mALFrg.indexOf(frg));
+                    switchToFragmentByIdx(mALFrg.indexOf(frg));
                     break;
                 }
             }
@@ -113,24 +126,11 @@ public abstract class ACSwitcherActivity<T>
 
 
     /**
-     * invoke this to setup ui
-     * @param savedInstanceState    param for ui
+     * invoke this to load fragment
+     * @param savedInstanceState    If non-null, this fragment is being re-constructed
+     *                              from a previous saved state as given here.
      */
-    protected void initUi(Bundle savedInstanceState) {
-        // for left menu(go back)
-        Toolbar toolbar = ButterKnife.findById(this, wxm.androidutil.R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(getBackIconRID());
-        toolbar.setNavigationOnClickListener(v -> leaveActivity());
-
-        // for Fragment
-        if (null != mALFrg && savedInstanceState != null) {
-            mHotFrgIdx = savedInstanceState.getInt(CHILD_HOT, 0);
-        } else  {
-            mALFrg = new ArrayList<>();
-            mHotFrgIdx = 0;
-        }
-    }
+    protected abstract void setupFragment(Bundle savedInstanceState);
 
     /**
      * leave activity
@@ -164,7 +164,7 @@ public abstract class ACSwitcherActivity<T>
      * swap to fragment by idx
      * @param idx       swap in fragment idx
      */
-    private void swapToFragmentByIdx(int idx)    {
+    private void switchToFragmentByIdx(int idx)    {
         if(idx >= 0  && idx < mALFrg.size()) {
             mHotFrgIdx = idx;
             loadHotFragment();

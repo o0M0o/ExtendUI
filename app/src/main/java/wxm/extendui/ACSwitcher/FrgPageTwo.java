@@ -13,14 +13,14 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import wxm.androidutil.FrgUtility.FrgUtilityBase;
+import wxm.androidutil.FrgUtility.FrgUtilitySupportBase;
 import wxm.extendui.R;
 
 /**
  * for webview
  * Created by ookoo on 2016/11/29.
  */
-public class FrgPageTwo extends FrgUtilityBase {
+public class FrgPageTwo extends FrgUtilitySupportBase {
     @BindView(R.id.tw_tag)
     TextView mTVTag;
 

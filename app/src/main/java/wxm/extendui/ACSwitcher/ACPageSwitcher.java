@@ -5,15 +5,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import wxm.androidutil.FrgUtility.FrgUtilityBase;
+import wxm.androidutil.FrgUtility.FrgUtilitySupportBase;
 import wxm.androidutil.Switcher.ACSwitcherActivity;
 import wxm.extendui.R;
 
 
-public class ACPageSwitcher extends ACSwitcherActivity<FrgUtilityBase> {
+public class ACPageSwitcher extends ACSwitcherActivity<FrgUtilitySupportBase> {
     @Override
-    protected void initUi(Bundle savedInstanceState)    {
-        super.initUi(savedInstanceState);
+    protected void setupFragment(Bundle savedInstanceState)    {
         addFragment(new FrgPageOne());
         addFragment(new FrgPageTwo());
     }
