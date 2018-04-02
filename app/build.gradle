@@ -19,6 +19,21 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            res.srcDirs =
+                    [
+                            'src/main/res',
+                            'src/main/res/layouts/activities',
+                            'src/main/res/layouts/fragment',
+                            'src/main/res/layouts/page',
+                            'src/main/res/layouts/dialog',
+                            'src/main/res/layouts/view_item',
+                            'src/main/res/layouts'
+                    ]
+        }
+    }
+
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8

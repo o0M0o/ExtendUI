@@ -39,9 +39,8 @@ public class CalendarListView extends FrameLayout {
         /**
          * <p>when item of Calendar View was clicked will be trigger. </p>
          *
-         * @param View               the view(Calendar View Item) that was clicked.
-         * @param selectedDate       the date has been selected is "yyyy-MM-dd" type
-         *
+         * @param View         the view(Calendar View Item) that was clicked.
+         * @param selectedDate the date has been selected is "yyyy-MM-dd" type
          */
         void onDateSelected(View View, String selectedDate);
     }
@@ -57,7 +56,7 @@ public class CalendarListView extends FrameLayout {
         void onMonthChanged(String yearMonth);
     }
 
-    protected FrameLayout   mFLContent;
+    protected FrameLayout mFLContent;
     protected CalendarView calendarView;
     protected LinearLayout weekBar;
     private GestureDetector gestureDetector;
@@ -79,7 +78,7 @@ public class CalendarListView extends FrameLayout {
         calendarView = new CalendarView(context);
         frameLayout.addView(calendarView, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-        mFLContent = (FrameLayout)findViewById(R.id.fl_holder);
+        mFLContent = (FrameLayout) findViewById(R.id.fl_holder);
         initListener();
         initWeekBar();
     }
@@ -96,7 +95,8 @@ public class CalendarListView extends FrameLayout {
     /**
      * get selected date
      * example : 2017-01-28
-     * @return  date
+     *
+     * @return date
      */
     public String getSelectedDate() {
         return calendarView.getSelectedDate();
@@ -105,7 +105,6 @@ public class CalendarListView extends FrameLayout {
     public void setOnMonthChangedListener(OnMonthChangedListener onMonthChangedListener) {
         calendarView.setOnMonthChangedListener(onMonthChangedListener);
     }
-
 
 
     public void setOnCalendarViewItemClickListener(OnCalendarViewItemClickListener onCalendarViewItemClickListener) {
@@ -120,7 +119,7 @@ public class CalendarListView extends FrameLayout {
         return weekBar;
     }
 
-    public void changeMonth(String month)   {
+    public void changeMonth(String month) {
         String cur_month = calendarView.getCurrentMonth();
         changeMonth(CalendarHelper.getDiffMonthByYearMonth(cur_month, month));
     }
@@ -170,9 +169,7 @@ public class CalendarListView extends FrameLayout {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-
         CalendarView.SelectedRowColumn selectedRowColumn = calendarView.getSelectedRowColumn();
-
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
 
@@ -298,7 +295,8 @@ public class CalendarListView extends FrameLayout {
     private void animationToBottom() {
         status = Status.ANIMATING;
 
-        ObjectAnimator objectAnimator2 = ObjectAnimator.ofFloat(this, "translationY", 0);
+        ObjectAnimator objectAnimator2 =
+                ObjectAnimator.ofFloat(this, "translationY", 0);
         objectAnimator2.setTarget(calendarView);
         objectAnimator2.setDuration(300).start();
 
@@ -321,9 +319,6 @@ public class CalendarListView extends FrameLayout {
             }
         });
     }
-
-
-
 
 
 }

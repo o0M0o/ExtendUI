@@ -81,7 +81,7 @@ public class CalendarView extends FrameLayout {
         return selectedDate;
     }
 
-    protected String getCurrentMonth()  {
+    protected String getCurrentMonth() {
         return currentMonth;
     }
 
@@ -317,7 +317,9 @@ public class CalendarView extends FrameLayout {
             @Override
             public void onAnimationEnd(Animator animation) {
                 FrameLayout container = (FrameLayout) CalendarView.this.getParent();
-                container.removeView(oldCalendarView);
+                if(null != container) {
+                    container.removeView(oldCalendarView);
+                }
                 isMonthChanging = false;
                 if (onMonthChangedListener != null) {
                     onMonthChangedListener.onMonthChanged(currentMonth);

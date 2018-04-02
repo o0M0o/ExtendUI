@@ -20,7 +20,7 @@ public class FrgWebViewImp extends FrgWebView {
     }
 
     @Override
-    protected void loadUI() {
+    protected void loadUI(Bundle savedInstanceState) {
         loadPage("http://www.sina.com", null);
     }
 }

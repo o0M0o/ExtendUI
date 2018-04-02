@@ -17,9 +17,6 @@ public class ACSimpleCalendar extends AppCompatActivity {
     @BindView(R.id.calendar_listview)
     CalendarListView mHGVDays;
 
-    // for data
-    private CalendarShowItemAdapter mCSIAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +30,7 @@ public class ACSimpleCalendar extends AppCompatActivity {
      * 初始化UI控件
      */
     private void initUI()   {
-        mCSIAdapter = new CalendarShowItemAdapter(this);
+        CalendarShowItemAdapter mCSIAdapter = new CalendarShowItemAdapter(this);
         mHGVDays.setCalendarListViewAdapter(mCSIAdapter);
 
         mHGVDays.setOnMonthChangedListener(yearMonth -> {

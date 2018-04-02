@@ -14,7 +14,7 @@ public class ACWebView extends BaseAppCompatActivity {
 
     @Override
     protected void initFrgHolder() {
-        LOG_TAG = "ACWebView";
+        LOG_TAG = "ACPageSwitcher";
         mFGHolder = new FrgWebViewImp();
     }
 }

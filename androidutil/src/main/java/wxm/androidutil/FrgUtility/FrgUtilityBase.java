@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.ButterKnife;
+
 /**
  * 工具Fragment基础类
  * Created by ookoo on 2016/11/16.
@@ -28,14 +30,14 @@ public abstract class FrgUtilityBase extends Fragment {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         if (null != view) {
-            initUiComponent(view);
+            loadUI(savedInstanceState);
         }
     }
 
     @Override
     public void onResume()  {
         super.onResume();
-        loadUI();
+        loadUI(null);
     }
 
     @Override
@@ -50,8 +52,7 @@ public abstract class FrgUtilityBase extends Fragment {
     public void refreshUI()    {
         View v = getView();
         if(null != v) {
-            initUiComponent(v);
-            loadUI();
+            loadUI(null);
         }
     }
 
@@ -66,19 +67,10 @@ public abstract class FrgUtilityBase extends Fragment {
     protected abstract View inflaterView(LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState);
 
-
-    /**
-     * 初始化视图UI元件
-     * 在inflatView后调用
-     * @param v               视图
-     */
-    protected abstract void initUiComponent(View v);
-
-
     /**
      * 初始化视图UI内容
      */
-    protected abstract void loadUI();
+    protected abstract void loadUI(Bundle savedInstanceState);
 
     /**
      * 和activity附着

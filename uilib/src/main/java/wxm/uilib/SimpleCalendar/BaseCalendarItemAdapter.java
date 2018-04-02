@@ -26,11 +26,10 @@ public class BaseCalendarItemAdapter<T extends BaseCalendarItemModel> extends Ba
     //key:date("yyyy-MM-dddd"),value: you custom CalendarItemModel must extend BaseCalendarItemModel
     private TreeMap<String, T> dayModelList = new TreeMap<>();
     //list to keep dayModelList's key that convenient for get key by index.
-    protected List<String> indexToTimeMap = new ArrayList<>();
+    private List<String> indexToTimeMap = new ArrayList<>();
 
     public BaseCalendarItemAdapter(Context context) {
         this.mContext = context;
-
     }
 
     public TreeMap<String, T> getDayModelList() {
@@ -40,9 +39,7 @@ public class BaseCalendarItemAdapter<T extends BaseCalendarItemModel> extends Ba
     public void setDayModelList(TreeMap<String, T> dayModelList) {
         this.dayModelList = dayModelList;
         indexToTimeMap.clear();
-        for (String time : this.dayModelList.keySet()) {
-            indexToTimeMap.add(time);
-        }
+        indexToTimeMap.addAll(this.dayModelList.keySet());
     }
 
     public List<String> getIndexToTimeMap() {
@@ -64,7 +61,16 @@ public class BaseCalendarItemAdapter<T extends BaseCalendarItemModel> extends Ba
         return position;
     }
 
-    //default calendar item view，We are appreciate of you override this function to custom your View items.
+
+    /**
+     * default calendar item view
+     * override this function to custom your View items.
+     * @param date              date for item
+     * @param model             data
+     * @param convertView       param
+     * @param parent            param
+     * @return                  param for origin function
+     */
     public View getView(String date, T model, View convertView, ViewGroup parent) {
         View view = convertView;
         if (view == null) {
