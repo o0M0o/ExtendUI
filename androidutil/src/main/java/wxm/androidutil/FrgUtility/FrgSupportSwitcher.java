@@ -99,11 +99,12 @@ public abstract class FrgSupportSwitcher<T>
     }
 
     /**
-     * set main resource id
+     * setup frg id
+     * must invoke this before use it
      * @param father        mainly frg
      * @param child         container frg for child
      */
-    protected void setFrgID(@LayoutRes int father, @IdRes int child) {
+    protected void setupFrgID(@LayoutRes int father, @IdRes int child) {
         mFatherFrg = father;
         mChildFrg = child;
     }
