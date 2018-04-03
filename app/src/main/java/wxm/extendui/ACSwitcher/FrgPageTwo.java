@@ -1,6 +1,7 @@
 package wxm.extendui.ACSwitcher;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,6 @@ public class FrgPageTwo extends FrgUtilitySupportBase {
     @Override
     protected View inflaterView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.frg_page_two, container, false);
-        ButterKnife.bind(this, rootView);
 
         mLiveSeconds = 0;
         mStartSeconds = Calendar.getInstance().getTimeInMillis() / 1000;
@@ -46,8 +46,8 @@ public class FrgPageTwo extends FrgUtilitySupportBase {
     }
 
     @Override
-    protected void enterActivity()  {
-        super.enterActivity();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         // update jobs info every 3 seconds
         FrgPageTwo h = this;
@@ -63,8 +63,8 @@ public class FrgPageTwo extends FrgUtilitySupportBase {
     }
 
     @Override
-    protected void leaveActivity()  {
+    public void onDestroy() {
+        super.onDestroy();
         mTimer.cancel();
-        super.leaveActivity();
     }
 }

@@ -1,6 +1,7 @@
-package wxm.androidutil.Switcher;
+package wxm.androidutil.FrgUtility;
 
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import butterknife.ButterKnife;
 import wxm.androidutil.FrgUtility.FrgUtilitySupportBase;
 
 /**

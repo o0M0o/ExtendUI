@@ -61,6 +61,13 @@ public abstract class ACSwitcherActivity<T>
     }
 
     /**
+     * leave activity
+     */
+    protected void leaveActivity()   {
+        finish();
+    }
+
+    /**
      * get back icon ID
      * @return      ID
      */
@@ -124,7 +131,6 @@ public abstract class ACSwitcherActivity<T>
         mALFrg.add(child);
     }
 
-
     /**
      * invoke this to load fragment
      * @param savedInstanceState    If non-null, this fragment is being re-constructed
@@ -132,13 +138,7 @@ public abstract class ACSwitcherActivity<T>
      */
     protected abstract void setupFragment(Bundle savedInstanceState);
 
-    /**
-     * leave activity
-     */
-    protected void leaveActivity()   {
-        finish();
-    }
-
+    /// PRIVATE START
     /**
      * load hot fragment
      */
@@ -170,4 +170,5 @@ public abstract class ACSwitcherActivity<T>
             loadHotFragment();
         }
     }
+    /// PRIVATE END
 }

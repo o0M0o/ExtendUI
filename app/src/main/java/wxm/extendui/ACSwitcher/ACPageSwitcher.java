@@ -15,6 +15,7 @@ public class ACPageSwitcher extends ACSwitcherActivity<FrgUtilitySupportBase> {
     protected void setupFragment(Bundle savedInstanceState)    {
         addFragment(new FrgPageOne());
         addFragment(new FrgPageTwo());
+        addFragment(new FrgPageThree());
     }
 
     @Override
