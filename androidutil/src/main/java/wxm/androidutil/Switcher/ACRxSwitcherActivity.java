@@ -10,6 +10,7 @@ import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
+import wxm.androidutil.R;
 
 /**
  * activity extend
@@ -123,6 +124,19 @@ public abstract class ACRxSwitcherActivity<T>
      */
     protected void addFragment(T child)  {
         mALFrg.add(child);
+
+        if(child instanceof Fragment) {
+            FragmentTransaction t = getFragmentManager().beginTransaction();
+            t.add(R.id.fl_holder, (Fragment)child);
+            t.commit();
+        } else  {
+            if(child instanceof android.support.v4.app.Fragment) {
+                android.support.v4.app.FragmentTransaction t =
+                        getSupportFragmentManager().beginTransaction();
+                t.add(R.id.fl_holder, (android.support.v4.app.Fragment)child);
+                t.commit();
+            }
+        }
     }
 
 
@@ -148,13 +162,13 @@ public abstract class ACRxSwitcherActivity<T>
             T cur = mALFrg.get(mHotFrgIdx);
             if(cur instanceof Fragment) {
                 FragmentTransaction t = getFragmentManager().beginTransaction();
-                t.replace(wxm.androidutil.R.id.fl_holder, (Fragment)cur);
+                t.show((Fragment)cur);
                 t.commit();
             } else  {
                 if(cur instanceof android.support.v4.app.Fragment) {
                     android.support.v4.app.FragmentTransaction t =
                             getSupportFragmentManager().beginTransaction();
-                    t.replace(wxm.androidutil.R.id.fl_holder, (android.support.v4.app.Fragment)cur);
+                    t.show((android.support.v4.app.Fragment)cur);
                     t.commit();
                 }
             }

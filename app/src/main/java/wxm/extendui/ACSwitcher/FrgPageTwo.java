@@ -13,7 +13,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import wxm.androidutil.FrgUtility.FrgUtilitySupportBase;
 import wxm.extendui.R;
 
