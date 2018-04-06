@@ -8,15 +8,19 @@
 
     <wxm.uilib.DistanceMeter.DistanceMeter
         android:id="@+id/dm_obj"
-        app:dmTextSize="8sp"
-        app:dmModeType="5"
-        app:dmLongLineCount="5"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="0dp"
-        android:layout_height="54dp" />
+        android:layout_height="84dp"
+        android:paddingEnd="4dp"
+        android:paddingStart="4dp"
+        app:dmMainScaleCount="5"
+        app:dmMainScaleHeight="32dp"
+        app:dmSubScaleCount="10"
+        app:dmSubScaleHeight="20dp"
+        app:dmTagWidth="6dp"
+        app:dmTagHeight="10dp"
+        app:dmTextSize="8sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

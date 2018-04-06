@@ -1,8 +1,8 @@
 package wxm.uilib.DistanceMeter;
 
 /**
- * MeterView Tag类
- * Created by ookoo on 2017/3/29.
+ * tag for meter rule
+ * Created by WangXM on 2017/3/29.
  */
 public class DistanceMeterTag {
     public String   mSZTagName;

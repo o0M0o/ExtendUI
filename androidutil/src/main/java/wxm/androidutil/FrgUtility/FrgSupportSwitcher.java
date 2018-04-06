@@ -55,7 +55,7 @@ public abstract class FrgSupportSwitcher<T>
 
     @Override
     protected void loadUI(Bundle savedInstanceState) {
-        loadHotFrg(0);
+        loadHotFrg(mHotFrgIdx >=0 && mHotFrgIdx < mFrgArr.size() ? mHotFrgIdx : 0);
     }
 
     /**
@@ -134,6 +134,11 @@ public abstract class FrgSupportSwitcher<T>
     protected void loadHotFrg(int newIdx) {
         T oldFrg = getHotPage();
         if(null != getView() && newIdx >= 0  && newIdx < mFrgArr.size()) {
+            if(mHotFrgIdx == newIdx)    {
+                showFragment(getHotPage(), true);
+                return;
+            }
+
             showFragment(oldFrg, false);
 
             mHotFrgIdx = newIdx;

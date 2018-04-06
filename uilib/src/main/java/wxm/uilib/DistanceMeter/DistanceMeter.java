@@ -1,6 +1,5 @@
 package wxm.uilib.DistanceMeter;
 
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -8,12 +7,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.text.Layout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -23,24 +25,22 @@ import wxm.uilib.R;
 
 
 /**
- *  表尺视图
- *
- * @author      wxm
- * @version create：2017/03/28
+ * meter rule
+ * @author      WangXM
+ * @version     create：2017/03/28
  */
 public class DistanceMeter extends View {
     public final static String PARA_VAL_MIN = "val_min";
     public final static String PARA_VAL_MAX = "val_max";
 
     /**
-     * 生成表尺tag
+     * translate value to show tag
      */
-    public interface TagTranslate {
+    public interface TagTranslator {
         /**
-         * 得到标尺显示tag
-         *
-         * @param val 标尺值
-         * @return 显示tag
+         * use value get display tag
+         * @param val       value for rule
+         * @return          show tag
          */
         String translateTWTag(int val);
     }
@@ -50,7 +50,7 @@ public class DistanceMeter extends View {
 
 
     /**
-     * 可设置属性
+     * attributes
      */
     private String mAttrSZPostUnit;
     private String mAttrSZPrvUnit;
@@ -58,36 +58,182 @@ public class DistanceMeter extends View {
     private int mAttrMaxValue;
 
     private int mAttrTextSize;
-    private int mAttrShortLineHeight;
-    private int mAttrLongLineHeight;
-    private int mAttrBaseLineWidth;
-    private int mAttrModeType;
-    private int mAttrLongLineCount;
-
-    private int mAttrBaseLineBottomPadding;
-
-    /**
-     * 固定变量
-     */
-    private int TEXT_COLOR_NORMAL;
-    private float DISPLAY_DENSITY;
-    private float DISPLAY_TEXT_WIDH;
+    private int mAttrSubScaleHeight;
+    private int mAttrMainScaleHeight;
+    private int mAttrSubScaleCount;
+    private int mAttrMainScaleCount;
+    private int mAttrTagWidth;
+    private int mAttrTagHeight;
 
     /**
-     *  标尺上游标
+     * cursors for meter rule
      */
     private ArrayList<DistanceMeterTag>     mALTags = new ArrayList<>();
 
     /**
-     * 把值翻译为tag
+     * default translator
      */
-    private TagTranslate mTTTranslator = new TagTranslate() {
+    private TagTranslator mTTTranslator = new TagTranslator() {
         @Override
         public String translateTWTag(int val) {
             return mAttrSZPrvUnit + String.valueOf(val) + mAttrSZPostUnit;
         }
     };
 
+    /**
+     * const value for self use
+     */
+    private int TEXT_COLOR_NORMAL;
+    private float DISPLAY_DENSITY;
+    private float DISPLAY_TEXT_WIDTH;
+
+    class drawHelper {
+        private Canvas    mCanvas;
+
+        private int mShortLineWidth = 2;
+        private int mLongLineWidth = 4;
+
+        private float mBigWidthUnit;
+        private float mSmallWidthUnit;
+
+        private float mBigUnitVal;
+        private float mSmallUnitVal;
+
+        private int   PAD_START;
+        private int   PAD_END;
+
+        drawHelper(final Canvas dr)    {
+            mCanvas = dr;
+
+            PAD_START = getPaddingStart();
+            PAD_END   = getPaddingEnd();
+
+            // 获得显示值
+            int mTotalValue = mAttrMaxValue - mAttrMinValue;
+            mTotalValue = 0 == mTotalValue % mAttrMainScaleCount ?
+                            mTotalValue : mTotalValue + mTotalValue % mAttrMainScaleCount;
+
+            mBigWidthUnit = (mVWWidth - PAD_START - PAD_END) / mAttrMainScaleCount;
+            mSmallWidthUnit = mBigWidthUnit / mAttrSubScaleCount;
+
+            mBigUnitVal = mTotalValue / mAttrMainScaleCount;
+            mSmallUnitVal = mBigUnitVal / mAttrSubScaleCount;
+        }
+
+        void drawScales() {
+            // for paint
+            Paint subScalePaint = new Paint();
+            subScalePaint.setStrokeWidth(mShortLineWidth);
+            subScalePaint.setColor(TEXT_COLOR_NORMAL);
+
+            Paint mainScalePaint = new Paint();
+            mainScalePaint.setStrokeWidth(mLongLineWidth);
+            mainScalePaint.setColor(TEXT_COLOR_NORMAL);
+
+            TextPaint tpScaleTag = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+            tpScaleTag.setColor(UiUtil.getColor(getContext(), R.color.text_fit));
+            tpScaleTag.setTextSize(mAttrTextSize);
+
+            // for axis
+            float yMainScaleBottom = mVWHeight - (mVWHeight - mAttrMainScaleHeight) / 2;
+            float yMainScaleTop = yMainScaleBottom - mAttrMainScaleHeight;
+            float ySubScaleBottom = mVWHeight - (mVWHeight - mAttrSubScaleHeight) / 2;
+            float ySubScaleTop = ySubScaleBottom - mAttrSubScaleHeight;
+            float yTextBottom = yMainScaleTop - 8;
+
+            for(int i = 0; i <= mAttrMainScaleCount; i++) {
+                // draw main scale
+                float xMainScale = rulerValToXCoordinate(i, 0, 0);
+                mCanvas.drawLine(xMainScale, yMainScaleBottom, xMainScale, yMainScaleTop, mainScalePaint);
+
+                String txtTag = mTTTranslator.translateTWTag(mAttrMinValue
+                        + (int)(mBigUnitVal * i));
+                float xText;
+                if(0 == i)  {
+                    xText = PAD_START;
+                } else if (mAttrMainScaleCount == i)   {
+                    xText = xMainScale -  txtTag.length() * DISPLAY_TEXT_WIDTH - 4;
+                } else  {
+                    xText = xMainScale -  txtTag.length() * DISPLAY_TEXT_WIDTH / 2;
+                }
+                mCanvas.drawText(txtTag, xText, yTextBottom, tpScaleTag);
+
+                // draw sub scale
+                for(int j = 1; j < mAttrSubScaleCount; j++)  {
+                    float xSubScale = rulerValToXCoordinate(i, j, 0);
+                    mCanvas.drawLine(xSubScale, ySubScaleBottom, xSubScale, ySubScaleTop, subScalePaint);
+                }
+            }
+        }
+
+        void drawCursors() {
+            Paint linePaint = new Paint();
+
+            float yMainScaleBottom = mVWHeight - (mVWHeight - mAttrMainScaleHeight) / 2;
+            float yCursorTop = yMainScaleBottom + DPToPixel(1);
+            float yCursorBottom = yCursorTop + mAttrTagHeight;
+            float yTextBottom = yCursorBottom + DISPLAY_TEXT_WIDTH + DPToPixel(4);
+
+            TextPaint tpCursor = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+            for (DistanceMeterTag mt : mALTags) {
+                linePaint.setColor(mt.mCRTagColor);
+
+                float xCursorCenter = meterValueToXCoordinate(mt.mTagVal);
+                float xCursorLeft = xCursorCenter - mAttrTagWidth / 2;
+                float xCursorRight = xCursorCenter + mAttrTagWidth / 2;
+
+                Path p = new Path();
+                p.moveTo(xCursorCenter, yCursorTop);
+                p.lineTo(xCursorLeft, yCursorBottom);
+                p.lineTo(xCursorRight, yCursorBottom);
+                p.lineTo(xCursorCenter, yCursorTop);
+                mCanvas.drawPath(p, linePaint);
+
+                tpCursor.setColor(mt.mCRTagColor);
+                tpCursor.setTextSize(mAttrTextSize);
+
+                float xCursorTextLeft = xCursorCenter - mt.mSZTagName.length() * DISPLAY_TEXT_WIDTH / 2;
+                mCanvas.drawText(mt.mSZTagName, xCursorTextLeft, yTextBottom, tpCursor);
+            }
+        }
+
+        /**
+         * translate meter value to x coordinate
+         * @param val       meter value
+         * @return          X coordinate in view
+         */
+        private float meterValueToXCoordinate(float val)    {
+            val -= mAttrMinValue;
+            int big = (int)(val / mBigUnitVal);
+
+            float l_v = val % mBigUnitVal;
+            int small = (int)(l_v / mSmallUnitVal);
+            float left = (l_v % mSmallUnitVal);
+
+            return rulerValToXCoordinate(big, small, left);
+        }
+
+        /**
+         * translate ruler value to x coordinate
+         * @param big       big unit value
+         * @param small     small unit value
+         * @param left      left value
+         * @return          x coordinate in view
+         */
+        private float rulerValToXCoordinate(int big, int small, float left) {
+            float x_big = 0 == big ?
+                    mLongLineWidth / 2 + PAD_START
+                    : (mAttrMainScaleCount == big ?
+                    mVWWidth - mLongLineWidth / 2 - PAD_END
+                    : PAD_START + mBigWidthUnit * big - mLongLineWidth / 2 );
+
+            float x_small = mSmallWidthUnit * small;
+            float x_left = mSmallWidthUnit * left / mSmallUnitVal;
+            return x_big + x_small + x_left;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public DistanceMeter(Context context, AttributeSet attrs) {
         super(context, attrs);
         ButterKnife.bind(this);
@@ -106,63 +252,80 @@ public class DistanceMeter extends View {
             sz_unit = array.getString(R.styleable.DistanceMeter_dmPrvUnit);
             mAttrSZPrvUnit = UtilFun.StringIsNullOrEmpty(sz_unit) ? "" : sz_unit;
 
-            mAttrLongLineCount = array.getInt(R.styleable.DistanceMeter_dmLongLineCount, 5);
-            mAttrModeType = array.getInt(R.styleable.DistanceMeter_dmModeType, 2);
+            mAttrMainScaleCount = array.getInt(R.styleable.DistanceMeter_dmMainScaleCount, 5);
+            mAttrSubScaleCount = array.getInt(R.styleable.DistanceMeter_dmSubScaleCount, 2);
             mAttrMinValue = array.getInt(R.styleable.DistanceMeter_dmMinValue, 0);
             mAttrMaxValue = array.getInt(R.styleable.DistanceMeter_dmMaxValue, 100);
 
             mAttrTextSize = array.getDimensionPixelSize(R.styleable.DistanceMeter_dmTextSize,
                                     (int)(DISPLAY_DENSITY * 12));
-            mAttrShortLineHeight = array.getInt(R.styleable.DistanceMeter_dmShortLineHeight, 4);
-            mAttrLongLineHeight = array.getInt(R.styleable.DistanceMeter_dmLongLineHeight, 8);
-            mAttrBaseLineWidth = array.getInt(R.styleable.DistanceMeter_dmBaseLineWidth, 4);
+            mAttrSubScaleHeight = array.getDimensionPixelSize(R.styleable.DistanceMeter_dmSubScaleHeight, DPToPixel(4));
+            mAttrMainScaleHeight = array.getDimensionPixelSize(R.styleable.DistanceMeter_dmMainScaleHeight, DPToPixel(8));
 
-            mAttrBaseLineBottomPadding = array.getInt(R.styleable.DistanceMeter_dmBaseLineBottomPadding,
-                                    24);
+            mAttrTagHeight = array.getDimensionPixelSize(R.styleable.DistanceMeter_dmTagHeight, DPToPixel(8));
+            mAttrTagWidth = array.getDimensionPixelSize(R.styleable.DistanceMeter_dmTagWidth, DPToPixel(4));
 
             // get other
             TextPaint tp_normal = new TextPaint(Paint.ANTI_ALIAS_FLAG);
             tp_normal.setTextSize(mAttrTextSize);
-            DISPLAY_TEXT_WIDH = Layout.getDesiredWidth("0", tp_normal);
+            DISPLAY_TEXT_WIDTH = Layout.getDesiredWidth("0", tp_normal);
         } finally {
             array.recycle();
+        }
+
+        if(isInEditMode())  {
+            DistanceMeterTag mt_f = new DistanceMeterTag();
+            mt_f.mSZTagName = "1";
+            mt_f.mCRTagColor = getContext().getColor(R.color.teal);
+            mt_f.mTagVal = mAttrMinValue + (mAttrMaxValue - mAttrMinValue) / 3;
+
+            DistanceMeterTag mt_od = new DistanceMeterTag();
+            mt_od.mSZTagName = "2";
+            mt_od.mCRTagColor = getContext().getColor(R.color.aquamarine);
+            mt_od.mTagVal = mAttrMinValue + (mAttrMaxValue - mAttrMinValue) / 2;
+
+            DistanceMeterTag mt_b = new DistanceMeterTag();
+            mt_b.mSZTagName = "3";
+            mt_b.mCRTagColor = getContext().getColor(R.color.brown);
+            mt_b.mTagVal = mAttrMinValue + (mAttrMaxValue - mAttrMinValue) / 3 * 2;
+
+            mALTags.addAll(Arrays.asList(mt_f, mt_od, mt_b));
         }
     }
 
     /**
-     * 设置标尺刻度翻译器
-     *
-     * @param tt 翻译器
+     * set scale translator
+     * @param tt    translator
      */
-    public void setTranslateTag(TagTranslate tt) {
+    public void setScaleTranslator(TagTranslator tt) {
         mTTTranslator = tt;
     }
 
 
     /**
-     * 清理标尺游标
+     * clear cursor
      */
-    public void clearValueTag()     {
+    public void clearCursor()     {
         mALTags.clear();
         invalidate();
         requestLayout();
     }
 
     /**
-     * 添加标尺游标
+     * add cursor
+     * @param vt    cursors
      */
-    public void addValueTag(DistanceMeterTag vt)    {
-        mALTags.add(vt);
+    public void addCursor(DistanceMeterTag ... vt)    {
+        mALTags.addAll(Arrays.asList(vt));
         invalidate();
         requestLayout();
     }
 
-
     /**
-     * 调整参数
-     * @param m_paras      新参数
+     * adjust attribute
+     * @param m_paras      new attributes
      */
-    public void adjustPara(Map<String, Object> m_paras)  {
+    public void adjustAttribute(Map<String, Object> m_paras)  {
         for(String k : m_paras.keySet())     {
             if(k.equals(PARA_VAL_MIN))  {
                 mAttrMinValue = (int)m_paras.get(k);
@@ -187,186 +350,20 @@ public class DistanceMeter extends View {
         drawScaleLine(canvas);
     }
 
-
     /**
-     * 从中间往两边开始画刻度线
-     *
-     * @param canvas context
+     * draw scale lines
+     * @param canvas    drawer
      */
     private void drawScaleLine(final Canvas canvas) {
-        class utility {
-            private int mShortLineWidth = 2;
-            private int mLongLineWidth = 4;
-
-            private float mBigWidthUnit;
-            private float mSmallWidthUnit;
-
-            private float mBigUnitVal;
-            private float mSmallUnitVal;
-
-            private int   PAD_START;
-            private int   PAD_END;
-
-            public utility()    {
-                PAD_START = getPaddingStart();
-                PAD_END   = getPaddingEnd();
-
-                // 根据游标调整有效值范围
-                // 设定显示范围为 20 ~ 80%
-                /*
-                if(!mALTags.isEmpty()) {
-                    LinkedList<Float> ls_val = new LinkedList<>();
-                    for (DistanceMeterTag mt : mALTags) {
-                        ls_val.add(mt.mTagVal);
-                    }
-
-                    float n_min = Collections.min(ls_val);
-                    float n_max = Collections.max(ls_val);
-
-                    int big_unit = (mAttrMaxValue - mAttrMinValue) / mAttrLongLineCount;
-                    mAttrMinValue = (int)n_min - big_unit;
-                    mAttrMaxValue = Math.max(mAttrLongLineCount + mAttrMinValue,
-                                    (int)n_max + big_unit);
-                }
-                */
-
-                // 获得显示值
-                int mTotalValue = mAttrMaxValue - mAttrMinValue;
-                while (0 != mTotalValue % mAttrLongLineCount)   {
-                    mTotalValue++;
-                }
-
-                mBigWidthUnit = (mVWWidth - PAD_START - PAD_END) / mAttrLongLineCount;
-                mSmallWidthUnit = mBigWidthUnit / mAttrModeType;
-
-                mBigUnitVal = mTotalValue / mAttrLongLineCount;
-                mSmallUnitVal = mBigUnitVal / mAttrModeType;
-            }
-
-            private void drawBaseLine() {
-                Paint basePaint = new Paint();
-                basePaint.setStrokeWidth(mAttrBaseLineWidth);
-                basePaint.setColor(TEXT_COLOR_NORMAL);
-
-                float y = mVWHeight - DISPLAY_DENSITY * mAttrBaseLineBottomPadding;
-                canvas.drawLine(getPaddingStart(), y, mVWWidth - getPaddingEnd(), y, basePaint);
-            }
-
-            private void drawLines() {
-                // for paint
-                Paint linePaint = new Paint();
-                linePaint.setStrokeWidth(mShortLineWidth);
-                linePaint.setColor(TEXT_COLOR_NORMAL);
-
-                Paint LongLinePaint = new Paint();
-                LongLinePaint.setStrokeWidth(mLongLineWidth);
-                LongLinePaint.setColor(TEXT_COLOR_NORMAL);
-
-                TextPaint tp_normal = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-                tp_normal.setColor(UiUtil.getColor(getContext(), R.color.text_fit));
-                tp_normal.setTextSize(mAttrTextSize);
-
-                // for axis
-                float b_start = mVWHeight - DISPLAY_DENSITY * mAttrBaseLineBottomPadding;
-                float ln_long_e_y = b_start
-                            - (int) DISPLAY_DENSITY * (mAttrBaseLineWidth + mAttrLongLineHeight);
-                float ln_short_e_y = b_start
-                            - (int) DISPLAY_DENSITY * (mAttrBaseLineWidth + mAttrShortLineHeight);
-                float text_top_pos = ln_long_e_y - 8;
-
-                for(int i = 0; i <= mAttrLongLineCount; i++) {
-                    float hot_x = RulerValueToXPosition(i, 0, 0);
-                    canvas.drawLine(hot_x, b_start, hot_x, ln_long_e_y, LongLinePaint);
-
-                    String tw_tag = mTTTranslator.translateTWTag(mAttrMinValue
-                                                    + (int)(mBigUnitVal * i));
-                    float x_start;
-                    if(0 == i)  {
-                        x_start = PAD_START;
-                    } else if (mAttrLongLineCount == i)   {
-                        x_start = hot_x - tw_tag.length() * DISPLAY_TEXT_WIDH - 4;
-                    } else  {
-                        x_start = hot_x - tw_tag.length() * DISPLAY_TEXT_WIDH / 2;
-                    }
-
-                    canvas.drawText(tw_tag, x_start, text_top_pos, tp_normal);
-
-                    for(int j = 1; j < mAttrModeType; j++)  {
-                        float cur_x = RulerValueToXPosition(i, j, 0);
-                        canvas.drawLine(cur_x, b_start, cur_x, ln_short_e_y, linePaint);
-                    }
-                }
-            }
-
-            private void drawTags() {
-                Paint linePaint = new Paint();
-
-                float ln_long_s_y = mVWHeight - DISPLAY_DENSITY * (mAttrBaseLineBottomPadding - 2);
-                float ln_long_e_y = ln_long_s_y + DISPLAY_DENSITY * 8;
-                float text_top_pos = ln_long_e_y + DISPLAY_TEXT_WIDH + DISPLAY_DENSITY * 4;
-
-                TextPaint tp_normal = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-
-                for (DistanceMeterTag mt : mALTags) {
-                    float x = MeterValueToXPosition(mt.mTagVal);
-
-                    linePaint.setColor(mt.mCRTagColor);
-                    Path p = new Path();
-                    p.moveTo(x, ln_long_s_y);
-                    p.lineTo(x - 8, ln_long_e_y);
-                    p.lineTo(x + 8, ln_long_e_y);
-                    p.lineTo(x, ln_long_s_y);
-                    canvas.drawPath(p, linePaint);
-
-                    tp_normal.setColor(mt.mCRTagColor);
-                    tp_normal.setTextSize(mAttrTextSize);
-                    canvas.drawText(mt.mSZTagName,
-                            x - mt.mSZTagName.length() * DISPLAY_TEXT_WIDH / 2,
-                            text_top_pos, tp_normal);
-                }
-            }
-
-            /**
-             * 通过值获得标尺x坐标
-             * @param val       值
-             * @return          标尺X坐标
-             */
-            private float MeterValueToXPosition(float val)    {
-                val -= mAttrMinValue;
-                int big = (int)(val / mBigUnitVal);
-
-                float l_v = val % mBigUnitVal;
-                int small = (int)(l_v / mSmallUnitVal);
-                float left = (l_v % mSmallUnitVal);
-
-                return RulerValueToXPosition(big, small, left);
-            }
-
-            /**
-             * 尺度值获得X坐标
-             * @param big       大值
-             * @param small     小值
-             * @param left      剩余值
-             * @return          x坐标
-             */
-            private float RulerValueToXPosition(int big, int small, float left) {
-                float x_big = 0 == big ?
-                                mLongLineWidth / 2 + PAD_START
-                                : (mAttrLongLineCount == big ?
-                                        mVWWidth - mLongLineWidth / 2 - PAD_END
-                                        : PAD_START + mBigWidthUnit * big - mLongLineWidth / 2 );
-
-                float x_small = mSmallWidthUnit * small;
-                float x_left = mSmallWidthUnit * left / mSmallUnitVal;
-                return x_big + x_small + x_left;
-            }
-        }
-        utility helper = new utility();
+        drawHelper helper = new drawHelper(canvas);
 
         canvas.save();
-        helper.drawBaseLine();
-        helper.drawLines();
-        helper.drawTags();
+        helper.drawScales();
+        helper.drawCursors();
         canvas.restore();
+    }
+
+    private int DPToPixel(float dp)   {
+        return (int)(DISPLAY_DENSITY * dp);
     }
 }

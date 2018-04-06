@@ -24,6 +24,7 @@ public abstract class FrgUtilitySupportBase extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflaterView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, v);
+        initUI(savedInstanceState);
         return v;
     }
 
@@ -44,8 +45,7 @@ public abstract class FrgUtilitySupportBase extends Fragment {
      * refresh UI
      */
     public void refreshUI()    {
-        View v = getView();
-        if(null != v) {
+        if(isVisible()) {
             loadUI(null);
         }
     }
@@ -66,6 +66,15 @@ public abstract class FrgUtilitySupportBase extends Fragment {
      * @param savedInstanceState        If non-null, this fragment is being re-constructed
      *                                  from a previous saved state as given here.
      */
-    protected abstract void loadUI(Bundle savedInstanceState);
+    protected void loadUI(Bundle savedInstanceState)    {
+    }
+
+    /**
+     * init ui
+     * @param savedInstanceState        If non-null, this fragment is being re-constructed
+     *                                  from a previous saved state as given here.
+     */
+    protected void initUI(Bundle savedInstanceState)    {
+    }
 }
 

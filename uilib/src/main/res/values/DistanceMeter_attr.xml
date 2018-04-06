@@ -6,8 +6,8 @@
         <attr name="dmPrvUnit" format="string" />
 
         <!-- 长线间模数，长线数 -->
-        <attr name="dmModeType" format="integer" />
-        <attr name="dmLongLineCount" format="integer" />
+        <attr name="dmMainScaleCount" format="integer" />
+        <attr name="dmSubScaleCount" format="integer" />
 
         <!-- 展示的最大/最小值范围 -->
         <attr name="dmMaxValue" format="integer" />
@@ -17,11 +17,11 @@
         <attr name="dmTextSize" format="dimension" />
 
         <!-- 长短线高度 -->
-        <attr name="dmShortLineHeight" format="integer" />
-        <attr name="dmLongLineHeight" format="integer" />
+        <attr name="dmMainScaleHeight" format="dimension" />
+        <attr name="dmSubScaleHeight" format="dimension" />
 
-        <!-- 基线高度，底区高度 -->
-        <attr name="dmBaseLineWidth" format="integer" />
-        <attr name="dmBaseLineBottomPadding" format="integer" />
+        <!-- for tag show -->
+        <attr name="dmTagHeight" format="dimension" />
+        <attr name="dmTagWidth" format="dimension" />
     </declare-styleable>
 </resources>
