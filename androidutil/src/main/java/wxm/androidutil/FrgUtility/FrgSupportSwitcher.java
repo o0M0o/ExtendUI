@@ -47,7 +47,7 @@ public abstract class FrgSupportSwitcher<T>
     }
 
     @Override
-    protected View inflaterView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
+    protected final View inflaterView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
         View v = layoutInflater.inflate(mFatherFrg, viewGroup, false);
         setupFragment(bundle);
         return v;

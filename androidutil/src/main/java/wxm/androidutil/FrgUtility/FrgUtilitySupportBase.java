@@ -35,16 +35,28 @@ public abstract class FrgUtilitySupportBase extends Fragment {
         }
     }
 
+    /*
     @Override
     public void onResume()  {
         super.onResume();
         loadUI(null);
     }
+    */
 
     /**
      * refresh UI
      */
-    public void refreshUI()    {
+    public final void refreshUI()    {
+        if(isVisible()) {
+            initUI(null);
+            loadUI(null);
+        }
+    }
+
+    /**
+     * reload UI
+     */
+    public final void reloadUI()    {
         if(isVisible()) {
             loadUI(null);
         }
