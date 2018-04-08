@@ -201,50 +201,49 @@ public class CalendarView extends FrameLayout {
     }
 
     private TreeMap<String, BaseCalendarItemModel> getDefaultCalendarDataListByYearMonth(String yearMonth) {
-        int calendarViewRow = COLUMN_ITEM_COUNT;
-        int calendarViewColumn = ROW_ITEM_COUNT;
+        int totalDays = COLUMN_ITEM_COUNT * ROW_ITEM_COUNT;
 
         Calendar calToday = Calendar.getInstance();
         Calendar calStartDate = Calendar.getInstance();
-        calToday.setFirstDayOfWeek(Calendar.SUNDAY);
-        calStartDate.setFirstDayOfWeek(Calendar.SUNDAY);
         long time = 0;
         try {
             time = CalendarHelper.YEAR_MONTH_FORMAT.parse(yearMonth).getTime();
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         calStartDate.setTimeInMillis(time);
         calStartDate.set(Calendar.DAY_OF_MONTH, 1);
         calStartDate.set(Calendar.HOUR_OF_DAY, 0);
         calStartDate.set(Calendar.MINUTE, 0);
         calStartDate.set(Calendar.SECOND, 0);
-        Calendar activeCalendar = (Calendar) calStartDate.clone();
         calStartDate.add(Calendar.DAY_OF_WEEK, -(calStartDate.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY));
-        Calendar calEndDate = (Calendar) calStartDate.clone();
-        calEndDate.add(Calendar.DAY_OF_MONTH, calendarViewRow * calendarViewColumn - 1);
+
         Calendar calCalendar = Calendar.getInstance();
         calCalendar.setTimeInMillis(calStartDate.getTimeInMillis());
+
+        Calendar activeCalendar = (Calendar) calStartDate.clone();
         TreeMap<String, BaseCalendarItemModel> dayModelList = new TreeMap<>();
-        for (int i = 0; i < calendarViewRow * calendarViewColumn; i++) {
-            BaseCalendarItemModel baseCalendarItemModel = null;
+        for (int i = 0; i < totalDays; i++) {
             try {
-                baseCalendarItemModel = (BaseCalendarItemModel) entityClass.newInstance();
+                BaseCalendarItemModel dayItem = (BaseCalendarItemModel) entityClass.newInstance();
+
+                dayItem.setCurrentMonth(CalendarHelper.areEqualMonth(calCalendar, activeCalendar));
+                dayItem.setToday(CalendarHelper.areEqualDays(calCalendar, calToday));
+                dayItem.setTimeMill(calCalendar.getTimeInMillis());
+                dayItem.setHoliday(Calendar.SUNDAY == calCalendar.get(Calendar.DAY_OF_WEEK) ||
+                        Calendar.SATURDAY == calCalendar.get(Calendar.DAY_OF_WEEK));
+                dayItem.setDayNumber(String.valueOf(calCalendar.get(Calendar.DAY_OF_MONTH)));
+                calCalendar.add(Calendar.DAY_OF_MONTH, 1);
+
+                dayModelList.put(CalendarHelper.YEAR_MONTH_DAY_FORMAT.format(dayItem.getTimeMill()),
+                        dayItem);
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
-            baseCalendarItemModel.setCurrentMonth(CalendarHelper.areEqualMonth(calCalendar, activeCalendar));
-            baseCalendarItemModel.setToday(CalendarHelper.areEqualDays(calCalendar.getTimeInMillis(), calToday.getTimeInMillis()));
-            baseCalendarItemModel.setTimeMill(calCalendar.getTimeInMillis());
-            baseCalendarItemModel.setHoliday(Calendar.SUNDAY == calCalendar.get(Calendar.DAY_OF_WEEK) ||
-                    Calendar.SATURDAY == calCalendar.get(Calendar.DAY_OF_WEEK));
-            baseCalendarItemModel.setDayNumber(String.valueOf(calCalendar.get(Calendar.DAY_OF_MONTH)));
-            calCalendar.add(Calendar.DAY_OF_MONTH, 1);
-            dayModelList.put(CalendarHelper.YEAR_MONTH_DAY_FORMAT.format(
-                    baseCalendarItemModel.getTimeMill()), baseCalendarItemModel);
         }
-        return dayModelList;
 
+        return dayModelList;
     }
 
     protected void changeMonth(int offset, final String date, final CalendarListView.Status status) {
@@ -272,7 +271,6 @@ public class CalendarView extends FrameLayout {
         });
 
     }
-
 
     private void animateCalendarViewToNewMonth(final CalendarView oldCalendarView, int offset, float translationY, final CalendarListView.OnMonthChangedListener monthChangeListener) {
         floatingMonthTips.setText(currentMonth);
@@ -317,7 +315,7 @@ public class CalendarView extends FrameLayout {
             @Override
             public void onAnimationEnd(Animator animation) {
                 FrameLayout container = (FrameLayout) CalendarView.this.getParent();
-                if(null != container) {
+                if (null != container) {
                     container.removeView(oldCalendarView);
                 }
                 isMonthChanging = false;

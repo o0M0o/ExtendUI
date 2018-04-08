@@ -149,6 +149,8 @@ public class CalendarListView extends FrameLayout {
 
     protected void initWeekBar() {
         weekBar = (LinearLayout) findViewById(R.id.week_bar);
+        int txt_black = getResources().getColor(android.R.color.black);
+
         String[] weeks = getResources().getStringArray(R.array.week);
         for (int i = 0; i < weeks.length; i++) {
             String week = weeks[i];
@@ -156,12 +158,10 @@ public class CalendarListView extends FrameLayout {
             textView.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
             textView.setText(week);
             textView.setTextSize(WEEK_ITEM_TEXT_SIZE);
-            if (i == 0 || i == weeks.length - 1) {
-                textView.setTextColor(RED_FF725F);
-            } else {
-                textView.setTextColor(getResources().getColor(android.R.color.black));
-            }
+            textView.setTextColor(i == weeks.length - 1 || i == weeks.length - 2
+                    ?  RED_FF725F : txt_black);
             textView.setGravity(Gravity.CENTER);
+
             weekBar.addView(textView);
         }
     }

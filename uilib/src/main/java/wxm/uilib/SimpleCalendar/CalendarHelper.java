@@ -57,8 +57,13 @@ final class CalendarHelper {
         c1.setTimeInMillis(time1);
         c2.setTimeInMillis(time2);
 
-        return areEqualMonth(c1, c2)
-                    && c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH);
+        return areEqualDays(c1, c2);
+    }
+
+
+    static boolean areEqualDays(Calendar c1, Calendar c2)  {
+        return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
+                && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR);
     }
 
     static boolean areEqualMonth(Calendar c1, Calendar c2) {

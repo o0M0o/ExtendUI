@@ -17,6 +17,7 @@ import wxm.uilib.R;
 
 /**
  * 日历节点适配器
+ *
  * @param <T> 日历节点数据
  */
 public class BaseCalendarItemAdapter<T extends BaseCalendarItemModel> extends BaseAdapter {
@@ -65,11 +66,12 @@ public class BaseCalendarItemAdapter<T extends BaseCalendarItemModel> extends Ba
     /**
      * default calendar item view
      * override this function to custom your View items.
-     * @param date              date for item
-     * @param model             data
-     * @param convertView       param
-     * @param parent            param
-     * @return                  param for origin function
+     *
+     * @param date        date for item
+     * @param model       data
+     * @param convertView param
+     * @param parent      param
+     * @return param for origin function
      */
     public View getView(String date, T model, View convertView, ViewGroup parent) {
         View view = convertView;
@@ -79,9 +81,7 @@ public class BaseCalendarItemAdapter<T extends BaseCalendarItemModel> extends Ba
         TextView dayNum = (TextView) view.findViewById(R.id.tv_day_num);
         dayNum.setText(model.getDayNumber());
 
-
         view.setBackgroundResource(R.drawable.bg_shape_calendar_item_normal);
-
         if (model.isToday()) {
             dayNum.setTextColor(RED_FF725F);
             dayNum.setText(mContext.getResources().getString(R.string.today));
@@ -90,7 +90,6 @@ public class BaseCalendarItemAdapter<T extends BaseCalendarItemModel> extends Ba
         if (model.isHoliday()) {
             dayNum.setTextColor(RED_FF725F);
         }
-
 
         if (model.getStatus() == BaseCalendarItemModel.Status.DISABLE) {
             dayNum.setTextColor(mContext.getResources().getColor(android.R.color.darker_gray));
