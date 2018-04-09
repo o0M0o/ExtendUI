@@ -203,7 +203,6 @@ public class CalendarView extends FrameLayout {
     private TreeMap<String, BaseCalendarItemModel> getDefaultCalendarDataListByYearMonth(String yearMonth) {
         int totalDays = COLUMN_ITEM_COUNT * ROW_ITEM_COUNT;
 
-        Calendar calToday = Calendar.getInstance();
         Calendar calStartDate = Calendar.getInstance();
         long time = 0;
         try {
@@ -218,23 +217,24 @@ public class CalendarView extends FrameLayout {
         calStartDate.set(Calendar.MINUTE, 0);
         calStartDate.set(Calendar.SECOND, 0);
 
-        Calendar activeCalendar = (Calendar) calStartDate.clone();
-        Calendar calCalendar = (Calendar) calStartDate.clone();
-
-        calCalendar.add(Calendar.DAY_OF_WEEK,
-                -(calCalendar.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY + 6));
+        int curMonth = calStartDate.get(Calendar.MONTH);
+        int dayOfWeek = calStartDate.get(Calendar.DAY_OF_WEEK);
+        Calendar calToday = Calendar.getInstance();
+        Calendar calItem = (Calendar) calStartDate.clone();
+        calItem.add(Calendar.DAY_OF_WEEK,
+                -(dayOfWeek == Calendar.SUNDAY ? 6 : dayOfWeek - Calendar.SUNDAY - 1));
         TreeMap<String, BaseCalendarItemModel> dayModelList = new TreeMap<>();
         for (int i = 0; i < totalDays; i++) {
             try {
                 BaseCalendarItemModel dayItem = (BaseCalendarItemModel) entityClass.newInstance();
 
-                dayItem.setCurrentMonth(CalendarHelper.areEqualMonth(calCalendar, activeCalendar));
-                dayItem.setToday(CalendarHelper.areEqualDays(calCalendar, calToday));
-                dayItem.setTimeMill(calCalendar.getTimeInMillis());
-                dayItem.setHoliday(Calendar.SUNDAY == calCalendar.get(Calendar.DAY_OF_WEEK) ||
-                        Calendar.SATURDAY == calCalendar.get(Calendar.DAY_OF_WEEK));
-                dayItem.setDayNumber(String.valueOf(calCalendar.get(Calendar.DAY_OF_MONTH)));
-                calCalendar.add(Calendar.DAY_OF_MONTH, 1);
+                dayItem.setCurrentMonth(curMonth == calItem.get(Calendar.MONTH));
+                dayItem.setToday(CalendarHelper.areEqualDays(calItem, calToday));
+                dayItem.setTimeMill(calItem.getTimeInMillis());
+                dayItem.setHoliday(Calendar.SUNDAY == calItem.get(Calendar.DAY_OF_WEEK) ||
+                        Calendar.SATURDAY == calItem.get(Calendar.DAY_OF_WEEK));
+                dayItem.setDayNumber(String.valueOf(calItem.get(Calendar.DAY_OF_MONTH)));
+                calItem.add(Calendar.DAY_OF_MONTH, 1);
 
                 dayModelList.put(CalendarHelper.YEAR_MONTH_DAY_FORMAT.format(dayItem.getTimeMill()),
                         dayItem);
