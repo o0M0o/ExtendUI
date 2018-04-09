@@ -43,7 +43,7 @@ public class CalendarView extends FrameLayout {
     }
 
     private static final int ROW_ITEM_COUNT = 7;
-    private static final int COLUMN_ITEM_COUNT = 5;
+    private static final int COLUMN_ITEM_COUNT = 6;
 
     public static int mItemWidth = 0;
     public static int mItemHeight = 0;
@@ -217,12 +217,12 @@ public class CalendarView extends FrameLayout {
         calStartDate.set(Calendar.HOUR_OF_DAY, 0);
         calStartDate.set(Calendar.MINUTE, 0);
         calStartDate.set(Calendar.SECOND, 0);
-        calStartDate.add(Calendar.DAY_OF_WEEK, -(calStartDate.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY));
-
-        Calendar calCalendar = Calendar.getInstance();
-        calCalendar.setTimeInMillis(calStartDate.getTimeInMillis());
 
         Calendar activeCalendar = (Calendar) calStartDate.clone();
+        Calendar calCalendar = (Calendar) calStartDate.clone();
+
+        calCalendar.add(Calendar.DAY_OF_WEEK,
+                -(calCalendar.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY + 6));
         TreeMap<String, BaseCalendarItemModel> dayModelList = new TreeMap<>();
         for (int i = 0; i < totalDays; i++) {
             try {

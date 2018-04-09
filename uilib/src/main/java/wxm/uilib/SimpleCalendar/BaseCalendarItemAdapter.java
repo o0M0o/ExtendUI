@@ -111,6 +111,4 @@ public class BaseCalendarItemAdapter<T extends BaseCalendarItemModel> extends Ba
         view.setLayoutParams(layoutParams);
         return view;
     }
-
-
 }
