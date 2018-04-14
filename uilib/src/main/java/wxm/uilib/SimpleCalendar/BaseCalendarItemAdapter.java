@@ -95,7 +95,7 @@ public class BaseCalendarItemAdapter<T extends BaseCalendarItemModel> extends Ba
             dayNum.setTextColor(mContext.getResources().getColor(android.R.color.darker_gray));
         }
 
-        if (!model.isCurrentMonth()) {
+        if (model.isNotCurrentMonth()) {
             dayNum.setTextColor(mContext.getResources().getColor(R.color.gray_bbbbbb));
             view.setClickable(true);
         }

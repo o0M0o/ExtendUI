@@ -10,6 +10,7 @@ public class BaseCalendarItemModel {
      * this item's background should be gloomy，because it is not belong to active month.
      */
     private boolean isCurrentMonth;
+
     // calendar item would show this number to show what date it is.
     private String dayNumber;
     private long timeMill;
@@ -23,8 +24,8 @@ public class BaseCalendarItemModel {
         SELECTED,
     }
 
-    public boolean isCurrentMonth() {
-        return isCurrentMonth;
+    public boolean isNotCurrentMonth() {
+        return !isCurrentMonth;
     }
 
     public void setCurrentMonth(boolean currentMonth) {

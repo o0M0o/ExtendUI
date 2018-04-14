@@ -31,7 +31,8 @@ public class CalendarShowItemAdapter extends BaseCalendarItemAdapter<CalendarSho
 
     @Override
     public View getView(String date, CalendarShowItemModel model, View convertView, ViewGroup parent) {
-        ViewGroup view = (ViewGroup) LayoutInflater.from(mContext).inflate(R.layout.gi_calendar_item, null);
+        ViewGroup view = (ViewGroup) LayoutInflater.from(mContext)
+                            .inflate(R.layout.gi_calendar_item, null);
 
         TextView dayNum = (TextView) view.findViewById(R.id.tv_day_num);
         dayNum.setText(model.getDayNumber());
@@ -52,7 +53,7 @@ public class CalendarShowItemAdapter extends BaseCalendarItemAdapter<CalendarSho
             dayNum.setTextColor(mCLDisable);
         }
 
-        if (!model.isCurrentMonth()) {
+        if (model.isNotCurrentMonth()) {
             dayNum.setVisibility(View.GONE);
             view.setClickable(true);
         }

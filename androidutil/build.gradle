@@ -45,4 +45,5 @@ dependencies {
     implementation 'com.trello:rxlifecycle-components:0.5.0'
 
     implementation 'org.apache.httpcomponents:httpcore:4.4.4'
+    implementation 'org.greenrobot:eventbus:3.0.0'
 }

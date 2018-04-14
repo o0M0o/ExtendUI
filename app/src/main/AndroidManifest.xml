@@ -33,6 +33,9 @@
         <activity android:name=".ACSwitcher.ACPageSwitcher"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ACSwipe.ACSwipe"
+            android:exported="true" />
+
     </application>
 
 </manifest>

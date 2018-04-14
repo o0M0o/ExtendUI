@@ -83,7 +83,6 @@ public class CalendarListView extends FrameLayout {
         initWeekBar();
     }
 
-
     /**
      * @param calendarItemAdapter adapter is for CalendarView
      */

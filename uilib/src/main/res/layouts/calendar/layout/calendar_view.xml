@@ -9,9 +9,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:gravity="center"
-        android:numColumns="7">
-
-    </GridView>
+        android:numColumns="7" />
 
     <ImageView
         android:id="@+id/selected_view"
@@ -31,5 +29,4 @@
         android:textSize="26sp"
         android:textStyle="bold"
         android:visibility="gone" />
-
 </FrameLayout>
