@@ -8,6 +8,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
@@ -20,6 +21,10 @@ import wxm.uilib.R;
  *              modify by WangXM at 2018/04/13
  */
 public class SwipeLayout extends LinearLayout {
+    private final static int SWIPE_LEFT     = 1;
+    private final static int SWIPE_RIGHT    = 2;
+    private final static int SWIPE_BOTH     = 3;
+
     /**
      * listener for slide
      */
@@ -38,6 +43,7 @@ public class SwipeLayout extends LinearLayout {
 
     private RelativeLayout mContentView;
     private RelativeLayout mRightView;
+    private RelativeLayout mLeftView;
 
     private Scroller mScroller;
     private OnSlideListener mOnSlideListener;
@@ -47,6 +53,7 @@ public class SwipeLayout extends LinearLayout {
     private static final int TAN = 2;
 
     private int mSlideState = OnSlideListener.SLIDE_STATUS_OFF;
+    private int mSwipeDirection = SWIPE_RIGHT;
 
     public SwipeLayout(Context context) {
         super(context);
@@ -74,6 +81,15 @@ public class SwipeLayout extends LinearLayout {
      */
     public void setRightView(View v) {
         mRightView.addView(v);
+    }
+
+    /**
+     * set left view
+     * right view used do operation
+     * @param v     operation view
+     */
+    public void setLeftView(View v) {
+        mLeftView.addView(v);
     }
 
     /**
@@ -194,23 +210,18 @@ public class SwipeLayout extends LinearLayout {
         return mSlideState;
     }
 
-    /**
-     * set slide width
-     * @param newWidth      new slide width
-     */
-    public void setSlideWidth(int newWidth) {
-        mHolderWidth = Math.round(TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, newWidth,
-                getResources().getDisplayMetrics()));
-        invalidate();
-    }
-
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
             scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             postInvalidate();
         }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        setLayoutWidth(mContentView, r - l);
     }
 
     /// PRIVATE START
@@ -221,6 +232,8 @@ public class SwipeLayout extends LinearLayout {
      */
     private void smoothScrollTo(int destX, int destY) {
         // 缓慢滚动到指定位置
+        //int scrollX = SWIPE_RIGHT == mSwipeDirection ?
+        //                getScrollX() : mHolderWidth + getScrollX();
         int scrollX = getScrollX();
         int delta = destX - scrollX;
         mScroller.startScroll(scrollX, 0, delta, 0, Math.abs(delta) * 3);
@@ -236,6 +249,7 @@ public class SwipeLayout extends LinearLayout {
         View.inflate(context, R.layout.container_swipelayout, this);
         mContentView = (RelativeLayout)findViewById(R.id.view_content);
         mRightView = (RelativeLayout)findViewById(R.id.view_right);
+        mLeftView = (RelativeLayout)findViewById(R.id.view_left);
 
         int defPXWidth = Math.round(TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 120,
@@ -249,6 +263,8 @@ public class SwipeLayout extends LinearLayout {
                 mHolderWidth = array.getDimensionPixelSize(R.styleable.SwipeLayout_dmRightWidth, defPXWidth);
                 idContent = array.getResourceId(R.styleable.SwipeLayout_idContentView, R.layout.def_content);
                 idRight = array.getResourceId(R.styleable.SwipeLayout_idRightView, R.layout.def_right);
+
+                mSwipeDirection = array.getInt(R.styleable.SwipeLayout_fgDirection, SWIPE_RIGHT);
             } finally {
                 array.recycle();
             }
@@ -256,19 +272,49 @@ public class SwipeLayout extends LinearLayout {
             mHolderWidth = defPXWidth;
         }
 
-        if(isInEditMode())  {
-            setContentView(LayoutInflater.from(context).inflate(idContent, null));
-            setRightView(LayoutInflater.from(context).inflate(idRight, null));
+        switch (mSwipeDirection)    {
+            case SWIPE_LEFT :   {
+                mRightView.setVisibility(View.GONE);
 
-            int scrollX = getScrollX();
-            int delta = mHolderWidth - scrollX;
-            mScroller.startScroll(scrollX, 0, delta, 0, 0);
-        } else {
-            if(R.layout.def_content != idContent && R.layout.def_right != idRight)  {
-                setContentView(LayoutInflater.from(context).inflate(idContent, null));
-                setRightView(LayoutInflater.from(context).inflate(idRight, null));
+                setLeftView(LayoutInflater.from(context).inflate(idRight, null));
+                setLayoutWidth(mLeftView, mHolderWidth);
             }
+            break;
+
+            case SWIPE_RIGHT : {
+                mLeftView.setVisibility(View.GONE);
+
+                setRightView(LayoutInflater.from(context).inflate(idRight, null));
+                setLayoutWidth(mRightView, mHolderWidth);
+            }
+            break;
+
+            case SWIPE_BOTH :   {
+                setLeftView(LayoutInflater.from(context).inflate(idRight, null));
+                setRightView(LayoutInflater.from(context).inflate(idRight, null));
+                setLayoutWidth(mLeftView, mHolderWidth);
+                setLayoutWidth(mRightView, mHolderWidth);
+            }
+            break;
         }
+        setContentView(LayoutInflater.from(context).inflate(idContent, null));
+
+        if(isInEditMode())  {
+            if(SWIPE_RIGHT == mSwipeDirection) {
+                int scrollX = getScrollX();
+                mScroller.startScroll(scrollX, 0, mHolderWidth - scrollX, 0, 0);
+            }
+        } else  {
+            int scrollX = getScrollX();
+            mScroller.startScroll(scrollX, 0,
+                    SWIPE_RIGHT == mSwipeDirection ? 0 : mHolderWidth -scrollX, 0, 0);
+        }
+    }
+
+    private void setLayoutWidth(RelativeLayout subLayout, int newWidth) {
+        ViewGroup.LayoutParams param = subLayout.getLayoutParams();
+        param.width = newWidth;
+        subLayout.setLayoutParams(param);
     }
     /// PRIVATE END
 }
