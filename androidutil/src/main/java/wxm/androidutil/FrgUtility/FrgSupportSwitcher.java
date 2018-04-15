@@ -1,27 +1,18 @@
 package wxm.androidutil.FrgUtility;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import butterknife.ButterKnife;
-import wxm.androidutil.FrgUtility.FrgUtilitySupportBase;
-import wxm.androidutil.R;
 
 /**
  * base UI for show data
  * Created by wxm on 2016/9/27.
  */
 public abstract class FrgSupportSwitcher<T>
-        extends FrgUtilitySupportBase {
+        extends FrgSupportBaseAdv {
     private final static String CHILD_HOT = "child_hot";
     protected ArrayList<T>  mFrgArr = new ArrayList<>();
     protected int           mHotFrgIdx  = -1;
@@ -31,6 +22,12 @@ public abstract class FrgSupportSwitcher<T>
 
     @IdRes
     private int mChildFrg;
+
+    @Override
+    protected boolean isUseEventBus() {
+        return false;
+    }
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -47,10 +44,17 @@ public abstract class FrgSupportSwitcher<T>
     }
 
     @Override
-    protected final View inflaterView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
-        View v = layoutInflater.inflate(mFatherFrg, viewGroup, false);
-        setupFragment(bundle);
-        return v;
+    protected int getLayoutID()    {
+        return mFatherFrg;
+    }
+
+    @Override
+    protected void initUI(Bundle savedInstanceState) {
+        if(null == savedInstanceState)  {
+            setupFragment(null);
+        }
+
+        loadUI(savedInstanceState);
     }
 
     @Override
@@ -63,7 +67,7 @@ public abstract class FrgSupportSwitcher<T>
      * will loop switch between all child
      */
     public void switchPage() {
-        if(null != getView()) {
+        if(isVisible()) {
             loadHotFrg((mHotFrgIdx + 1) % mFrgArr.size());
         }
     }
@@ -73,7 +77,7 @@ public abstract class FrgSupportSwitcher<T>
      * @param sb    child page want switch to
      */
     public void switchToPage(T sb)  {
-        if(null != getView()) {
+        if(isVisible()) {
             for (T frg : mFrgArr) {
                 if (frg == sb) {
                     if (frg != mFrgArr.get(mHotFrgIdx)) {

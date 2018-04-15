@@ -5,12 +5,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import wxm.androidutil.FrgUtility.FrgUtilitySupportBase;
+import wxm.androidutil.FrgUtility.FrgSupportBaseAdv;
 import wxm.androidutil.Switcher.ACSwitcherActivity;
 import wxm.extendui.R;
 
 
-public class ACPageSwitcher extends ACSwitcherActivity<FrgUtilitySupportBase> {
+public class ACPageSwitcher extends ACSwitcherActivity<FrgSupportBaseAdv> {
     @Override
     protected void setupFragment(Bundle savedInstanceState)    {
         addFragment(new FrgPageOne());

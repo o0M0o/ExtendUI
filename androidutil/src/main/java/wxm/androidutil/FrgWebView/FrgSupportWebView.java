@@ -6,15 +6,15 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.annotation.LayoutRes;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import wxm.androidutil.FrgUtility.FrgUtilitySupportBase;
+import butterknife.BindView;
+import wxm.androidutil.FrgUtility.FrgSupportBaseAdv;
 import wxm.androidutil.R;
 import wxm.androidutil.util.UtilFun;
 
@@ -22,17 +22,30 @@ import wxm.androidutil.util.UtilFun;
  * fragment for webView
  * Created by ookoo on 2017/2/15.
  */
-public abstract class FrgSupportWebView extends FrgUtilitySupportBase {
+public abstract class FrgSupportWebView extends FrgSupportBaseAdv {
     WebView mWVPage;
     ProgressBar mPBLoad;
 
     private Object pagePara;
 
     @Override
+    protected boolean isUseEventBus() {
+        return false;
+    }
+
+    @Override
+    @LayoutRes
+    protected int getLayoutID() {
+        return R.layout.frg_webview;
+    }
+
+    @Override
     @SuppressLint("SetJavaScriptEnabled")
-    protected View inflaterView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
-        LOG_TAG = "FrgWebView";
-        View rootView = layoutInflater.inflate(R.layout.frg_webview, viewGroup, false);
+    protected final void initUI(Bundle savedInstanceState) {
+        View rootView = getView();
+        if(null == rootView)
+            return;
+
         mWVPage = UtilFun.cast_t(rootView.findViewById(R.id.wv_page));
         mPBLoad = UtilFun.cast_t(rootView.findViewById(R.id.pb_load));
 
@@ -45,11 +58,8 @@ public abstract class FrgSupportWebView extends FrgUtilitySupportBase {
                 onWVPageFinished(mWVPage, pagePara);
             }
         });
-        return rootView;
-    }
 
-    @Override
-    protected void loadUI(Bundle savedInstanceState) {
+        loadUI(savedInstanceState);
     }
 
     /**

@@ -13,15 +13,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import wxm.androidutil.FrgUtility.FrgUtilitySupportBase;
+import wxm.androidutil.FrgUtility.FrgSupportBaseAdv;
 import wxm.extendui.R;
 
 /**
  * for webview
  * Created by ookoo on 2016/11/29.
  */
-public class FrgPageOne extends FrgUtilitySupportBase {
+public class FrgPageOne extends FrgSupportBaseAdv {
     @BindView(R.id.tw_tag)
     TextView mTVTag;
 
@@ -30,12 +29,19 @@ public class FrgPageOne extends FrgUtilitySupportBase {
     private long mStartSeconds;
 
     @Override
-    protected View inflaterView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.frg_page_one, container, false);
+    protected int getLayoutID() {
+        return R.layout.frg_page_one;
+    }
 
+    @Override
+    protected boolean isUseEventBus() {
+        return false;
+    }
+
+    @Override
+    protected void initUI(Bundle bundle)    {
         mLiveSeconds = 0;
         mStartSeconds = Calendar.getInstance().getTimeInMillis() / 1000;
-        return rootView;
     }
 
     @Override

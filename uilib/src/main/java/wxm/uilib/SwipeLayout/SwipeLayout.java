@@ -143,7 +143,7 @@ public class SwipeLayout extends LinearLayout {
 
     @Override
     public boolean performClick()   {
-        return  true;
+        return  super.performClick();
     }
 
     @Override
@@ -309,13 +309,13 @@ public class SwipeLayout extends LinearLayout {
                 getResources().getDisplayMetrics()));
 
         @LayoutRes int idContent = R.layout.def_content;
-        @LayoutRes int idRight = R.layout.def_right;
+        @LayoutRes int idRight = R.layout.def_sub;
         if(null != attrs) {
             TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.SwipeLayout);
             try {
                 mHolderWidth = array.getDimensionPixelSize(R.styleable.SwipeLayout_dmRightWidth, defPXWidth);
                 idContent = array.getResourceId(R.styleable.SwipeLayout_idContentView, R.layout.def_content);
-                idRight = array.getResourceId(R.styleable.SwipeLayout_idRightView, R.layout.def_right);
+                idRight = array.getResourceId(R.styleable.SwipeLayout_idRightView, R.layout.def_sub);
 
                 mSwipeDirection = array.getInt(R.styleable.SwipeLayout_fgDirection, SWIPE_RIGHT);
             } finally {
@@ -359,10 +359,15 @@ public class SwipeLayout extends LinearLayout {
         }
     }
 
-    private void setLayoutWidth(RelativeLayout subLayout, int newWidth) {
-        ViewGroup.LayoutParams param = subLayout.getLayoutParams();
-        param.width = newWidth;
-        subLayout.setLayoutParams(param);
+    /**
+     * set layout width
+     * @param layout    layout object
+     * @param width     layout width
+     */
+    private void setLayoutWidth(RelativeLayout layout, int width) {
+        ViewGroup.LayoutParams param = layout.getLayoutParams();
+        param.width = width;
+        layout.setLayoutParams(param);
     }
     /// PRIVATE END
 }
