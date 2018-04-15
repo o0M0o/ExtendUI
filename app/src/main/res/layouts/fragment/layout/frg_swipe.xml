@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <wxm.uilib.SwipeLayout.SwipeLayout
-        android:id="@+id/swipe"
+        android:id="@+id/swipe1"
         app:fgDirection="left"
         app:idContentView="@layout/vw_content"
         app:idRightView="@layout/vw_right"
@@ -17,12 +17,25 @@
 
 
     <wxm.uilib.SwipeLayout.SwipeLayout
-        android:id="@+id/swipe1"
+        android:id="@+id/swipe2"
         app:fgDirection="right"
         app:idContentView="@layout/vw_content"
         app:idRightView="@layout/vw_right"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/swipe"
+        app:layout_constraintTop_toBottomOf="@id/swipe1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <wxm.uilib.SwipeLayout.SwipeLayout
+        android:id="@+id/swipe3"
+        app:fgDirection="right|left"
+        app:idContentView="@layout/vw_content"
+        app:idRightView="@layout/vw_right"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/swipe2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="match_parent"

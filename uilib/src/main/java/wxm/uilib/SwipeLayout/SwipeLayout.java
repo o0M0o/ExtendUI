@@ -109,8 +109,9 @@ public class SwipeLayout extends LinearLayout {
         }
     }
 
-    //如果其子View存在消耗点击事件的View，那么SwipeLayout的onTouchEvent不会被执行，
+    // 如果其子View存在消耗点击事件的View，那么SwipeLayout的onTouchEvent不会被执行，
     // 因为在ACTION_MOVE的时候返回true，执行其onTouchEvent方法
+    // 返回值为true表示本次触摸事件由自己执行，即执行SwipeLayout的onTouchEvent方法
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         int x = (int) ev.getX();
@@ -132,11 +133,9 @@ public class SwipeLayout extends LinearLayout {
                 return false;
 
             case MotionEvent.ACTION_MOVE:
-                //返回值为true表示本次触摸事件由自己执行，即执行SwipeLayout的onTouchEvent方法
-                int deltaX = x - mLastX;
-                int deltaY = y - mLastY;
-                //这里作用是来比较X、Y轴的滑动距离，如果X轴的滑动距离小于两倍的Y轴滑动距离，则不执行SwipeLayout的滑动事件
-                return Math.abs(deltaX) >= Math.abs(deltaY) * TAN;
+                // 比较X、Y轴的滑动距离
+                // 如果X轴的滑动距离小于两倍的Y轴滑动距离，则不执行SwipeLayout的滑动事件
+                return Math.abs(x - mLastX) >= Math.abs(y - mLastY) * TAN;
         }
 
         return super.onInterceptTouchEvent(ev);
@@ -154,20 +153,25 @@ public class SwipeLayout extends LinearLayout {
         int scrollX = getScrollX();
         switch (event.getAction()) {
             case MotionEvent.ACTION_MOVE: {
-                int deltaX = x - mLastX;
                 //如果SwipeLayout是在譬如ScrollView、ListView这种可以上下滑动的View中
                 //那么当用户的手指滑出SwipeLayout的边界，那么将会触发器ACTION_CANCEL事件
                 //如果此情形发生，那么SwipeLayout将会处于停止状态，无法复原。
                 //增加下面这句代码，就是告诉父控件，不要cancel我的事件，我的事件我继续处理。
                 getParent().requestDisallowInterceptTouchEvent(true);
-                int newScrollX = scrollX - deltaX;
+                int deltaX = x - mLastX;
                 if (deltaX != 0) {
-                    if (newScrollX < 0) {
-                        //最小的滑动距离为0
-                        newScrollX = 0;
-                    } else if (newScrollX > mHolderWidth) {
-                        //最大的滑动距离就是mRightView的宽度
-                        newScrollX = mHolderWidth;
+                    int newScrollX = scrollX - deltaX;
+                    switch (mSwipeDirection)    {
+                        // swipe range is [0, mHolderWidth]
+                        case SWIPE_RIGHT :
+                        case SWIPE_LEFT:
+                            newScrollX = Math.min(mHolderWidth, Math.max(0, newScrollX));
+                            break;
+
+                        // swipe range is [0, 2 * mHolderWidth]
+                        case SWIPE_BOTH:
+                            newScrollX = Math.min(2 * mHolderWidth, Math.max(0, newScrollX));
+                            break;
                     }
                     this.scrollTo(newScrollX, 0);
                 }
@@ -175,19 +179,56 @@ public class SwipeLayout extends LinearLayout {
             }
 
             case MotionEvent.ACTION_UP: {
-                int newScrollX = 0;
                 //如果已滑动的距离满足下面条件，则SwipeLayout直接滑动到最大距离，不然滑动到最小距离0
-                if (scrollX - mHolderWidth * 0.75 > 0) {
-                    newScrollX = mHolderWidth;
+                int newScrollX = 0;
+                switch (mSwipeDirection)    {
+                    case SWIPE_RIGHT :
+                    case SWIPE_LEFT:
+                        newScrollX = scrollX > mHolderWidth*0.75 ? mHolderWidth : 0;
+                        break;
+
+                    case SWIPE_BOTH:
+                        newScrollX = scrollX > mHolderWidth*0.75 ?
+                                        scrollX > mHolderWidth*1.75 ? 2 * mHolderWidth : mHolderWidth
+                                        : 0;
+                        break;
                 }
+
                 this.smoothScrollTo(newScrollX, 0);
                 if (mOnSlideListener != null) {
-                    if (newScrollX == 0) {
-                        mOnSlideListener.onSlide(this, OnSlideListener.SLIDE_STATUS_OFF);
-                        mSlideState = OnSlideListener.SLIDE_STATUS_OFF;
-                    } else {
-                        mOnSlideListener.onSlide(this, OnSlideListener.SLIDE_STATUS_ON);
-                        mSlideState = OnSlideListener.SLIDE_STATUS_ON;
+                    switch (mSwipeDirection)    {
+                        case SWIPE_RIGHT :
+                            mOnSlideListener.onSlide(this,
+                                    newScrollX == 0 ?
+                                            OnSlideListener.SLIDE_STATUS_OFF
+                                            : OnSlideListener.SLIDE_STATUS_ON);
+
+                            mSlideState = newScrollX == 0 ?
+                                            OnSlideListener.SLIDE_STATUS_OFF
+                                            : OnSlideListener.SLIDE_STATUS_ON;
+                            break;
+
+                        case SWIPE_LEFT:
+                            mOnSlideListener.onSlide(this,
+                                    newScrollX != 0 ?
+                                            OnSlideListener.SLIDE_STATUS_OFF
+                                            : OnSlideListener.SLIDE_STATUS_ON);
+
+                            mSlideState = newScrollX != 0 ?
+                                    OnSlideListener.SLIDE_STATUS_OFF
+                                    : OnSlideListener.SLIDE_STATUS_ON;
+                            break;
+
+                        case SWIPE_BOTH:
+                            mOnSlideListener.onSlide(this,
+                                    newScrollX != mHolderWidth ?
+                                            OnSlideListener.SLIDE_STATUS_ON
+                                            : OnSlideListener.SLIDE_STATUS_OFF);
+
+                            mSlideState = newScrollX != mHolderWidth ?
+                                    OnSlideListener.SLIDE_STATUS_ON
+                                    : OnSlideListener.SLIDE_STATUS_OFF;
+                            break;
                     }
                 }
                 getParent().requestDisallowInterceptTouchEvent(false);
@@ -232,10 +273,22 @@ public class SwipeLayout extends LinearLayout {
      */
     private void smoothScrollTo(int destX, int destY) {
         // 缓慢滚动到指定位置
-        //int scrollX = SWIPE_RIGHT == mSwipeDirection ?
-        //                getScrollX() : mHolderWidth + getScrollX();
         int scrollX = getScrollX();
-        int delta = destX - scrollX;
+        int delta = 0;
+        switch (mSwipeDirection)    {
+            case SWIPE_RIGHT :
+                delta = destX - scrollX;
+                break;
+
+            case SWIPE_LEFT:
+                delta = destX - scrollX;
+                break;
+
+            case SWIPE_BOTH:
+                delta = destX - scrollX;
+                break;
+        }
+
         mScroller.startScroll(scrollX, 0, delta, 0, Math.abs(delta) * 3);
         invalidate();
     }
@@ -300,14 +353,9 @@ public class SwipeLayout extends LinearLayout {
         setContentView(LayoutInflater.from(context).inflate(idContent, null));
 
         if(isInEditMode())  {
-            if(SWIPE_RIGHT == mSwipeDirection) {
-                int scrollX = getScrollX();
-                mScroller.startScroll(scrollX, 0, mHolderWidth - scrollX, 0, 0);
-            }
+            this.scrollTo(SWIPE_RIGHT == mSwipeDirection ? mHolderWidth : 0, 0);
         } else  {
-            int scrollX = getScrollX();
-            mScroller.startScroll(scrollX, 0,
-                    SWIPE_RIGHT == mSwipeDirection ? 0 : mHolderWidth -scrollX, 0, 0);
+            this.scrollTo(SWIPE_RIGHT != mSwipeDirection ? mHolderWidth : 0, 0);
         }
     }
 
