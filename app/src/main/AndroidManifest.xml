@@ -24,7 +24,9 @@
         <activity
             android:name=".DistanceMeter.ACDistanceMeter"
             android:exported="true" />
-        <activity android:name=".IconButton.ACIconButton" />
+        <activity android:name=".IconButton.ACIconButton"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true" />
         <activity android:name=".SimpleCalendar.ACSimpleCalendar"
             android:exported="true" />
         <activity android:name=".WebView.ACWebView"

@@ -59,7 +59,7 @@ public abstract class FrgSupportSwitcher<T>
 
     @Override
     protected void loadUI(Bundle savedInstanceState) {
-        loadHotFrg(mHotFrgIdx >=0 && mHotFrgIdx < mFrgArr.size() ? mHotFrgIdx : 0);
+        loadHotFrg(isHaveHotPage() ? mHotFrgIdx : 0);
     }
 
     /**
@@ -67,9 +67,7 @@ public abstract class FrgSupportSwitcher<T>
      * will loop switch between all child
      */
     public void switchPage() {
-        if(isVisible()) {
-            loadHotFrg((mHotFrgIdx + 1) % mFrgArr.size());
-        }
+        loadHotFrg((mHotFrgIdx + 1) % mFrgArr.size());
     }
 
     /**
@@ -77,14 +75,12 @@ public abstract class FrgSupportSwitcher<T>
      * @param sb    child page want switch to
      */
     public void switchToPage(T sb)  {
-        if(isVisible()) {
-            for (T frg : mFrgArr) {
-                if (frg == sb) {
-                    if (frg != mFrgArr.get(mHotFrgIdx)) {
-                        loadHotFrg(mFrgArr.indexOf(frg));
-                    }
-                    break;
+        for (T frg : mFrgArr) {
+            if (frg == sb) {
+                if (frg != getHotPage()) {
+                    loadHotFrg(mFrgArr.indexOf(frg));
                 }
+                break;
             }
         }
     }
@@ -94,7 +90,7 @@ public abstract class FrgSupportSwitcher<T>
      * @return      current page
      */
     public T getHotPage()    {
-        return mHotFrgIdx >= 0 && mHotFrgIdx < mFrgArr.size() ? mFrgArr.get(mHotFrgIdx) : null;
+        return isHaveHotPage() ? mFrgArr.get(mHotFrgIdx) : null;
     }
 
     /**
@@ -169,6 +165,10 @@ public abstract class FrgSupportSwitcher<T>
             }
             t.commit();
         }
+    }
+
+    private boolean isHaveHotPage() {
+        return mHotFrgIdx >= 0 && mHotFrgIdx < mFrgArr.size();
     }
     //// PRIVATE END
 }
