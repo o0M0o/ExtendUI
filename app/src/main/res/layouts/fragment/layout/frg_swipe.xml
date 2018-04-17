@@ -6,6 +6,7 @@
 
     <wxm.uilib.SwipeLayout.SwipeLayout
         android:id="@+id/swipe1"
+        app:dmRightWidth="80dp"
         app:fgDirection="left"
         app:idContentView="@layout/vw_content"
         app:idRightView="@layout/vw_right"

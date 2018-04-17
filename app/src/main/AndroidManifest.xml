@@ -29,6 +29,8 @@
             android:exported="true" />
         <activity android:name=".SimpleCalendar.ACSimpleCalendar"
             android:exported="true" />
+        <activity android:name=".ACCalendar.ACCalendar"
+            android:exported="true" />
         <activity android:name=".WebView.ACWebView"
             android:theme="@style/AppTheme.NoActionBar"
             android:exported="true" />

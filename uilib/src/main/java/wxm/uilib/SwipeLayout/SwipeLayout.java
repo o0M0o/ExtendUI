@@ -330,7 +330,9 @@ public class SwipeLayout extends LinearLayout {
             case SWIPE_LEFT :   {
                 mRightView.setVisibility(View.GONE);
 
-                setLeftView(LayoutInflater.from(context).inflate(idRight, null));
+                if(isInEditMode() || idRight != R.layout.def_sub) {
+                    setLeftView(LayoutInflater.from(context).inflate(idRight, null));
+                }
                 setLayoutWidth(mLeftView, mHolderWidth);
             }
             break;
@@ -338,20 +340,26 @@ public class SwipeLayout extends LinearLayout {
             case SWIPE_RIGHT : {
                 mLeftView.setVisibility(View.GONE);
 
-                setRightView(LayoutInflater.from(context).inflate(idRight, null));
+                if(isInEditMode() || idRight != R.layout.def_sub) {
+                    setRightView(LayoutInflater.from(context).inflate(idRight, null));
+                }
                 setLayoutWidth(mRightView, mHolderWidth);
             }
             break;
 
             case SWIPE_BOTH :   {
-                setLeftView(LayoutInflater.from(context).inflate(idRight, null));
-                setRightView(LayoutInflater.from(context).inflate(idRight, null));
+                if(isInEditMode() || idRight != R.layout.def_sub) {
+                    setLeftView(LayoutInflater.from(context).inflate(idRight, null));
+                    setRightView(LayoutInflater.from(context).inflate(idRight, null));
+                }
                 setLayoutWidth(mLeftView, mHolderWidth);
                 setLayoutWidth(mRightView, mHolderWidth);
             }
             break;
         }
-        setContentView(LayoutInflater.from(context).inflate(idContent, null));
+        if(isInEditMode() || idContent != R.layout.def_content) {
+            setContentView(LayoutInflater.from(context).inflate(idContent, null));
+        }
 
         if(isInEditMode())  {
             this.scrollTo(SWIPE_RIGHT == mSwipeDirection ? mHolderWidth : 0, 0);

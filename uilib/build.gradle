@@ -20,6 +20,7 @@ android {
                     [
                             'src/main/res',
                             'src/main/res/layouts/calendar',
+                            'src/main/res/layouts/frgCalendar',
                             'src/main/res/layouts/swipe',
                             'src/main/res/layouts/other',
                             'src/main/res/layouts'
