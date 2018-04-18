@@ -3,6 +3,7 @@ package wxm.uilib.FrgCalendar;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.app.FragmentHostCallback;
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
@@ -82,6 +83,17 @@ public class FrgCalendarDays extends ConstraintLayout {
 
     public String getCurrentDay()   {
         return mSZSelectedDate;
+    }
+
+    public void shrink(boolean flag)    {
+        int hotRow = !flag || null == mIAItemAdapter ? 0
+                : mIAItemAdapter.getIndexToTimeMap().indexOf(mSZSelectedDate) / FrgCalendarHelper.COLUMN_COUNT;
+
+        ObjectAnimator objectAnimator2 = ObjectAnimator
+                .ofFloat(this, "translationY",
+                        (FrgCalendarHelper.mItemHeight * hotRow));
+        objectAnimator2.setTarget(this);
+        objectAnimator2.setDuration(300).start();
     }
 
     /**

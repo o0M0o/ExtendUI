@@ -104,6 +104,7 @@ public class FrgCalendar extends ConstraintLayout {
 
     // other
     private boolean     mIsMonthChanging = false;
+    private boolean     mIsShrinkMode = false;
 
     private OnMonthChangedListener  mOLMonthChange = new OnMonthChangedListener() {
         @SuppressLint("SetTextI18n")
@@ -146,6 +147,15 @@ public class FrgCalendar extends ConstraintLayout {
 
     public void setOnMonthChangeListener(OnMonthChangedListener listener)   {
         mOLOuterMonthChange = listener;
+    }
+
+    public void setShrinkMode(boolean flag) {
+        mIsShrinkMode = flag;
+        initCalendarDay();
+    }
+
+    public boolean isShrinkMode()   {
+        return mIsShrinkMode;
     }
 
     @Override
@@ -246,22 +256,23 @@ public class FrgCalendar extends ConstraintLayout {
         mFDDays = (FrgCalendarDays)findViewById(R.id.fd_days);
         mLLWeekBar = (LinearLayout) findViewById(R.id.week_bar);
 
-        // init fast select
-        initFastSelected((ConstraintLayout)findViewById(R.id.cl_header));
-
         mGDDetector = new GestureDetector(context, new FlingListener());
+        mFDDays.setMonthChangeListener(mOLMonthChange);
 
-        // upset gridview
-        int newH = FrgCalendarHelper.ROW_COUNT * FrgCalendarHelper.mItemHeight;
-        //LayoutParams lpGV = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, newH);
+        initFastSelected((ConstraintLayout)findViewById(R.id.cl_header));
+        initWeekBar();
+        initCalendarDay();
+    }
+
+    private void initCalendarDay()  {
+        int newH = mIsShrinkMode ?
+                FrgCalendarHelper.mItemHeight
+                :  FrgCalendarHelper.ROW_COUNT * FrgCalendarHelper.mItemHeight;
         LayoutParams lpHolder = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, newH);
-        //mGVCalendar.setLayoutParams(lpGV);
         lpHolder.topToBottom = R.id.week_bar;
         mCLHolder.setLayoutParams(lpHolder);
 
-        mFDDays.setMonthChangeListener(mOLMonthChange);
-
-        initWeekBar();
+        mFDDays.shrink(mIsShrinkMode);
     }
 
     private void initFastSelected(ConstraintLayout clHeader)    {
