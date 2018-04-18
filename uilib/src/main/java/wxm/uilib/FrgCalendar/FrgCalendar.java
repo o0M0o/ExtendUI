@@ -139,6 +139,8 @@ public class FrgCalendar extends ConstraintLayout {
         mIAItemAdapter = ciAdapter;
         mECItemModel = (Class<?>) ((ParameterizedType) ciAdapter
                             .getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+
+        mGVCalendar.setAdapter(mIAItemAdapter);
         initCalendarView();
     }
 
@@ -232,13 +234,14 @@ public class FrgCalendar extends ConstraintLayout {
      * @param attrs     for UI
      */
     private void initView(Context context, AttributeSet attrs)    {
+        View.inflate(context, R.layout.frg_calendar, this);
         FrgCalendarHelper.init(context);
 
         // init UI component
-        View.inflate(context, R.layout.frg_calendar, this);
         mGVCalendar = (GridView)findViewById(R.id.gridview);
         mVWFloatingSelected = findViewById(R.id.selected_view);
         mTVMonthTips = (TextView)findViewById(R.id.floating_month_tip);
+        mLLWeekBar = (LinearLayout) findViewById(R.id.week_bar);
         mGDDetector = new GestureDetector(context, new FlingListener());
 
         // hidden month tips
@@ -253,7 +256,11 @@ public class FrgCalendar extends ConstraintLayout {
         });
 
         // upset gridview
-        mGVCalendar.setAdapter(new FrgCalendarItemAdapter(context));
+        LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                FrgCalendarHelper.ROW_COUNT * FrgCalendarHelper.mItemHeight);
+        lp.topToBottom = R.id.week_bar;
+        mGVCalendar.setLayoutParams(lp);
+
         mGVCalendar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -269,11 +276,13 @@ public class FrgCalendar extends ConstraintLayout {
         // upset float selected view
         mVWFloatingSelected.setLayoutParams(
                 new LayoutParams(FrgCalendarHelper.mItemWidth, FrgCalendarHelper.mItemHeight));
+        mVWFloatingSelected.setVisibility(View.GONE);
 
         initWeekBar();
         //if(isInEditMode())  {
             mIAItemAdapter = new FrgCalendarItemAdapter<FrgCalendarItemModel>(context);
             mECItemModel = FrgCalendarItemModel.class;
+            mGVCalendar.setAdapter(mIAItemAdapter);
         //}
 
         initCalendarView();
@@ -283,7 +292,6 @@ public class FrgCalendar extends ConstraintLayout {
      * init week-bar
      */
     protected void initWeekBar() {
-        mLLWeekBar = (LinearLayout) findViewById(R.id.week_bar);
         int txt_black = getResources().getColor(android.R.color.black);
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
@@ -308,8 +316,9 @@ public class FrgCalendar extends ConstraintLayout {
      * @param position      position in calendar
      */
     private void animateSelectedViewToPos(int position) {
+        mVWFloatingSelected.setVisibility(View.VISIBLE);
         int left = FrgCalendarHelper.mItemWidth * (position % FrgCalendarHelper.COLUMN_COUNT);
-        int top = FrgCalendarHelper.mItemHeight * (position / FrgCalendarHelper.COLUMN_COUNT);
+        int top = mLLWeekBar.getLayoutParams().height + FrgCalendarHelper.mItemHeight * (position / FrgCalendarHelper.COLUMN_COUNT);
         PropertyValuesHolder pvhX = PropertyValuesHolder
                             .ofFloat("X", mVWFloatingSelected.getX(), left);
         PropertyValuesHolder pvhY = PropertyValuesHolder

@@ -109,7 +109,7 @@ public class FrgCalendarItemAdapter<T extends FrgCalendarItemModel> extends Base
     public View getView(int position, View convertView, ViewGroup parent) {
         String date = indexToTimeMap.get(position);
         View view = getView(date, dayModelList.get(date), convertView, parent);
-        GridView.LayoutParams layoutParams = new GridView.LayoutParams(CalendarView.mItemWidth, CalendarView.mItemHeight);
+        GridView.LayoutParams layoutParams = new GridView.LayoutParams(FrgCalendarHelper.mItemWidth, FrgCalendarHelper.mItemHeight);
         view.setLayoutParams(layoutParams);
         return view;
     }
