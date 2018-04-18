@@ -34,11 +34,18 @@ public class ACCalendar extends AppCompatActivity {
         mHGVDays.setCalendarItemAdapter(mCSIAdapter);
 
         Toast tt = Toast.makeText(getApplicationContext(), "selected : ", Toast.LENGTH_SHORT);
-        mHGVDays.setOnSelectedListener((calendarView, view, time, pos) ->   {
+        mHGVDays.setOnSelectedListener((view, time, pos) ->   {
             //tt.cancel();
             tt.setText("selected : " + time);
             tt.setDuration(Toast.LENGTH_SHORT);
             tt.show();
+        });
+
+        Toast tt1 = Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT);
+        mHGVDays.setOnMonthChangeListener(yearMonth -> {
+            tt1.setText(yearMonth);
+            tt1.setDuration(Toast.LENGTH_SHORT);
+            tt1.show();
         });
     }
 }
