@@ -3,6 +3,7 @@ package wxm.uilib.FrgCalendar;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -101,6 +103,13 @@ public class FrgCalendar extends ConstraintLayout {
     private ConstraintLayout    mCLHolder;
     private FrgCalendarDays     mFDDays;
 
+    private TextView            mTVYear;
+    private TextView            mTVMonth;
+    private ImageView           mIVYearLeft;
+    private ImageView           mIVYearRight;
+    private ImageView           mIVMonthLeft;
+    private ImageView           mIVMonthRight;
+
     // for touch
     private float mStartY;
     private float mDownY;
@@ -111,9 +120,13 @@ public class FrgCalendar extends ConstraintLayout {
     private boolean     mIsMonthChanging = false;
 
     private OnMonthChangedListener  mOLMonthChange = new OnMonthChangedListener() {
+        @SuppressLint("SetTextI18n")
         @Override
         public void onMonthChanged(String yearMonth) {
             mIsMonthChanging = false;
+            mTVYear.setText(yearMonth.substring(0, 4) + "年");
+            mTVMonth.setText(yearMonth.substring(5, 7) + "月");
+
             if(null != mOLOuterMonthChange) {
                 mOLOuterMonthChange.onMonthChanged(yearMonth);
             }
@@ -246,6 +259,10 @@ public class FrgCalendar extends ConstraintLayout {
         mCLHolder = (ConstraintLayout)findViewById(R.id.cl_holder);
         mFDDays = (FrgCalendarDays)findViewById(R.id.fd_days);
         mLLWeekBar = (LinearLayout) findViewById(R.id.week_bar);
+
+        // init fast select
+        initFastSelected((ConstraintLayout)findViewById(R.id.cl_header));
+
         mGDDetector = new GestureDetector(context, new FlingListener());
 
         // upset gridview
@@ -261,10 +278,49 @@ public class FrgCalendar extends ConstraintLayout {
         initWeekBar();
     }
 
+    private void initFastSelected(ConstraintLayout clHeader)    {
+        mTVMonth = (TextView)clHeader.findViewById(R.id.tv_month);
+        mTVYear = (TextView)clHeader.findViewById(R.id.tv_year);
+        mIVYearLeft = (ImageView)clHeader.findViewById(R.id.iv_year_left);
+        mIVYearRight = (ImageView)clHeader.findViewById(R.id.iv_year_right);
+        mIVMonthLeft = (ImageView)clHeader.findViewById(R.id.iv_month_left);
+        mIVMonthRight = (ImageView)clHeader.findViewById(R.id.iv_month_right);
+
+        OnClickListener listener = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                int dif = 0;
+                Calendar calendar = FrgCalendarHelper.getCalendarByYearMonthDay(mFDDays.getCurrentDay());
+                if(R.id.iv_year_left == id || R.id.iv_year_right == id) {
+                    dif = R.id.iv_year_right == id ? 1 : -1;
+                    calendar.add(Calendar.YEAR, dif);
+                }
+
+                if(R.id.iv_month_left == id || R.id.iv_month_right == id)   {
+                    dif = R.id.iv_month_right == id ? 1 : -1;
+                    calendar.add(Calendar.MONTH, dif);
+                }
+
+                if(0 != dif) {
+                    mIsMonthChanging = true;
+                    mFDDays.changeMonth(dif,
+                            FrgCalendarHelper.YEAR_MONTH_DAY_FORMAT.format(calendar.getTime()),
+                            CalendarStatus.LIST_CLOSE);
+                }
+            }
+        };
+
+        mIVYearLeft.setOnClickListener(listener);
+        mIVYearRight.setOnClickListener(listener);
+        mIVMonthLeft.setOnClickListener(listener);
+        mIVMonthRight.setOnClickListener(listener);
+    }
+
     /**
      * init week-bar
      */
-    protected void initWeekBar() {
+    private void initWeekBar() {
         int txt_black = getResources().getColor(android.R.color.black);
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
