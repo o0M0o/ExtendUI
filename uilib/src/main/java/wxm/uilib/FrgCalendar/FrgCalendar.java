@@ -264,11 +264,6 @@ public class FrgCalendar extends ConstraintLayout {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 animateSelectedViewToPos(position);
-                mSZSelectedDate = (String) mIAItemAdapter.getIndexToTimeMap().get(position);
-                FrgCalendar h = FrgCalendar.this;
-                if (mOnDateSelectedListener != null) {
-                    mOnDateSelectedListener.onDateSelected(h, view, mSZSelectedDate, position);
-                }
             }
         });
 
@@ -288,8 +283,6 @@ public class FrgCalendar extends ConstraintLayout {
         if(isInEditMode())  {
             mTVMonthTips.setText(mSZCurrentMonth);
             mTVMonthTips.setVisibility(View.VISIBLE);
-
-            animateSelectedViewToDate(mSZCurrentMonth + "-01");
         }
     }
 
@@ -321,6 +314,8 @@ public class FrgCalendar extends ConstraintLayout {
      * @param position      position in calendar
      */
     private void animateSelectedViewToPos(int position) {
+        mSZSelectedDate = (String) mIAItemAdapter.getIndexToTimeMap().get(position);
+
         mVWFloatingSelected.setVisibility(View.VISIBLE);
         int left = FrgCalendarHelper.mItemWidth * (position % FrgCalendarHelper.COLUMN_COUNT);
         int top = mLLWeekBar.getLayoutParams().height + FrgCalendarHelper.mItemHeight * (position / FrgCalendarHelper.COLUMN_COUNT);
@@ -330,6 +325,11 @@ public class FrgCalendar extends ConstraintLayout {
                             .ofFloat("Y", mVWFloatingSelected.getY(), top);
         ObjectAnimator.ofPropertyValuesHolder(mVWFloatingSelected, pvhX, pvhY)
                 .setDuration(200).start();
+
+        if (mOnDateSelectedListener != null) {
+            mOnDateSelectedListener.onDateSelected(FrgCalendar.this,
+                   mGVCalendar.getChildAt(position),  mSZSelectedDate, position);
+        }
     }
 
     /**
@@ -339,7 +339,6 @@ public class FrgCalendar extends ConstraintLayout {
      * @param status        status for view
      */
     private void changeMonth(int offset, final String date, final CalendarStatus status) {
-        mSZSelectedDate = date;
         mIsMonthChanging = true;
 
         FrgCalendar oldCalendarView = new FrgCalendar(getContext());
@@ -348,7 +347,7 @@ public class FrgCalendar extends ConstraintLayout {
         mCLHolder.addView(oldCalendarView);
         oldCalendarView.setTranslationY(getTranslationY());
 
-        Calendar calendar = FrgCalendarHelper.getCalendarByYearMonthDay(mSZSelectedDate);
+        Calendar calendar = FrgCalendarHelper.getCalendarByYearMonthDay(date);
         mSZCurrentMonth = FrgCalendarHelper.YEAR_MONTH_FORMAT.format(calendar.getTime());
         TreeMap<String, FrgCalendarItemModel> tmItemModel = getCalendarDataList(mSZCurrentMonth);
         setDayModel(tmItemModel);
@@ -431,7 +430,7 @@ public class FrgCalendar extends ConstraintLayout {
     private void initCalendarView() {
         Calendar calendar = Calendar.getInstance();
         long selectedTime = calendar.getTimeInMillis();
-        mSZSelectedDate = FrgCalendarHelper.YEAR_MONTH_DAY_FORMAT.format(selectedTime);
+        String selectedDate = FrgCalendarHelper.YEAR_MONTH_DAY_FORMAT.format(selectedTime);
         mSZCurrentMonth = FrgCalendarHelper.YEAR_MONTH_FORMAT.format(selectedTime);
         TreeMap<String, FrgCalendarItemModel> tmItemModel = getCalendarDataList(mSZCurrentMonth);
 
@@ -443,7 +442,7 @@ public class FrgCalendar extends ConstraintLayout {
         }
 
         setDayModel(tmItemModel);
-        animateSelectedViewToPos(mIAItemAdapter.getIndexToTimeMap().indexOf(mSZSelectedDate));
+        animateSelectedViewToPos(mIAItemAdapter.getIndexToTimeMap().indexOf(selectedDate));
     }
 
     /**
@@ -550,7 +549,6 @@ public class FrgCalendar extends ConstraintLayout {
     }
 
     private void animateSelectedViewToDate(String date) {
-        mSZSelectedDate = date;
         int position = mIAItemAdapter.getIndexToTimeMap().indexOf(date);
         animateSelectedViewToPos(position);
     }
