@@ -30,7 +30,6 @@ public class FrgCalendarDays extends ConstraintLayout {
     // UI component
     protected GridView  mGVCalendar;
     protected View      mVWFloatingSelected;
-    private TextView    mTVMonthTips;
 
     // data
     private String      mSZCurrentMonth;
@@ -108,10 +107,6 @@ public class FrgCalendarDays extends ConstraintLayout {
         animateCalendarToNewMonth(oldCalendarView, offset, oldCalendarView.getTranslationY(), new FrgCalendar.OnMonthChangedListener() {
             @Override
             public void onMonthChanged(String yearMonth) {
-                if(null != mOnMonthChangeListener)  {
-                    mOnMonthChangeListener.onMonthChanged(yearMonth);
-                }
-
                 animateSelectedViewToDate(date);
             }
         });
@@ -127,7 +122,6 @@ public class FrgCalendarDays extends ConstraintLayout {
         // init UI component
         mGVCalendar = (GridView)findViewById(R.id.gridview);
         mVWFloatingSelected = findViewById(R.id.selected_view);
-        mTVMonthTips = (TextView)findViewById(R.id.floating_month_tip);
 
         // upset gridview
         int newH = FrgCalendarHelper.ROW_COUNT * FrgCalendarHelper.mItemHeight;
@@ -175,6 +169,10 @@ public class FrgCalendarDays extends ConstraintLayout {
     private void setDayModel(TreeMap<String, FrgCalendarItemModel> dayModelTreeMap) {
         mIAItemAdapter.setDayModelList(dayModelTreeMap);
         mIAItemAdapter.notifyDataSetChanged();
+
+        if(null != mOnMonthChangeListener)  {
+            mOnMonthChangeListener.onMonthChanged(mSZCurrentMonth);
+        }
     }
 
     private void animateSelectedViewToDate(String date) {
@@ -265,31 +263,6 @@ public class FrgCalendarDays extends ConstraintLayout {
      */
     private void animateCalendarToNewMonth(final FrgCalendar oldCalendarView,
                                            int offset, float translationY, final FrgCalendar.OnMonthChangedListener monthChangeListener) {
-        mTVMonthTips.setText(mSZCurrentMonth);
-        final ObjectAnimator alpha = ObjectAnimator.ofFloat(mTVMonthTips, "alpha", 0f, 1f, 0f);
-        alpha.setDuration(1500);
-        alpha.setInterpolator(new AccelerateInterpolator());
-        alpha.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                mTVMonthTips.setVisibility(VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mTVMonthTips.setVisibility(GONE);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
-        alpha.start();
-
         ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(this, "translationY", translationY);
         objectAnimator1.setTarget(this);
         objectAnimator1.setDuration(800).start();

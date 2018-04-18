@@ -1,29 +1,19 @@
 package wxm.uilib.FrgCalendar;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.lang.reflect.ParameterizedType;
-import java.text.ParseException;
 import java.util.Calendar;
-import java.util.TreeMap;
 
 import wxm.uilib.R;
 
@@ -105,10 +95,6 @@ public class FrgCalendar extends ConstraintLayout {
 
     private TextView            mTVYear;
     private TextView            mTVMonth;
-    private ImageView           mIVYearLeft;
-    private ImageView           mIVYearRight;
-    private ImageView           mIVMonthLeft;
-    private ImageView           mIVMonthRight;
 
     // for touch
     private float mStartY;
@@ -281,10 +267,10 @@ public class FrgCalendar extends ConstraintLayout {
     private void initFastSelected(ConstraintLayout clHeader)    {
         mTVMonth = (TextView)clHeader.findViewById(R.id.tv_month);
         mTVYear = (TextView)clHeader.findViewById(R.id.tv_year);
-        mIVYearLeft = (ImageView)clHeader.findViewById(R.id.iv_year_left);
-        mIVYearRight = (ImageView)clHeader.findViewById(R.id.iv_year_right);
-        mIVMonthLeft = (ImageView)clHeader.findViewById(R.id.iv_month_left);
-        mIVMonthRight = (ImageView)clHeader.findViewById(R.id.iv_month_right);
+        ImageView mIVYearLeft = (ImageView) clHeader.findViewById(R.id.iv_year_left);
+        ImageView mIVYearRight = (ImageView) clHeader.findViewById(R.id.iv_year_right);
+        ImageView mIVMonthLeft = (ImageView) clHeader.findViewById(R.id.iv_month_left);
+        ImageView mIVMonthRight = (ImageView) clHeader.findViewById(R.id.iv_month_right);
 
         OnClickListener listener = new OnClickListener() {
             @Override
