@@ -1,26 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/week_bar"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:background="@color/calendar_week_bg_color"
         android:gravity="center"
-        android:orientation="horizontal" />
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <GridView
-        android:id="@+id/gridview"
-        app:layout_constraintTop_toBottomOf="@id/week_bar"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:gravity="center"
-        android:numColumns="7" />
+        app:layout_constraintTop_toBottomOf="@id/week_bar">
+
+        <GridView
+            android:id="@+id/gridview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:numColumns="7" />
+    </android.support.constraint.ConstraintLayout>
 
     <ImageView
         android:id="@+id/selected_view"
@@ -32,12 +38,15 @@
         android:id="@+id/floating_month_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:background="@android:color/white"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:textColor="@android:color/black"
         android:textSize="26sp"
         android:textStyle="bold"
-        android:visibility="gone" />
-</android.support.constraint.ConstraintLayout >
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/cl_holder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/cl_holder" />
+</android.support.constraint.ConstraintLayout>

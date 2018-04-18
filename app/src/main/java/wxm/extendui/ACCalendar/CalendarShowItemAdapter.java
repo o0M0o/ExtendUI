@@ -54,7 +54,7 @@ public class CalendarShowItemAdapter extends FrgCalendarItemAdapter<CalendarShow
         }
 
         if (model.isNotCurrentMonth()) {
-            dayNum.setVisibility(View.GONE);
+            dayNum.setTextColor(mContext.getResources().getColor(wxm.uilib.R.color.gray_bbbbbb));
             view.setClickable(true);
         }
 

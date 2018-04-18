@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,6 +95,7 @@ public class FrgCalendar extends ConstraintLayout {
     }
 
     // UI component
+    protected ConstraintLayout  mCLHolder;
     protected GridView          mGVCalendar;
     protected View              mVWFloatingSelected;
     private TextView            mTVMonthTips;
@@ -144,10 +146,6 @@ public class FrgCalendar extends ConstraintLayout {
         initCalendarView();
     }
 
-    public String getSelectedDate() {
-        return mSZSelectedDate;
-    }
-
     public void setOnSelectedListener(OnDateSelectedListener listener)   {
         mOnDateSelectedListener = listener;
     }
@@ -158,6 +156,7 @@ public class FrgCalendar extends ConstraintLayout {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mDiffY = ev.getY();
+                /*
                 // when listView is close (calendarView is not shrink)
                 if (status == CalendarStatus.LIST_CLOSE && mDiffY < mLLWeekBar.getBottom() + getBottom()) {
                     return super.dispatchTouchEvent(ev);
@@ -165,6 +164,7 @@ public class FrgCalendar extends ConstraintLayout {
                 if (status == CalendarStatus.LIST_OPEN && mDiffY > mLLWeekBar.getBottom() + FrgCalendarHelper.mItemHeight) {
                     return super.dispatchTouchEvent(ev);
                 }
+                */
 
                 mStartY = ev.getRawY();
                 mDownY = ev.getRawY();
@@ -173,6 +173,7 @@ public class FrgCalendar extends ConstraintLayout {
 
             case MotionEvent.ACTION_MOVE:
                 float curY = ev.getRawY();
+                /*
                 if (status == CalendarStatus.LIST_CLOSE && curY > mStartY) {
                     return super.dispatchTouchEvent(ev);
                 }
@@ -191,24 +192,29 @@ public class FrgCalendar extends ConstraintLayout {
                 if (status == CalendarStatus.LIST_OPEN && mDiffY > mLLWeekBar.getBottom() + FrgCalendarHelper.mItemHeight) {
                     return super.dispatchTouchEvent(ev);
                 }
-
+                */
                 mGDDetector.onTouchEvent(ev);
-
+                /*
                 setTranslationY(getTranslationY() + selectedRowColumn.row
                         * (curY - mStartY) / ((getHeight() / FrgCalendarHelper.mItemHeight) - 1));
+                */
                 mStartY = curY;
                 status = CalendarStatus.DRAGGING;
                 return true;
 
             case MotionEvent.ACTION_UP:
-                curY = ev.getRawY();
+                //curY = ev.getRawY();
                 if (status != CalendarStatus.DRAGGING) {
                     return super.dispatchTouchEvent(ev);
                 }
+
+                mVWFloatingSelected.setVisibility(View.GONE);
                 mGDDetector.onTouchEvent(ev);
                 if (status == CalendarStatus.ANIMATING) {
                     return super.dispatchTouchEvent(ev);
                 }
+
+                /*
                 if (curY < mDownY) {
                     if (Math.abs((curY - mDownY)) > getHeight() / 2) {
                         animationToTop(selectedRowColumn);
@@ -222,6 +228,7 @@ public class FrgCalendar extends ConstraintLayout {
                         animationToBottom();
                     }
                 }
+                */
         }
 
         return super.dispatchTouchEvent(ev);
@@ -238,28 +245,20 @@ public class FrgCalendar extends ConstraintLayout {
         FrgCalendarHelper.init(context);
 
         // init UI component
+        mCLHolder = (ConstraintLayout)findViewById(R.id.cl_holder);
         mGVCalendar = (GridView)findViewById(R.id.gridview);
         mVWFloatingSelected = findViewById(R.id.selected_view);
         mTVMonthTips = (TextView)findViewById(R.id.floating_month_tip);
         mLLWeekBar = (LinearLayout) findViewById(R.id.week_bar);
         mGDDetector = new GestureDetector(context, new FlingListener());
 
-        // hidden month tips
-        mTVMonthTips.setVisibility(View.GONE);
-        mTVMonthTips.post(new Runnable() {
-            @Override
-            public void run() {
-                LayoutParams lp = (LayoutParams) mTVMonthTips.getLayoutParams();
-                lp.topMargin = 2 * FrgCalendarHelper.mItemHeight - mTVMonthTips.getHeight() / 2;
-                mTVMonthTips.setLayoutParams(lp);
-            }
-        });
-
         // upset gridview
-        LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                FrgCalendarHelper.ROW_COUNT * FrgCalendarHelper.mItemHeight);
-        lp.topToBottom = R.id.week_bar;
-        mGVCalendar.setLayoutParams(lp);
+        int newH = FrgCalendarHelper.ROW_COUNT * FrgCalendarHelper.mItemHeight;
+        LayoutParams lpGV = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, newH);
+        LayoutParams lpHolder = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, newH);
+        mGVCalendar.setLayoutParams(lpGV);
+        lpHolder.topToBottom = R.id.week_bar;
+        mCLHolder.setLayoutParams(lpHolder);
 
         mGVCalendar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -286,6 +285,12 @@ public class FrgCalendar extends ConstraintLayout {
         //}
 
         initCalendarView();
+        if(isInEditMode())  {
+            mTVMonthTips.setText(mSZCurrentMonth);
+            mTVMonthTips.setVisibility(View.VISIBLE);
+
+            animateSelectedViewToDate(mSZCurrentMonth + "-01");
+        }
     }
 
     /**
@@ -339,14 +344,16 @@ public class FrgCalendar extends ConstraintLayout {
 
         FrgCalendar oldCalendarView = new FrgCalendar(getContext());
         oldCalendarView.setCalendarItemAdapter(mIAItemAdapter);
-        ConstraintLayout container = (ConstraintLayout) this.getParent();
-        container.addView(oldCalendarView);
+        oldCalendarView.findViewById(R.id.week_bar).setVisibility(GONE);
+        mCLHolder.addView(oldCalendarView);
         oldCalendarView.setTranslationY(getTranslationY());
+
         Calendar calendar = FrgCalendarHelper.getCalendarByYearMonthDay(mSZSelectedDate);
         mSZCurrentMonth = FrgCalendarHelper.YEAR_MONTH_FORMAT.format(calendar.getTime());
         TreeMap<String, FrgCalendarItemModel> tmItemModel = getCalendarDataList(mSZCurrentMonth);
         setDayModel(tmItemModel);
-        setTranslationY(getTranslationY() + offset * this.getHeight());
+
+        //setTranslationY(getTranslationY() + offset * this.getHeight());
         animateCalendarToNewMonth(oldCalendarView, offset, oldCalendarView.getTranslationY(), new OnMonthChangedListener() {
             @Override
             public void onMonthChanged(String yearMonth) {
@@ -356,7 +363,6 @@ public class FrgCalendar extends ConstraintLayout {
                 animateSelectedViewToDate(date);
             }
         });
-
     }
 
     /**
@@ -498,7 +504,11 @@ public class FrgCalendar extends ConstraintLayout {
         objectAnimator1.setTarget(this);
         objectAnimator1.setDuration(800).start();
 
-        ObjectAnimator objectAnimator2 = ObjectAnimator.ofFloat(this, "translationY", oldCalendarView.getTranslationY() - offset * this.getHeight());
+        //ObjectAnimator objectAnimator2 = ObjectAnimator.ofFloat(this, "translationY", oldCalendarView.getTranslationY() - offset * this.getHeight());
+        ObjectAnimator objectAnimator2 = ObjectAnimator
+                .ofFloat(this, "translationY",
+                offset > 0 ? oldCalendarView.getTranslationY() - this.getHeight()
+                    : 0 - this.getHeight());
         objectAnimator2.setTarget(oldCalendarView);
         objectAnimator2.setDuration(800).start();
         objectAnimator2.addListener(new Animator.AnimatorListener() {
@@ -508,10 +518,7 @@ public class FrgCalendar extends ConstraintLayout {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                ConstraintLayout container = (ConstraintLayout) FrgCalendar.this.getParent();
-                if (null != container) {
-                    container.removeView(oldCalendarView);
-                }
+                mCLHolder.removeView(oldCalendarView);
                 mIsMonthChanging = false;
                 if (monthChangeListener != null) {
                     monthChangeListener.onMonthChanged(mSZCurrentMonth);

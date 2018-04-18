@@ -33,9 +33,12 @@ public class ACCalendar extends AppCompatActivity {
         CalendarShowItemAdapter mCSIAdapter = new CalendarShowItemAdapter(this);
         mHGVDays.setCalendarItemAdapter(mCSIAdapter);
 
-        mHGVDays.setOnSelectedListener((calendarView, view, time, pos) ->
-                Toast.makeText(getApplicationContext(),
-                "selected : " + time,
-                Toast.LENGTH_SHORT).show());
+        Toast tt = Toast.makeText(getApplicationContext(), "selected : ", Toast.LENGTH_SHORT);
+        mHGVDays.setOnSelectedListener((calendarView, view, time, pos) ->   {
+            //tt.cancel();
+            tt.setText("selected : " + time);
+            tt.setDuration(Toast.LENGTH_SHORT);
+            tt.show();
+        });
     }
 }
