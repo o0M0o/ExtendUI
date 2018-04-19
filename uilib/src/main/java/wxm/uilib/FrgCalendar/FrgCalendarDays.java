@@ -85,15 +85,18 @@ public class FrgCalendarDays extends ConstraintLayout {
         return mSZSelectedDate;
     }
 
-    public void shrink(boolean flag)    {
+    public void shrink(final boolean flag)    {
+        /*
         int hotRow = !flag || null == mIAItemAdapter ? 0
                 : mIAItemAdapter.getIndexToTimeMap().indexOf(mSZSelectedDate) / FrgCalendarHelper.COLUMN_COUNT;
 
         ObjectAnimator objectAnimator2 = ObjectAnimator
                 .ofFloat(this, "translationY",
-                        (FrgCalendarHelper.mItemHeight * hotRow));
+                        -(FrgCalendarHelper.mItemHeight * hotRow));
         objectAnimator2.setTarget(this);
         objectAnimator2.setDuration(300).start();
+        scrollTo(0, hotRow * FrgCalendarHelper.mItemHeight);
+        */
     }
 
     /**
@@ -103,9 +106,10 @@ public class FrgCalendarDays extends ConstraintLayout {
      * @param status        status for view
      */
     public void changeMonth(int offset, final String date, final FrgCalendar.CalendarStatus status) {
-        FrgCalendar oldCalendarView = new FrgCalendar(getContext());
+        offset = offset > 0 ? 1 : -1;
+
+        FrgCalendarDays oldCalendarView = new FrgCalendarDays(getContext());
         oldCalendarView.setCalendarItemAdapter(mIAItemAdapter);
-        oldCalendarView.findViewById(R.id.week_bar).setVisibility(GONE);
         ConstraintLayout cl = (ConstraintLayout)getParent();
         cl.addView(oldCalendarView);
         oldCalendarView.setTranslationY(getTranslationY());
@@ -115,7 +119,7 @@ public class FrgCalendarDays extends ConstraintLayout {
         TreeMap<String, FrgCalendarItemModel> tmItemModel = getCalendarDataList(mSZCurrentMonth);
         setDayModel(tmItemModel);
 
-        //setTranslationY(getTranslationY() + offset * this.getHeight());
+        setTranslationY(getTranslationY() + offset * this.getHeight());
         animateCalendarToNewMonth(oldCalendarView, offset, oldCalendarView.getTranslationY(), new FrgCalendar.OnMonthChangedListener() {
             @Override
             public void onMonthChanged(String yearMonth) {
@@ -134,11 +138,6 @@ public class FrgCalendarDays extends ConstraintLayout {
         // init UI component
         mGVCalendar = (GridView)findViewById(R.id.gridview);
         mVWFloatingSelected = findViewById(R.id.selected_view);
-
-        // upset gridview
-        int newH = FrgCalendarHelper.ROW_COUNT * FrgCalendarHelper.mItemHeight;
-        LayoutParams lpGV = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, newH);
-        mGVCalendar.setLayoutParams(lpGV);
 
         mGVCalendar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -273,7 +272,7 @@ public class FrgCalendarDays extends ConstraintLayout {
      * @param translationY              Y position
      * @param monthChangeListener       month change listener
      */
-    private void animateCalendarToNewMonth(final FrgCalendar oldCalendarView,
+    private void animateCalendarToNewMonth(final FrgCalendarDays oldCalendarView,
                                            int offset, float translationY, final FrgCalendar.OnMonthChangedListener monthChangeListener) {
         ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(this, "translationY", translationY);
         objectAnimator1.setTarget(this);
@@ -282,8 +281,7 @@ public class FrgCalendarDays extends ConstraintLayout {
         //ObjectAnimator objectAnimator2 = ObjectAnimator.ofFloat(this, "translationY", oldCalendarView.getTranslationY() - offset * this.getHeight());
         ObjectAnimator objectAnimator2 = ObjectAnimator
                 .ofFloat(this, "translationY",
-                        offset > 0 ? oldCalendarView.getTranslationY() - this.getHeight()
-                                : 0 - this.getHeight());
+                        oldCalendarView.getTranslationY() - offset * this.getHeight());
         objectAnimator2.setTarget(oldCalendarView);
         objectAnimator2.setDuration(800).start();
         objectAnimator2.addListener(new Animator.AnimatorListener() {
