@@ -18,6 +18,7 @@ import java.util.Calendar;
 import wxm.uilib.R;
 
 /**
+ * use this in your layout files if you use calendar UI
  * @author WangXM
  * @version create：2018/4/17
  */
@@ -36,21 +37,15 @@ public class FrgCalendar extends ConstraintLayout {
         ANIMATING,
     }
 
-    static class SelectedRowColumn {
-        int row;
-        int column;
-    }
 
-    public interface OnDateSelectedListener {
+    public interface DateChangeListener {
         /**
          * @param view          clicked the view(Calendar View Item)
          * @param time          the date has been selected with "yyyy-MM-dd" format
          * @param pos           position in GridView
          */
-        void onDateSelected(View view, String time, int pos);
-    }
+        void onDayChanged(View view, String time, int pos);
 
-    public interface OnMonthChangedListener {
         /**
          * when month of calendar view has changed. it include user manually fling CalendarView to change
          * month,also include when user scroll ListView then beyond the current month.it will change month
@@ -90,6 +85,7 @@ public class FrgCalendar extends ConstraintLayout {
     // UI component
     private GestureDetector     mGDDetector;
     private FrgCalendarDays     mFDDays;
+    private LinearLayout        mLLWeekBar;
 
     private TextView            mTVYear;
     private TextView            mTVMonth;
@@ -104,7 +100,14 @@ public class FrgCalendar extends ConstraintLayout {
     private boolean     mIsMonthChanging = false;
     private boolean     mIsShrinkMode = false;
 
-    private OnMonthChangedListener  mOLMonthChange = new OnMonthChangedListener() {
+    private DateChangeListener mDLSelfDateChangeListener = new DateChangeListener() {
+        @Override
+        public void onDayChanged(View view, String time, int pos) {
+            if(null != mDLOuterListener) {
+                mDLOuterListener.onDayChanged(view, time, pos);
+            }
+        }
+
         @SuppressLint("SetTextI18n")
         @Override
         public void onMonthChanged(String yearMonth) {
@@ -112,12 +115,12 @@ public class FrgCalendar extends ConstraintLayout {
             mTVYear.setText(yearMonth.substring(0, 4) + "年");
             mTVMonth.setText(yearMonth.substring(5, 7) + "月");
 
-            if(null != mOLOuterMonthChange) {
-                mOLOuterMonthChange.onMonthChanged(yearMonth);
+            if(null != mDLOuterListener) {
+                mDLOuterListener.onMonthChanged(yearMonth);
             }
         }
     };
-    private OnMonthChangedListener  mOLOuterMonthChange = null;
+    private DateChangeListener  mDLOuterListener = null;
 
 
     public FrgCalendar(Context context) {
@@ -135,24 +138,39 @@ public class FrgCalendar extends ConstraintLayout {
         initView(context, attrs);
     }
 
+    /**
+     * set usr derived adapter in here
+     * @param ciAdapter     usr implementation adapter
+     */
     public void setCalendarItemAdapter(FrgCalendarItemAdapter ciAdapter) {
         mFDDays.setCalendarItemAdapter(ciAdapter);
     }
 
-    public void setOnSelectedListener(OnDateSelectedListener listener)   {
-        mFDDays.setDataSelectedListener(listener);
+    /**
+     * set usr date change listener in here
+     * when clicked month or day changed, use this listener tell usr
+     * @param listener      usr listener
+     */
+    public void setDateChangeListener(DateChangeListener listener)   {
+        mDLOuterListener = listener;
     }
 
-    public void setOnMonthChangeListener(OnMonthChangedListener listener)   {
-        mOLOuterMonthChange = listener;
-    }
-
+    /**
+     * set shrink mode
+     * can save space if use shrink mode
+     * but not implementation this mode now
+     * @param flag          true for 'shrink mode', false for 'full mode'
+     */
     public void setShrinkMode(boolean flag) {
         mIsShrinkMode = flag;
         initCalendarDay();
         adjustSelfLayout();
     }
 
+    /**
+     * check if in 'shrink mode'
+     * @return          true if in 'shrink mode'
+     */
     public boolean isShrinkMode()   {
         return mIsShrinkMode;
     }
@@ -251,20 +269,30 @@ public class FrgCalendar extends ConstraintLayout {
         FrgCalendarHelper.init(context);
 
         // init UI component
-        mFDDays = (FrgCalendarDays)findViewById(R.id.fd_days);
+        ConstraintLayout cl = (ConstraintLayout)findViewById(R.id.cl_holder);
+        mFDDays = (FrgCalendarDays)cl.findViewById(R.id.fd_days);
+        mLLWeekBar = (LinearLayout) findViewById(R.id.week_bar);
 
         mGDDetector = new GestureDetector(context, new FlingListener());
-        mFDDays.setMonthChangeListener(mOLMonthChange);
+        mFDDays.setDataSelectedListener(mDLSelfDateChangeListener);
 
         initFastSelected((ConstraintLayout)findViewById(R.id.cl_header));
+        initWeekBar();
         initCalendarDay();
         adjustSelfLayout();
     }
 
+    /**
+     * init calendar day part
+     */
     private void initCalendarDay()  {
         mFDDays.shrink(mIsShrinkMode);
     }
 
+    /**
+     * adjust self layout
+     * NOT IMPLEMENTATION NOW!
+     */
     private void adjustSelfLayout()    {
         /*
         int h = ((LayoutParams)findViewById(R.id.cl_header).getLayoutParams()).height;
@@ -276,7 +304,11 @@ public class FrgCalendar extends ConstraintLayout {
         */
     }
 
-
+    /**
+     * init fast select header
+     * in this header you can direct jump to year or month
+     * @param clHeader      layout holder for header
+     */
     private void initFastSelected(ConstraintLayout clHeader)    {
         mTVMonth = (TextView)clHeader.findViewById(R.id.tv_month);
         mTVYear = (TextView)clHeader.findViewById(R.id.tv_year);
@@ -314,6 +346,29 @@ public class FrgCalendar extends ConstraintLayout {
         mIVYearRight.setOnClickListener(listener);
         mIVMonthLeft.setOnClickListener(listener);
         mIVMonthRight.setOnClickListener(listener);
+    }
+
+    /**
+     * init week-bar
+     */
+    private void initWeekBar() {
+        int txt_black = getResources().getColor(android.R.color.black);
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+        String[] weeks = getResources().getStringArray(R.array.week);
+        for (int i = 0; i < weeks.length; i++) {
+            String week = weeks[i];
+
+            TextView textView = new TextView(this.getContext());
+            textView.setLayoutParams(lp);
+            textView.setText(week);
+            textView.setTextSize(WEEK_ITEM_TEXT_SIZE);
+            textView.setTextColor(i == weeks.length - 1 || i == weeks.length - 2
+                    ?  RED_FF725F : txt_black);
+            textView.setGravity(Gravity.CENTER);
+
+            mLLWeekBar.addView(textView);
+        }
     }
     /// PRIVATE END
 }

@@ -6,12 +6,17 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cl_header"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/calendar_week_bg_color">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/cl_fast_selected"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/week_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -78,91 +83,14 @@
 
         </android.support.constraint.ConstraintLayout>
 
-        <android.support.constraint.ConstraintLayout
+        <LinearLayout
             android:id="@+id/week_bar"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:background="@color/calendar_week_bg_color"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cl_fast_selected">
-
-            <TextView
-                android:id="@+id/tv_w1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="周一"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/tv_w2"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_w2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="周二"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/tv_w3"
-                app:layout_constraintStart_toEndOf="@id/tv_w1"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_w3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="周三"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/tv_w4"
-                app:layout_constraintStart_toEndOf="@id/tv_w2"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_w4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="周四"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/tv_w5"
-                app:layout_constraintStart_toEndOf="@id/tv_w3"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_w5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="周五"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/tv_w6"
-                app:layout_constraintStart_toEndOf="@id/tv_w4"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_w6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="周六"
-                android:textColor="#ffff725f"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/tv_w7"
-                app:layout_constraintStart_toEndOf="@id/tv_w5"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_w7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="周日"
-                android:textColor="#ffff725f"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tv_w6"
-                app:layout_constraintTop_toTopOf="parent" />
-        </android.support.constraint.ConstraintLayout>
+            android:gravity="center"
+            android:orientation="horizontal" />
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
