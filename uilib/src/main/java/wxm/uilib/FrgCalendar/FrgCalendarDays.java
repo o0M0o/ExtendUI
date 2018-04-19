@@ -54,6 +54,11 @@ public class FrgCalendarDays extends ConstraintLayout {
         initSelf(context, attrs);
     }
 
+    public FrgCalendarDays(Context ct, FrgCalendarItemAdapter adapter)    {
+        super(ct);
+        copySelf(ct, adapter);
+    }
+
     /**
      * set date change listener
      * @param listener      listener
@@ -112,8 +117,7 @@ public class FrgCalendarDays extends ConstraintLayout {
     public void changeMonth(int offset, final String date, final FrgCalendar.CalendarStatus status) {
         offset = offset > 0 ? 1 : -1;
 
-        FrgCalendarDays oldCalendarView = new FrgCalendarDays(getContext());
-        oldCalendarView.setCalendarItemAdapter(mIAItemAdapter);
+        FrgCalendarDays oldCalendarView = new FrgCalendarDays(getContext(), mIAItemAdapter);
         ConstraintLayout cl = (ConstraintLayout)getParent();
         cl.addView(oldCalendarView);
         oldCalendarView.setTranslationY(getTranslationY());
@@ -156,6 +160,16 @@ public class FrgCalendarDays extends ConstraintLayout {
         if(isInEditMode())  {
             setCalendarItemAdapter(new FrgCalendarItemAdapter(context));
         }
+    }
+
+    private void copySelf(Context ct, FrgCalendarItemAdapter adapter) {
+        View.inflate(ct, R.layout.frg_calendar_days, this);
+
+        mGVCalendar = (GridView)findViewById(R.id.gridview);
+        mVWFloatingSelected = findViewById(R.id.selected_view);
+
+        mVWFloatingSelected.setVisibility(View.GONE);
+        setCalendarItemAdapter(adapter);
     }
 
     /**
