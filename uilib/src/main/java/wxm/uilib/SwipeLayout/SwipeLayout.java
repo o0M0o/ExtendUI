@@ -168,8 +168,7 @@ public class SwipeLayout extends LinearLayout {
                             newScrollX = Math.min(mHolderWidth, Math.max(0, newScrollX));
                             break;
 
-                        // swipe range is [0,
-                        // 2 * mHolderWidth]
+                        // swipe range is [0, 2 * mHolderWidth]
                         case SWIPE_BOTH:
                             newScrollX = Math.min(2 * mHolderWidth, Math.max(0, newScrollX));
                             break;

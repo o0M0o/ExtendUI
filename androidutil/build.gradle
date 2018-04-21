@@ -30,20 +30,20 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support:appcompat-v7:26.1.0'
     testImplementation 'junit:junit:4.12'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+
     implementation files('libs/ormlite/ormlite-core-5.0.jar')
     implementation files('libs/ormlite/ormlite-jdbc-5.0.jar')
     implementation files('libs/ormlite/ormlite-android-5.0.jar')
 
+    implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.jakewharton:butterknife:8.5.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
-
-    implementation 'io.reactivex:rxandroid:1.1.0'
     implementation 'com.trello:rxlifecycle:0.5.0'
-    // If you want pre-written Activities and Fragments you can subclass as providers
     implementation 'com.trello:rxlifecycle-components:0.5.0'
 
     implementation 'org.apache.httpcomponents:httpcore:4.4.4'
     implementation 'org.greenrobot:eventbus:3.0.0'
+
+    implementation 'io.reactivex:rxandroid:1.1.0'
 }
