@@ -1,6 +1,7 @@
 package wxm.androidutil.Dialog;
 
 import android.os.Build;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
@@ -46,8 +47,8 @@ public class DlgDatePicker extends DlgOKOrNOBase {
 
 
     @Override
-    protected View InitDlgView() {
-        InitDlgTitle("选择日期与时间", "接受", "放弃");
+    final protected View createDlgView(Bundle bundle) {
+        initDlgTitle("选择日期与时间", "接受", "放弃");
 
         if(UtilFun.StringIsNullOrEmpty(mInitDate))
             return null;

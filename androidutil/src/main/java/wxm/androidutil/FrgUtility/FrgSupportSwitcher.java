@@ -3,6 +3,7 @@ package wxm.androidutil.FrgUtility;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 
@@ -125,7 +126,7 @@ public abstract class FrgSupportSwitcher<T>
      * @param savedInstanceState    If non-null, this fragment is being re-constructed
      *                              from a previous saved state as given here.
      */
-    protected abstract void setupFragment(Bundle savedInstanceState);
+    protected abstract void setupFragment(@Nullable Bundle savedInstanceState);
 
     //// PRIVATE START
     /**

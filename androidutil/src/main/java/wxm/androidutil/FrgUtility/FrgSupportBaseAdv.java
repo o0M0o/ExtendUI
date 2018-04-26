@@ -3,6 +3,8 @@ package wxm.androidutil.FrgUtility;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,11 +88,11 @@ public abstract class FrgSupportBaseAdv extends Fragment {
 
     /**
      * derive it do ui load work
-     * suggest invoke it in initUI
+     * suggest invoke it in initDlgView
      * @param savedInstanceState        If non-null, this fragment is being re-constructed
      *                                  from a previous saved state as given here.
      */
-    protected void loadUI(Bundle savedInstanceState)    {
+    protected void loadUI(@Nullable Bundle savedInstanceState)    {
     }
 
     /**
@@ -98,6 +100,6 @@ public abstract class FrgSupportBaseAdv extends Fragment {
      * @param savedInstanceState        If non-null, this fragment is being re-constructed
      *                                  from a previous saved state as given here.
      */
-    protected void initUI(Bundle savedInstanceState)    {
+    protected void initUI(@Nullable Bundle savedInstanceState)    {
     }
 }

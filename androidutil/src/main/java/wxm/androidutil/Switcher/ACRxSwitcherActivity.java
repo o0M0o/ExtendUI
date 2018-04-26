@@ -3,6 +3,7 @@ package wxm.androidutil.Switcher;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
@@ -169,7 +170,7 @@ public abstract class ACRxSwitcherActivity<T>
      * @param savedInstanceState    If non-null, this fragment is being re-constructed
      *                              from a previous saved state as given here.
      */
-    protected abstract void setupFragment(Bundle savedInstanceState);
+    protected abstract void setupFragment(@Nullable Bundle savedInstanceState);
 
     /// PRIVATE START
     /**
