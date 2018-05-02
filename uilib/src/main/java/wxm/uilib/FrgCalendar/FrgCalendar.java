@@ -17,7 +17,8 @@ import java.util.Calendar;
 
 import wxm.uilib.FrgCalendar.Base.CalendarStatus;
 import wxm.uilib.FrgCalendar.Base.CalendarUtility;
-import wxm.uilib.FrgCalendar.Month.MothAdapter;
+import wxm.uilib.FrgCalendar.Base.ICalendarListener;
+import wxm.uilib.FrgCalendar.CalendarItem.BaseItemAdapter;
 import wxm.uilib.FrgCalendar.Month.FrgMonth;
 import wxm.uilib.R;
 
@@ -30,32 +31,10 @@ public class FrgCalendar extends ConstraintLayout {
     private static final int WEEK_ITEM_TEXT_SIZE = 12;
     private static final int RED_FF725F = 0xffff725f;
 
-
-
-
-    public interface DateChangeListener {
-        /**
-         * @param view          clicked the view(Calendar View Item)
-         * @param time          the date has been selected with "yyyy-MM-dd" format
-         * @param pos           position in GridView
-         */
-        void onDayChanged(View view, String time, int pos);
-
-        /**
-         * when month of calendar view has changed. it include user manually fling CalendarView to change
-         * month,also include when user scroll ListView then beyond the current month.it will change month
-         * of CalendarView automatically.
-         *
-         * @param yearMonth the date has been selected is "yyyy-MM-dd" type
-         */
-        void onMonthChanged(String yearMonth);
-    }
-
-
     private class FlingListener extends GestureDetector.SimpleOnGestureListener {
         @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                               float velocityY) {
+        public boolean onFling(MotionEvent e1, MotionEvent e2,
+                               float velocityX, float velocityY) {
             if (!mIsMonthChanging) {
                 if (Math.abs(velocityY) > Math.abs(velocityX)) {
                     Calendar calendar = CalendarUtility.getCalendarByYearMonthDay(mFDDays.getCurrentDay());
@@ -95,11 +74,11 @@ public class FrgCalendar extends ConstraintLayout {
     private boolean     mIsMonthChanging = false;
     private boolean     mIsShrinkMode = false;
 
-    private DateChangeListener mDLSelfDateChangeListener = new DateChangeListener() {
+    private ICalendarListener mDLSelfDateChangeListener = new ICalendarListener() {
         @Override
-        public void onDayChanged(View view, String time, int pos) {
+        public void onDayChanged(View view, String day) {
             if(null != mDLOuterListener) {
-                mDLOuterListener.onDayChanged(view, time, pos);
+                mDLOuterListener.onDayChanged(view, day);
             }
         }
 
@@ -120,7 +99,7 @@ public class FrgCalendar extends ConstraintLayout {
             }
         }
     };
-    private DateChangeListener  mDLOuterListener = null;
+    private ICalendarListener  mDLOuterListener = null;
 
 
     public FrgCalendar(Context context) {
@@ -161,7 +140,7 @@ public class FrgCalendar extends ConstraintLayout {
      * set usr derived adapter in here
      * @param ciAdapter     usr implementation adapter
      */
-    public void setCalendarItemAdapter(MothAdapter ciAdapter) {
+    public void setCalendarItemAdapter(BaseItemAdapter ciAdapter) {
         mFDDays.setCalendarItemAdapter(ciAdapter);
     }
 
@@ -170,7 +149,7 @@ public class FrgCalendar extends ConstraintLayout {
      * when clicked month or day changed, use this listener tell usr
      * @param listener      usr listener
      */
-    public void setDateChangeListener(DateChangeListener listener)   {
+    public void setDateChangeListener(ICalendarListener listener)   {
         mDLOuterListener = listener;
     }
 
@@ -301,7 +280,7 @@ public class FrgCalendar extends ConstraintLayout {
         adjustSelfLayout();
 
         if(isInEditMode())  {
-            setCalendarItemAdapter(new MothAdapter(context));
+            setCalendarItemAdapter(new BaseItemAdapter(context));
 
             Calendar cDay = Calendar.getInstance();
             setCalendarSelectedDay(cDay.get(Calendar.YEAR), cDay.get(Calendar.MONTH),

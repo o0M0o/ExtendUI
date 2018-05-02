@@ -6,9 +6,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.Calendar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import wxm.extendui.R;
+import wxm.uilib.FrgCalendar.Base.ICalendarListener;
 import wxm.uilib.FrgCalendar.FrgCalendar;
 
 /**
@@ -36,14 +39,17 @@ public class ACCalendar extends AppCompatActivity {
      * 初始化UI控件
      */
     private void initUI()   {
-        CalendarShowItemAdapter mCSIAdapter = new CalendarShowItemAdapter(this);
+        CalendarItemAdapter mCSIAdapter = new CalendarItemAdapter(this);
         mHGVDays.setCalendarItemAdapter(mCSIAdapter);
+        Calendar cDay = Calendar.getInstance();
+        mHGVDays.setCalendarSelectedDay(cDay.get(Calendar.YEAR), cDay.get(Calendar.MONTH),
+                cDay.get(Calendar.DAY_OF_MONTH));
 
         Toast tt = Toast.makeText(getApplicationContext(), "selected : ", Toast.LENGTH_SHORT);
-        mHGVDays.setDateChangeListener(new FrgCalendar.DateChangeListener() {
+        mHGVDays.setDateChangeListener(new ICalendarListener() {
             @Override
-            public void onDayChanged(View view, String time, int pos) {
-                tt.setText("selected : " + time);
+            public void onDayChanged(View view, String day) {
+                tt.setText("selected : " + day);
                 tt.setDuration(Toast.LENGTH_SHORT);
                 tt.show();
             }
@@ -56,11 +62,6 @@ public class ACCalendar extends AppCompatActivity {
             }
         });
 
-        mBTShrink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mHGVDays.setShrinkMode(!mHGVDays.isShrinkMode());
-            }
-        });
+        mBTShrink.setOnClickListener(v -> mHGVDays.setShrinkMode(!mHGVDays.isShrinkMode()));
     }
 }

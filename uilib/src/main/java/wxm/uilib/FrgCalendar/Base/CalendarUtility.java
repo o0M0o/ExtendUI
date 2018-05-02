@@ -16,6 +16,7 @@ public final class CalendarUtility {
     // calendar is 7 column * 6 row
     public static final int ROW_COUNT     = 6;
     public static final int COLUMN_COUNT  = 7;
+    public static final int ITEM_COUNT  = COLUMN_COUNT * ROW_COUNT;
 
     // pixel size for frg
     public static int width;

@@ -1,31 +1,26 @@
-package wxm.uilib.FrgCalendar.Month;
+package wxm.uilib.FrgCalendar.CalendarItem;
 
 /**
  * class for Calendar Item
- * Created by ookoo on 2017/07/07
+ * Created by WangXM on 2017/05/02.
  */
-public class MonthModel {
-    /**
-     * if is not the current month
-     * this item's background should be gloomy，because it is not belong to active month.
-     */
-    private boolean isCurrentMonth;
+@SuppressWarnings("WeakerAccess")
+public class BaseItemModel {
+    protected long timeMill;
 
-    // calendar item would show this number to show what date it is.
-    private String dayNumber;
-    private long timeMill;
-    private boolean isToday;
-    private boolean isHoliday;
-    private Status status;
+    protected boolean isCurrentMonth;
+    protected boolean isToday;
+    protected boolean isHoliday;
 
-    public enum Status {
-        NONE,
-        DISABLE,
-        SELECTED,
-    }
+    protected String dayNumber;
+    protected EItemStatus status;
 
     public boolean isNotCurrentMonth() {
         return !isCurrentMonth;
+    }
+
+    public boolean isCurrentMonth() {
+        return isCurrentMonth;
     }
 
     public void setCurrentMonth(boolean currentMonth) {
@@ -64,11 +59,11 @@ public class MonthModel {
         isHoliday = holiday;
     }
 
-    public Status getStatus() {
+    public EItemStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(EItemStatus status) {
         this.status = status;
     }
 }

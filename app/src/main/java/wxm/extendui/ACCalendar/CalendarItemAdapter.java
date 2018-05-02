@@ -8,20 +8,20 @@ import android.widget.TextView;
 
 import wxm.androidutil.util.UiUtil;
 import wxm.extendui.R;
-import wxm.uilib.FrgCalendar.Month.MothAdapter;
-import wxm.uilib.FrgCalendar.Month.MonthModel;
+import wxm.uilib.FrgCalendar.CalendarItem.EItemStatus;
+import wxm.uilib.FrgCalendar.CalendarItem.BaseItemAdapter;
 
 /**
  * 日历节点
  * Created by xiaoming wang on 2017/07/03.
  */
-public class CalendarShowItemAdapter extends MothAdapter<CalendarShowItemModel> {
+public class CalendarItemAdapter extends BaseItemAdapter<CalendarItemModel> {
     private final int mCLToday;
     private final int mCLHoliday;
     private final int mCLDisable;
 
 
-    public CalendarShowItemAdapter(Context context) {
+    public CalendarItemAdapter(Context context) {
         super(context);
 
         mCLToday = UiUtil.getColor(context, R.color.red_ff725f);
@@ -30,7 +30,7 @@ public class CalendarShowItemAdapter extends MothAdapter<CalendarShowItemModel> 
     }
 
     @Override
-    public View getView(String date, CalendarShowItemModel model, View convertView, ViewGroup parent) {
+    public View getView(String date, CalendarItemModel model, View convertView, ViewGroup parent) {
         ViewGroup view = (ViewGroup) LayoutInflater.from(mContext)
                             .inflate(R.layout.gi_calendar_item, null);
 
@@ -49,7 +49,7 @@ public class CalendarShowItemAdapter extends MothAdapter<CalendarShowItemModel> 
             dayNum.setTextColor(mCLHoliday);
         }
 
-        if (model.getStatus() == MonthModel.Status.DISABLE) {
+        if (model.getStatus() == EItemStatus.DISABLE) {
             dayNum.setTextColor(mCLDisable);
         }
 
