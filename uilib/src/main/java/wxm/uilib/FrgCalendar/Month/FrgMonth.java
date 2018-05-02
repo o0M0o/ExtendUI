@@ -7,9 +7,11 @@ import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Calendar;
@@ -58,11 +60,6 @@ public class FrgMonth extends ConstraintLayout {
     public FrgMonth(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initSelf(context, attrs);
-    }
-
-    public FrgMonth(Context ct, AttributeSet attrs, BaseItemAdapter adapter)    {
-        super(ct);
-        copySelf(ct, attrs, adapter);
     }
 
     /**
@@ -119,8 +116,7 @@ public class FrgMonth extends ConstraintLayout {
      */
     public void setSelectedDay(final String date)   {
         // set month view
-        Calendar calendar = CalendarUtility.getCalendarByYearMonthDay(date);
-        mSZCurrentMonth = CalendarUtility.getYearMonthStr(calendar);
+        mSZCurrentMonth = date.substring(0, 7);
         setDayModel(getCalendarDataList(mSZCurrentMonth));
 
         // set selected daya
@@ -137,16 +133,14 @@ public class FrgMonth extends ConstraintLayout {
         offset = offset > 0 ? 1 : -1;
 
         // for old view
-        FrgMonth oldCalendarView = new FrgMonth(getContext(), mASSet, mIAItemAdapter);
-        //oldCalendarView.setDayModel(getCalendarDataList(mSZCurrentMonth));
+        FrgMonth oldCalendarView = copySelf();
         ConstraintLayout cl = (ConstraintLayout)getParent();
         cl.addView(oldCalendarView);
         oldCalendarView.setTranslationY(getTranslationY());
 
         // for new view
-        mSZCurrentMonth = date.substring(0, 7);
-        setDayModel(getCalendarDataList(mSZCurrentMonth));
-        setTranslationY(getTranslationY() + offset * this.getHeight());
+        setSelectedDay(date);
+        setTranslationY(getTranslationY() + offset * this.getHeight() / 2);
 
         // for animate
         animateCalendarToNewMonth(oldCalendarView, date, offset, oldCalendarView.getTranslationY());
@@ -180,9 +174,19 @@ public class FrgMonth extends ConstraintLayout {
         mVWFloatingSelected.setVisibility(View.GONE);
     }
 
-    private void copySelf(Context ct, AttributeSet attrs, BaseItemAdapter adapter) {
-        initSelf(ct, attrs);
-        setCalendarItemAdapter(adapter);
+    private FrgMonth copySelf() {
+        FrgMonth fm = new FrgMonth(getContext(), mASSet);
+        try {
+            fm.setCalendarItemAdapter(mIAItemAdapter.getClass()
+                    .getConstructor(Context.class).newInstance(getContext()));
+        } catch (InstantiationException | IllegalAccessException
+                | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        LayoutParams lp = (LayoutParams) getLayoutParams();
+        fm.setLayoutParams(new ViewGroup.LayoutParams(lp.width, lp.height));
+        fm.setSelectedDay(mSZSelectedDate);
+        return fm;
     }
 
     /**
@@ -232,8 +236,7 @@ public class FrgMonth extends ConstraintLayout {
         TreeMap<String, BaseItemModel> dayModelList = new TreeMap<>();
         for (int i = 0; i < totalDays; i++) {
             try {
-                BaseItemModel dayItem = null == mECItemModel ?
-                        new BaseItemModel() : (BaseItemModel) mECItemModel.newInstance();
+                BaseItemModel dayItem = (BaseItemModel) mECItemModel.newInstance();
 
                 dayItem.setCurrentMonth(curMonth == calItem.get(Calendar.MONTH));
                 dayItem.setToday(CalendarUtility.areEqualDays(calItem, calToday));
@@ -294,22 +297,22 @@ public class FrgMonth extends ConstraintLayout {
 
     /**
      * animate for change calendar month
-     * @param oldCalendarView           view for old view
+     * @param oldMonthView           view for old view
      * @param date                      new date for selected
      * @param offset                    offset between new-month to old-month
      * @param translationY              Y position
      */
-    private void animateCalendarToNewMonth(final FrgMonth oldCalendarView, final String date,
+    private void animateCalendarToNewMonth(final FrgMonth oldMonthView, final String date,
                                            int offset, float translationY) {
-        ObjectAnimator objectAnimator1 = ObjectAnimator
+        ObjectAnimator animator1 = ObjectAnimator
                 .ofFloat(this, "translationY", translationY);
-        objectAnimator1.setTarget(this);
-        objectAnimator1.setDuration(800).start();
+        animator1.setTarget(this);
+        animator1.setDuration(600);
 
-        ObjectAnimator objectAnimator2 = ObjectAnimator
+        final ObjectAnimator animator2 = ObjectAnimator
                 .ofFloat(this, "translationY", translationY - offset * this.getHeight());
-        objectAnimator2.setTarget(oldCalendarView);
-        objectAnimator2.addListener(new Animator.AnimatorListener() {
+        animator2.setTarget(oldMonthView);
+        animator2.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
             }
@@ -317,7 +320,7 @@ public class FrgMonth extends ConstraintLayout {
             @Override
             public void onAnimationEnd(Animator animation) {
                 ConstraintLayout cl = (ConstraintLayout)getParent();
-                cl.removeView(oldCalendarView);
+                cl.removeView(oldMonthView);
 
                 animateSelectedViewToDate(date, true);
             }
@@ -330,7 +333,27 @@ public class FrgMonth extends ConstraintLayout {
             public void onAnimationRepeat(Animator animation) {
             }
         });
-        objectAnimator2.setDuration(800).start();
+        animator2.setDuration(600);
+
+        animator1.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                animator2.start();
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        animator1.start();
     }
     /// PRIVATE END
 }
