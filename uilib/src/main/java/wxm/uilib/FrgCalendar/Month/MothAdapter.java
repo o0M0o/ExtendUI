@@ -1,4 +1,4 @@
-package wxm.uilib.FrgCalendar;
+package wxm.uilib.FrgCalendar.Month;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,9 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import wxm.uilib.FrgCalendar.Base.CalendarUtility;
 import wxm.uilib.R;
-import wxm.uilib.SimpleCalendar.BaseCalendarItemModel;
-import wxm.uilib.SimpleCalendar.CalendarView;
 
 
 /**
@@ -22,7 +21,7 @@ import wxm.uilib.SimpleCalendar.CalendarView;
  *
  * @param <T> 日历节点数据
  */
-public class FrgCalendarItemAdapter<T extends FrgCalendarItemModel> extends BaseAdapter {
+public class MothAdapter<T extends MonthModel> extends BaseAdapter {
     private static final int RED_FF725F = 0xffff725f;
 
     protected Context mContext;
@@ -31,7 +30,7 @@ public class FrgCalendarItemAdapter<T extends FrgCalendarItemModel> extends Base
     //list to keep dayModelList's key that convenient for get key by index.
     private List<String> indexToTimeMap = new ArrayList<>();
 
-    public FrgCalendarItemAdapter(Context context) {
+    public MothAdapter(Context context) {
         this.mContext = context;
     }
 
@@ -93,7 +92,7 @@ public class FrgCalendarItemAdapter<T extends FrgCalendarItemModel> extends Base
             dayNum.setTextColor(RED_FF725F);
         }
 
-        if (model.getStatus() == FrgCalendarItemModel.Status.DISABLE) {
+        if (model.getStatus() == MonthModel.Status.DISABLE) {
             dayNum.setTextColor(mContext.getResources().getColor(android.R.color.darker_gray));
         }
 
@@ -109,7 +108,7 @@ public class FrgCalendarItemAdapter<T extends FrgCalendarItemModel> extends Base
     public View getView(int position, View convertView, ViewGroup parent) {
         String date = indexToTimeMap.get(position);
         View view = getView(date, dayModelList.get(date), convertView, parent);
-        GridView.LayoutParams layoutParams = new GridView.LayoutParams(FrgCalendarHelper.mItemWidth, FrgCalendarHelper.mItemHeight);
+        GridView.LayoutParams layoutParams = new GridView.LayoutParams(CalendarUtility.mItemWidth, CalendarUtility.mItemHeight);
         view.setLayoutParams(layoutParams);
         return view;
     }

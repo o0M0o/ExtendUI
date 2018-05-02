@@ -1,13 +1,13 @@
 package wxm.extendui.ACCalendar;
 
 
-import wxm.uilib.FrgCalendar.FrgCalendarItemModel;
+import wxm.uilib.FrgCalendar.Month.MonthModel;
 
 /**
  * for extended
  * Created by kelin on 16-7-20.
  */
-public class CalendarShowItemModel extends FrgCalendarItemModel {
+public class CalendarShowItemModel extends MonthModel {
     private int mRecordCount;
 
     public int getRecordCount() {

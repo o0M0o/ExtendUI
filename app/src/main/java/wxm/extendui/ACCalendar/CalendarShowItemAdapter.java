@@ -8,14 +8,14 @@ import android.widget.TextView;
 
 import wxm.androidutil.util.UiUtil;
 import wxm.extendui.R;
-import wxm.uilib.FrgCalendar.FrgCalendarItemAdapter;
-import wxm.uilib.FrgCalendar.FrgCalendarItemModel;
+import wxm.uilib.FrgCalendar.Month.MothAdapter;
+import wxm.uilib.FrgCalendar.Month.MonthModel;
 
 /**
  * 日历节点
  * Created by xiaoming wang on 2017/07/03.
  */
-public class CalendarShowItemAdapter extends FrgCalendarItemAdapter<CalendarShowItemModel> {
+public class CalendarShowItemAdapter extends MothAdapter<CalendarShowItemModel> {
     private final int mCLToday;
     private final int mCLHoliday;
     private final int mCLDisable;
@@ -49,7 +49,7 @@ public class CalendarShowItemAdapter extends FrgCalendarItemAdapter<CalendarShow
             dayNum.setTextColor(mCLHoliday);
         }
 
-        if (model.getStatus() == FrgCalendarItemModel.Status.DISABLE) {
+        if (model.getStatus() == MonthModel.Status.DISABLE) {
             dayNum.setTextColor(mCLDisable);
         }
 

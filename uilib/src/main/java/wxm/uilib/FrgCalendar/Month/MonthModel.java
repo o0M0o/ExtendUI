@@ -1,10 +1,10 @@
-package wxm.uilib.FrgCalendar;
+package wxm.uilib.FrgCalendar.Month;
 
 /**
  * class for Calendar Item
  * Created by ookoo on 2017/07/07
  */
-public class FrgCalendarItemModel {
+public class MonthModel {
     /**
      * if is not the current month
      * this item's background should be gloomy，because it is not belong to active month.
