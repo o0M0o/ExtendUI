@@ -16,7 +16,7 @@ import wxm.uilib.FrgCalendar.Month.MothItemAdapter;
  * 日历节点
  * Created by xiaoming wang on 2017/07/03.
  */
-public class CalendarItemAdapter extends MothItemAdapter<CalendarItemModel> {
+public class CalendarItemAdapter extends BaseItemAdapter<CalendarItemModel> {
     private final int mCLToday;
     private final int mCLHoliday;
     private final int mCLDisable;

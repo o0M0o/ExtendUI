@@ -20,6 +20,7 @@ import java.util.TreeMap;
 import wxm.uilib.FrgCalendar.Base.CalendarUtility;
 import wxm.uilib.FrgCalendar.Base.FrgBaseCalendar;
 import wxm.uilib.FrgCalendar.CalendarItem.BaseItemAdapter;
+import wxm.uilib.FrgCalendar.CalendarItem.BaseItemModel;
 import wxm.uilib.R;
 
 /**
@@ -37,8 +38,7 @@ public class FrgWeek extends FrgBaseCalendar {
     // data
     private String      mSZSelectedDate;
 
-    private WeekItemAdapter         mIAItemAdapter;
-    private Class<?>                mECItemModel;
+    private WeekItemAdapter     mIAItemAdapter;
 
     public FrgWeek(Context context) {
         super(context);
@@ -58,12 +58,6 @@ public class FrgWeek extends FrgBaseCalendar {
      */
     public void setCalendarItemAdapter(BaseItemAdapter ciAdapter) {
         mIAItemAdapter = (WeekItemAdapter)ciAdapter;
-
-        Type tp = ciAdapter.getClass().getGenericSuperclass();
-        mECItemModel = tp instanceof ParameterizedType ?
-                (Class<?>) ((ParameterizedType)tp).getActualTypeArguments()[0]
-                : WeekItemModel.class;
-
         mGVCalendar.setAdapter(mIAItemAdapter);
     }
 
@@ -148,7 +142,7 @@ public class FrgWeek extends FrgBaseCalendar {
      * @param dayModelTreeMap       day-data for calendar day part
      */
     @SuppressWarnings("unchecked")
-    private <T extends WeekItemModel> void setDayModel(TreeMap<String, T> dayModelTreeMap) {
+    private void setDayModel(TreeMap<String, BaseItemModel> dayModelTreeMap) {
         mIAItemAdapter.setDayModel(dayModelTreeMap);
         mIAItemAdapter.notifyDataSetChanged();
 
@@ -173,7 +167,7 @@ public class FrgWeek extends FrgBaseCalendar {
      * @param szDay         "yyyy-MM-dd" for day
      * @return              day-models
      */
-    private TreeMap<String, WeekItemModel> getCalendarDataList(String szDay) {
+    private TreeMap<String, BaseItemModel> getCalendarDataList(String szDay) {
         Calendar calStartDate = CalendarUtility.getCalendarByYearMonthDay(szDay);
         calStartDate.set(Calendar.HOUR_OF_DAY, 0);
         calStartDate.set(Calendar.MINUTE, 0);
@@ -185,17 +179,13 @@ public class FrgWeek extends FrgBaseCalendar {
                 -(dayOfWeek == Calendar.SUNDAY ? 6 : dayOfWeek - Calendar.SUNDAY - 1));
 
         Calendar calToday = Calendar.getInstance();
-        TreeMap<String, WeekItemModel> dayModelList = new TreeMap<>();
+        TreeMap<String, BaseItemModel> dayModelList = new TreeMap<>();
         for (int i = 0; i < CalendarUtility.COLUMN_COUNT; i++) {
-            try {
-                WeekItemModel dayItem = (WeekItemModel) mECItemModel.newInstance();
+            BaseItemModel dayItem = mIAItemAdapter.getNewItem();
                 dayItem.initModel(calItem, calToday);
 
                 dayModelList.put(dayItem.getDate(), dayItem);
                 calItem.add(Calendar.DAY_OF_MONTH, 1);
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
         }
 
         return dayModelList;

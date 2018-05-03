@@ -26,22 +26,12 @@ import wxm.uilib.R;
  * Created by WangXM on 2018/05/02.
  */
 @SuppressWarnings("WeakerAccess")
-public class MothItemAdapter<T extends MonthItemModel> extends BaseItemAdapter<T> {
+public class MothItemAdapter extends BaseItemAdapter<BaseItemModel> {
     public MothItemAdapter(Context context) {
         super(context);
     }
 
-    /**
-     * default calendar item view
-     * override this function to custom your View items.
-     *
-     * @param date        date for item
-     * @param model       data
-     * @param convertView param
-     * @param parent      param
-     * @return param for origin function
-     */
-    protected View getView(String date, T model, View convertView, ViewGroup parent) {
+    protected View getView(String date, BaseItemModel model, View convertView, ViewGroup parent) {
         ViewHolder vhParent = ViewHolder.get(mContext, convertView, R.layout.gi_calendar_item);
         View vwParent = vhParent.getConvertView();
 

@@ -13,6 +13,8 @@ import butterknife.ButterKnife;
 import wxm.extendui.R;
 import wxm.uilib.FrgCalendar.Base.ICalendarListener;
 import wxm.uilib.FrgCalendar.FrgCalendar;
+import wxm.uilib.FrgCalendar.Month.MothItemAdapter;
+import wxm.uilib.FrgCalendar.Week.WeekItemAdapter;
 
 /**
  * 展示SimpleCalendar
@@ -39,8 +41,8 @@ public class ACCalendar extends AppCompatActivity {
      * 初始化UI控件
      */
     private void initUI()   {
-        CalendarItemAdapter mCSIAdapter = new CalendarItemAdapter(this);
-        mHGVDays.setCalendarItemAdapter(mCSIAdapter);
+        mHGVDays.setCalendarItemAdapter(new MothItemAdapter(this),
+                new WeekItemAdapter(this));
         Calendar cDay = Calendar.getInstance();
         mHGVDays.setCalendarSelectedDay(cDay.get(Calendar.YEAR), cDay.get(Calendar.MONTH),
                 cDay.get(Calendar.DAY_OF_MONTH));

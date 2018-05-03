@@ -8,11 +8,12 @@ import wxm.uilib.FrgCalendar.Base.CalendarUtility;
  * Created by WangXM on 2017/05/02.
  */
 @SuppressWarnings("WeakerAccess")
-public abstract class BaseItemModel {
+public class BaseItemModel {
     protected long timeMill;
 
     protected boolean isToday;
     protected boolean isHoliday;
+    protected boolean isCurrentMonth = false;
 
     // day-in-month, range [1, 31]
     protected String szDayNumber;
@@ -20,6 +21,9 @@ public abstract class BaseItemModel {
     protected String szDate;
 
     protected EItemStatus status;
+
+    public BaseItemModel()  {
+    }
 
     /**
      * init model data
@@ -34,6 +38,16 @@ public abstract class BaseItemModel {
 
         isToday = CalendarUtility.areEqualDays(self, today);
         isHoliday = CalendarUtility.isHoliday(self);
+    }
+
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean isCurrentMonth() {
+        return isCurrentMonth;
+    }
+
+    public void setCurrentMonth(boolean isCurrentMonth) {
+        this.isCurrentMonth = isCurrentMonth;
     }
 
     public String getDayNumber() {

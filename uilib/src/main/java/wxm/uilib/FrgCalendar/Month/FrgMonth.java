@@ -12,8 +12,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Calendar;
 import java.util.TreeMap;
 
@@ -21,6 +19,7 @@ import wxm.uilib.FrgCalendar.Base.CalendarStatus;
 import wxm.uilib.FrgCalendar.Base.CalendarUtility;
 import wxm.uilib.FrgCalendar.Base.FrgBaseCalendar;
 import wxm.uilib.FrgCalendar.CalendarItem.BaseItemAdapter;
+import wxm.uilib.FrgCalendar.CalendarItem.BaseItemModel;
 import wxm.uilib.R;
 
 /**
@@ -39,7 +38,6 @@ public class FrgMonth extends FrgBaseCalendar {
     private String mSZSelectedDate;
 
     private MothItemAdapter mIAItemAdapter;
-    private Class<?> mECItemModel;
 
     public FrgMonth(Context context) {
         super(context);
@@ -56,13 +54,7 @@ public class FrgMonth extends FrgBaseCalendar {
 
     @Override
     public void setCalendarItemAdapter(BaseItemAdapter ciAdapter) {
-        mIAItemAdapter = (MothItemAdapter)ciAdapter;
-
-        Type tp = ciAdapter.getClass().getGenericSuperclass();
-        mECItemModel = tp instanceof ParameterizedType ?
-                (Class<?>) ((ParameterizedType) tp).getActualTypeArguments()[0]
-                : MonthItemModel.class;
-
+        mIAItemAdapter = (MothItemAdapter) ciAdapter;
         mGVCalendar.setAdapter(mIAItemAdapter);
     }
 
@@ -77,7 +69,6 @@ public class FrgMonth extends FrgBaseCalendar {
         mSZCurrentMonth = date.substring(0, 7);
         setDayModel(getCalendarDataList(mSZCurrentMonth));
 
-        // set selected daya
         animateSelectedViewToDate(date, false);
     }
 
@@ -150,7 +141,7 @@ public class FrgMonth extends FrgBaseCalendar {
      * @param dayModelTreeMap day-data for calendar day part
      */
     @SuppressWarnings("unchecked")
-    private <T extends MonthItemModel> void setDayModel(TreeMap<String, T> dayModelTreeMap) {
+    private void setDayModel(TreeMap<String, BaseItemModel> dayModelTreeMap) {
         mIAItemAdapter.setDayModel(dayModelTreeMap);
         mIAItemAdapter.notifyDataSetChanged();
 
@@ -175,7 +166,7 @@ public class FrgMonth extends FrgBaseCalendar {
      * @param yearMonth year and month for days
      * @return item-models
      */
-    private TreeMap<String, MonthItemModel> getCalendarDataList(String yearMonth) {
+    private TreeMap<String, BaseItemModel> getCalendarDataList(String yearMonth) {
         Calendar calStartDate = CalendarUtility.getCalendarByYearMonth(yearMonth);
         calStartDate.set(Calendar.DAY_OF_MONTH, 1);
         calStartDate.set(Calendar.HOUR_OF_DAY, 0);
@@ -189,18 +180,14 @@ public class FrgMonth extends FrgBaseCalendar {
 
         int curMonth = calStartDate.get(Calendar.MONTH);
         Calendar calToday = Calendar.getInstance();
-        TreeMap<String, MonthItemModel> dayModelList = new TreeMap<>();
+        TreeMap<String, BaseItemModel> dayModelList = new TreeMap<>();
         for (int i = 0; i < CalendarUtility.ROW_COUNT * CalendarUtility.COLUMN_COUNT; i++) {
-            try {
-                MonthItemModel dayItem = (MonthItemModel) mECItemModel.newInstance();
-                dayItem.initModel(calItem, calToday);
-                dayItem.setCurrentMonth(curMonth == calItem.get(Calendar.MONTH));
+            BaseItemModel dayItem = mIAItemAdapter.getNewItem();
+            dayItem.initModel(calItem, calToday);
+            dayItem.setCurrentMonth(curMonth == calItem.get(Calendar.MONTH));
 
-                dayModelList.put(dayItem.getDate(), dayItem);
-                calItem.add(Calendar.DAY_OF_MONTH, 1);
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            dayModelList.put(dayItem.getDate(), dayItem);
+            calItem.add(Calendar.DAY_OF_MONTH, 1);
         }
 
         return dayModelList;
@@ -212,7 +199,6 @@ public class FrgMonth extends FrgBaseCalendar {
      * @param position position in calendar
      */
     private void animateSelectedToPos(final int position, boolean animate) {
-        mSZSelectedDate = mIAItemAdapter.getDayInPosition(position);
         final String szDay = mIAItemAdapter.getDayInPosition(position);
 
         mVWFloatingSelected.setVisibility(View.VISIBLE);
@@ -231,6 +217,7 @@ public class FrgMonth extends FrgBaseCalendar {
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                mSZSelectedDate = szDay;
                 if (mDayChangeListener != null) {
                     mDayChangeListener.onDayChanged(szDay);
                 }

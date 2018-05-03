@@ -15,12 +15,14 @@ import android.widget.TextView;
 
 import java.util.Calendar;
 
+import wxm.androidutil.util.UtilFun;
 import wxm.uilib.FrgCalendar.Base.CalendarStatus;
 import wxm.uilib.FrgCalendar.Base.CalendarUtility;
 import wxm.uilib.FrgCalendar.Base.ICalendarListener;
-import wxm.uilib.FrgCalendar.CalendarItem.BaseItemAdapter;
 import wxm.uilib.FrgCalendar.Month.FrgMonth;
 import wxm.uilib.FrgCalendar.Month.MothItemAdapter;
+import wxm.uilib.FrgCalendar.Week.FrgWeek;
+import wxm.uilib.FrgCalendar.Week.WeekItemAdapter;
 import wxm.uilib.R;
 
 /**
@@ -38,11 +40,11 @@ public class FrgCalendar extends ConstraintLayout {
                                float velocityX, float velocityY) {
             if (!mIsMonthChanging) {
                 if (Math.abs(velocityY) > Math.abs(velocityX)) {
-                    Calendar calendar = CalendarUtility.getCalendarByYearMonthDay(mFDDays.getCurrentDay());
+                    Calendar calendar = CalendarUtility.getCalendarByYearMonthDay(mFGMonth.getCurrentDay());
                     calendar.add(Calendar.MONTH, velocityY < 0 ? 1 : -1);
 
                     mIsMonthChanging = true;
-                    mFDDays.changeMonth(velocityY < 0 ? 1 : -1,
+                    mFGMonth.changeMonth(velocityY < 0 ? 1 : -1,
                             CalendarUtility.getYearMonthDayStr(calendar),
                             CalendarStatus.LIST_CLOSE);
                 }
@@ -59,7 +61,8 @@ public class FrgCalendar extends ConstraintLayout {
 
     // UI component
     private GestureDetector     mGDDetector;
-    private FrgMonth mFDDays;
+    private FrgMonth            mFGMonth;
+    private FrgWeek             mFGWeek;
     private LinearLayout        mLLWeekBar;
 
     private TextView            mTVYear;
@@ -131,15 +134,22 @@ public class FrgCalendar extends ConstraintLayout {
 
         Calendar cDay = Calendar.getInstance();
         cDay.set(year, month, day);
-        mFDDays.setSelectedDay(CalendarUtility.getYearMonthDayStr(cDay));
+
+        String szDay = CalendarUtility.getYearMonthDayStr(cDay);
+        if(mIsShrinkMode)
+            mFGWeek.setSelectedDay(szDay);
+        else
+            mFGMonth.setSelectedDay(szDay);
     }
 
     /**
      * set usr derived adapter in here
-     * @param ciAdapter     usr implementation adapter
+     * @param ciMonth     usr implementation adapter
+     * @param ciWeek      usr implementation adapter
      */
-    public void setCalendarItemAdapter(MothItemAdapter ciAdapter) {
-        mFDDays.setCalendarItemAdapter(ciAdapter);
+    public void setCalendarItemAdapter(MothItemAdapter ciMonth, WeekItemAdapter ciWeek) {
+        mFGMonth.setCalendarItemAdapter(ciMonth);
+        mFGWeek.setCalendarItemAdapter(ciWeek);
     }
 
     /**
@@ -210,19 +220,22 @@ public class FrgCalendar extends ConstraintLayout {
 
         // init UI component
         ConstraintLayout cl = (ConstraintLayout)findViewById(R.id.cl_holder);
-        mFDDays = (FrgMonth)cl.findViewById(R.id.fd_days);
+        mFGMonth = (FrgMonth)cl.findViewById(R.id.fg_month);
+        mFGWeek = (FrgWeek) cl.findViewById(R.id.fg_week);
         mLLWeekBar = (LinearLayout) findViewById(R.id.week_bar);
 
         mGDDetector = new GestureDetector(context, new FlingListener());
-        mFDDays.setDayChangeListener(mDLSelfDateChangeListener);
+        mFGMonth.setDayChangeListener(mDLSelfDateChangeListener);
+        mFGWeek.setDayChangeListener(mDLSelfDateChangeListener);
 
         initFastSelected((ConstraintLayout)findViewById(R.id.cl_header));
         initWeekBar();
-        initCalendarDay();
+        initCalendarDay1();
         adjustSelfLayout();
 
         if(isInEditMode())  {
-            setCalendarItemAdapter(new MothItemAdapter(context));
+            setCalendarItemAdapter(new MothItemAdapter(context),
+                    new WeekItemAdapter(context));
 
             Calendar cDay = Calendar.getInstance();
             setCalendarSelectedDay(cDay.get(Calendar.YEAR), cDay.get(Calendar.MONTH),
@@ -233,7 +246,24 @@ public class FrgCalendar extends ConstraintLayout {
     /**
      * init calendar day part
      */
+    private void initCalendarDay1()  {
+    }
+
+    /**
+     * init calendar day part
+     */
     private void initCalendarDay()  {
+        String szDay = mIsShrinkMode ? mFGWeek.getCurrentDay() : mFGMonth.getCurrentDay();
+        mFGMonth.setVisibility(mIsShrinkMode ? View.GONE : View.VISIBLE);
+        mFGWeek.setVisibility(mIsShrinkMode ? View.VISIBLE : View.GONE);
+
+        if(!UtilFun.StringIsNullOrEmpty(szDay)) {
+            if (mIsShrinkMode) {
+                mFGWeek.setSelectedDay(szDay);
+            } else {
+                mFGMonth.setSelectedDay(szDay);
+            }
+        }
     }
 
     /**
@@ -241,14 +271,6 @@ public class FrgCalendar extends ConstraintLayout {
      * NOT IMPLEMENTATION NOW!
      */
     private void adjustSelfLayout()    {
-        /*
-        int h = ((LayoutParams)findViewById(R.id.cl_header).getLayoutParams()).height;
-
-        int newH = mIsShrinkMode ?
-                        h + CalendarUtility.mItemHeight
-                        : h + CalendarUtility.mItemHeight * CalendarUtility.ROW_COUNT;
-        setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, newH));
-        */
     }
 
     /**
@@ -269,7 +291,7 @@ public class FrgCalendar extends ConstraintLayout {
             public void onClick(View v) {
                 int id = v.getId();
                 int dif = 0;
-                Calendar calendar = CalendarUtility.getCalendarByYearMonthDay(mFDDays.getCurrentDay());
+                Calendar calendar = CalendarUtility.getCalendarByYearMonthDay(mFGMonth.getCurrentDay());
                 if(R.id.iv_year_left == id || R.id.iv_year_right == id) {
                     dif = R.id.iv_year_right == id ? 1 : -1;
                     calendar.add(Calendar.YEAR, dif);
@@ -282,7 +304,7 @@ public class FrgCalendar extends ConstraintLayout {
 
                 if(0 != dif) {
                     mIsMonthChanging = true;
-                    mFDDays.changeMonth(dif,
+                    mFGMonth.changeMonth(dif,
                             CalendarUtility.getYearMonthDayStr(calendar),
                             CalendarStatus.LIST_CLOSE);
                 }

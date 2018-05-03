@@ -7,9 +7,12 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.function.Supplier;
 
 import wxm.androidutil.ViewHolder.ViewHolder;
 import wxm.uilib.FrgCalendar.Base.CalendarUtility;
@@ -27,6 +30,8 @@ public abstract class BaseItemAdapter<T extends BaseItemModel> extends BaseAdapt
     protected static final int RED_FF725F = 0xffff725f;
     protected Context mContext;
 
+    protected Class<?>   mItemType;
+
     /**
      * key      : date("yyyy-MM-dd")
      * value    : you ItemModel extended from BaseItemModel
@@ -36,6 +41,11 @@ public abstract class BaseItemAdapter<T extends BaseItemModel> extends BaseAdapt
 
     public BaseItemAdapter(Context context) {
         this.mContext = context;
+
+        Type tp = getClass().getGenericSuperclass();
+        mItemType = tp instanceof ParameterizedType ?
+                (Class<?>) ((ParameterizedType) tp).getActualTypeArguments()[0]
+                : BaseItemModel.class;
     }
 
     @Override
@@ -80,6 +90,16 @@ public abstract class BaseItemAdapter<T extends BaseItemModel> extends BaseAdapt
 
     public String getDayInPosition(int pos) {
         return mSZDayArr.get(pos);
+    }
+
+    public T getNewItem()   {
+        try {
+            return (T)mItemType.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     /**
