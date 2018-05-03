@@ -1,4 +1,4 @@
-package wxm.uilib.FrgCalendar.Month;
+package wxm.uilib.FrgCalendar.Week;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -17,102 +17,101 @@ import java.lang.reflect.Type;
 import java.util.Calendar;
 import java.util.TreeMap;
 
-import wxm.uilib.FrgCalendar.Base.CalendarStatus;
 import wxm.uilib.FrgCalendar.Base.CalendarUtility;
 import wxm.uilib.FrgCalendar.Base.FrgBaseCalendar;
 import wxm.uilib.FrgCalendar.CalendarItem.BaseItemAdapter;
 import wxm.uilib.R;
 
 /**
- * monthly calendar mode
- *
+ * weekly calendar mode
  * @author WangXM
  * @version create：2018/4/18
  */
-public class FrgMonth extends FrgBaseCalendar {
+public class FrgWeek extends FrgBaseCalendar {
     // UI component
-    protected GridView mGVCalendar;
-    protected View mVWFloatingSelected;
+    protected GridView  mGVCalendar;
+    protected View      mVWFloatingSelected;
+
+    protected AttributeSet  mASSet;
 
     // data
-    private String mSZCurrentMonth;
-    private String mSZSelectedDate;
+    private String      mSZSelectedDate;
 
-    private MothItemAdapter mIAItemAdapter;
-    private Class<?> mECItemModel;
+    private WeekItemAdapter         mIAItemAdapter;
+    private Class<?>                mECItemModel;
 
-    public FrgMonth(Context context) {
+    public FrgWeek(Context context) {
         super(context);
     }
 
-    public FrgMonth(Context context, AttributeSet attrs) {
+    public FrgWeek(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public FrgMonth(Context context, AttributeSet attrs, int defStyleAttr) {
+    public FrgWeek(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-
-    @Override
+    /**
+     * set adapter for day-ui-component
+     * @param ciAdapter     adapter
+     */
     public void setCalendarItemAdapter(BaseItemAdapter ciAdapter) {
-        mIAItemAdapter = (MothItemAdapter)ciAdapter;
+        mIAItemAdapter = (WeekItemAdapter)ciAdapter;
 
         Type tp = ciAdapter.getClass().getGenericSuperclass();
         mECItemModel = tp instanceof ParameterizedType ?
-                (Class<?>) ((ParameterizedType) tp).getActualTypeArguments()[0]
-                : MonthItemModel.class;
+                (Class<?>) ((ParameterizedType)tp).getActualTypeArguments()[0]
+                : WeekItemModel.class;
 
         mGVCalendar.setAdapter(mIAItemAdapter);
     }
 
     @Override
-    public String getCurrentDay() {
+    public String getCurrentDay()   {
         return mSZSelectedDate;
     }
 
+
     @Override
-    public void setSelectedDay(final String date) {
+    public void setSelectedDay(final String date)   {
         // set month view
-        mSZCurrentMonth = date.substring(0, 7);
-        setDayModel(getCalendarDataList(mSZCurrentMonth));
+        setDayModel(getCalendarDataList(date));
 
         // set selected daya
         animateSelectedViewToDate(date, false);
     }
 
     /**
-     * invoke to change month
-     *
-     * @param offset offset for month
-     * @param date   new date, example : "2018-05-02"
-     * @param status status for view
+     * invoke to change week
+     * @param offset        offset for month
+     * @param date          new date, example : "2018-05-02"
      */
-    public void changeMonth(int offset, final String date, final CalendarStatus status) {
+    public void changeWeek(int offset, final String date) {
         offset = offset > 0 ? 1 : -1;
 
         // for old view
-        FrgMonth oldCalendarView = copySelf();
-        ConstraintLayout cl = (ConstraintLayout) getParent();
-        cl.addView(oldCalendarView);
-        oldCalendarView.setTranslationY(getTranslationY());
+        FrgWeek oldView = copySelf();
+        ConstraintLayout cl = (ConstraintLayout)getParent();
+        cl.addView(oldView);
+        oldView.setTranslationY(getTranslationY());
 
         // for new view
         setSelectedDay(date);
         setTranslationY(getTranslationY() + offset * this.getHeight() / 2);
 
         // for animate
-        animateToNewMonth(oldCalendarView, date, offset, oldCalendarView.getTranslationY());
+        animateToNewWeek(oldView, date, offset, oldView.getTranslationY());
     }
 
     /// PRIVATE START
     @Override
-    protected void initSelf(Context context) {
+    protected void initSelf(Context context)  {
         View.inflate(context, R.layout.frg_calendar_days, this);
         CalendarUtility.init(context);
 
         // init UI component
-        mGVCalendar = (GridView) findViewById(R.id.gridview);
+        mGVCalendar = (GridView)findViewById(R.id.gridview);
         mVWFloatingSelected = findViewById(R.id.selected_view);
 
         mGVCalendar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -129,8 +128,8 @@ public class FrgMonth extends FrgBaseCalendar {
     }
 
     @Override
-    protected FrgMonth copySelf() {
-        FrgMonth fm = new FrgMonth(getContext(), mASSet);
+    protected FrgWeek copySelf() {
+        FrgWeek fm = new FrgWeek(getContext(), mASSet);
         try {
             fm.setCalendarItemAdapter(mIAItemAdapter.getClass()
                     .getConstructor(Context.class).newInstance(getContext()));
@@ -146,38 +145,36 @@ public class FrgMonth extends FrgBaseCalendar {
 
     /**
      * set day-data
-     *
-     * @param dayModelTreeMap day-data for calendar day part
+     * @param dayModelTreeMap       day-data for calendar day part
      */
     @SuppressWarnings("unchecked")
-    private <T extends MonthItemModel> void setDayModel(TreeMap<String, T> dayModelTreeMap) {
+    private <T extends WeekItemModel> void setDayModel(TreeMap<String, T> dayModelTreeMap) {
         mIAItemAdapter.setDayModel(dayModelTreeMap);
         mIAItemAdapter.notifyDataSetChanged();
 
-        if (null != mDayChangeListener) {
+        /*
+        if(null != mDayChangeListener)  {
             mDayChangeListener.onMonthChanged(mSZCurrentMonth);
         }
+        */
     }
 
     /**
      * animate for move 'selected view' to day
-     *
-     * @param date    day
-     * @param animate if true use animate
+     * @param date          day
+     * @param animate       if true use animate
      */
     private void animateSelectedViewToDate(String date, boolean animate) {
         animateSelectedToPos(mIAItemAdapter.getPositionForDay(date), animate);
     }
 
     /**
-     * get days item-model for month
-     *
-     * @param yearMonth year and month for days
-     * @return item-models
+     * get days item-model for week
+     * @param szDay         "yyyy-MM-dd" for day
+     * @return              day-models
      */
-    private TreeMap<String, MonthItemModel> getCalendarDataList(String yearMonth) {
-        Calendar calStartDate = CalendarUtility.getCalendarByYearMonth(yearMonth);
-        calStartDate.set(Calendar.DAY_OF_MONTH, 1);
+    private TreeMap<String, WeekItemModel> getCalendarDataList(String szDay) {
+        Calendar calStartDate = CalendarUtility.getCalendarByYearMonthDay(szDay);
         calStartDate.set(Calendar.HOUR_OF_DAY, 0);
         calStartDate.set(Calendar.MINUTE, 0);
         calStartDate.set(Calendar.SECOND, 0);
@@ -187,14 +184,12 @@ public class FrgMonth extends FrgBaseCalendar {
         calItem.add(Calendar.DAY_OF_WEEK,
                 -(dayOfWeek == Calendar.SUNDAY ? 6 : dayOfWeek - Calendar.SUNDAY - 1));
 
-        int curMonth = calStartDate.get(Calendar.MONTH);
         Calendar calToday = Calendar.getInstance();
-        TreeMap<String, MonthItemModel> dayModelList = new TreeMap<>();
-        for (int i = 0; i < CalendarUtility.ROW_COUNT * CalendarUtility.COLUMN_COUNT; i++) {
+        TreeMap<String, WeekItemModel> dayModelList = new TreeMap<>();
+        for (int i = 0; i < CalendarUtility.COLUMN_COUNT; i++) {
             try {
-                MonthItemModel dayItem = (MonthItemModel) mECItemModel.newInstance();
+                WeekItemModel dayItem = (WeekItemModel) mECItemModel.newInstance();
                 dayItem.initModel(calItem, calToday);
-                dayItem.setCurrentMonth(curMonth == calItem.get(Calendar.MONTH));
 
                 dayModelList.put(dayItem.getDate(), dayItem);
                 calItem.add(Calendar.DAY_OF_MONTH, 1);
@@ -208,8 +203,7 @@ public class FrgMonth extends FrgBaseCalendar {
 
     /**
      * animate selected view to calendar position
-     *
-     * @param position position in calendar
+     * @param position      position in calendar
      */
     private void animateSelectedToPos(final int position, boolean animate) {
         mSZSelectedDate = mIAItemAdapter.getDayInPosition(position);
@@ -224,7 +218,7 @@ public class FrgMonth extends FrgBaseCalendar {
                 .ofFloat("Y", mVWFloatingSelected.getY(), top);
         ObjectAnimator obj = ObjectAnimator.ofPropertyValuesHolder(mVWFloatingSelected, pvhX, pvhY)
                 .setDuration(animate ? 200 : 0);
-        obj.addListener(new Animator.AnimatorListener() {
+        obj.addListener(new Animator.AnimatorListener()    {
             @Override
             public void onAnimationStart(Animator animation) {
             }
@@ -249,14 +243,13 @@ public class FrgMonth extends FrgBaseCalendar {
 
     /**
      * animate for change calendar month
-     *
-     * @param oldMonthView view for old view
-     * @param date         new date for selected
-     * @param offset       offset between new-month to old-month
-     * @param translationY Y position
+     * @param oldMonthView           view for old view
+     * @param date                      new date for selected
+     * @param offset                    offset between new-month to old-month
+     * @param translationY              Y position
      */
-    private void animateToNewMonth(final FrgMonth oldMonthView, final String date,
-                                   int offset, float translationY) {
+    private void animateToNewWeek(final FrgWeek oldMonthView, final String date,
+                                  int offset, float translationY) {
         ObjectAnimator animator1 = ObjectAnimator
                 .ofFloat(this, "translationY", translationY);
         animator1.setTarget(this);
@@ -272,7 +265,7 @@ public class FrgMonth extends FrgBaseCalendar {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                ConstraintLayout cl = (ConstraintLayout) getParent();
+                ConstraintLayout cl = (ConstraintLayout)getParent();
                 cl.removeView(oldMonthView);
 
                 animateSelectedViewToDate(date, true);

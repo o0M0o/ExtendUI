@@ -1,62 +1,59 @@
 package wxm.uilib.FrgCalendar.CalendarItem;
 
+import java.util.Calendar;
+import wxm.uilib.FrgCalendar.Base.CalendarUtility;
+
 /**
  * class for Calendar Item
  * Created by WangXM on 2017/05/02.
  */
 @SuppressWarnings("WeakerAccess")
-public class BaseItemModel {
+public abstract class BaseItemModel {
     protected long timeMill;
 
-    protected boolean isCurrentMonth;
     protected boolean isToday;
     protected boolean isHoliday;
 
-    protected String dayNumber;
+    // day-in-month, range [1, 31]
+    protected String szDayNumber;
+    // date as string, example : '2018-05-01'
+    protected String szDate;
+
     protected EItemStatus status;
 
-    public boolean isNotCurrentMonth() {
-        return !isCurrentMonth;
-    }
+    /**
+     * init model data
+     * invoke this before use
+     * @param self      for self
+     * @param today     today for init
+     */
+    public void initModel(Calendar self, Calendar today)    {
+        timeMill = self.getTimeInMillis();
+        szDate = CalendarUtility.getYearMonthDayStr(self);
+        szDayNumber = String.valueOf(self.get(Calendar.DAY_OF_MONTH));
 
-    public boolean isCurrentMonth() {
-        return isCurrentMonth;
-    }
-
-    public void setCurrentMonth(boolean currentMonth) {
-        isCurrentMonth = currentMonth;
+        isToday = CalendarUtility.areEqualDays(self, today);
+        isHoliday = CalendarUtility.isHoliday(self);
     }
 
     public String getDayNumber() {
-        return dayNumber;
-    }
-
-    public void setDayNumber(String dayNumber) {
-        this.dayNumber = dayNumber;
+        return szDayNumber;
     }
 
     public long getTimeMill() {
         return timeMill;
     }
 
-    public void setTimeMill(long timeMill) {
-        this.timeMill = timeMill;
+    public String getDate() {
+        return szDate;
     }
 
     public boolean isToday() {
         return isToday;
     }
 
-    public void setToday(boolean today) {
-        isToday = today;
-    }
-
     public boolean isHoliday() {
         return isHoliday;
-    }
-
-    public void setHoliday(boolean holiday) {
-        isHoliday = holiday;
     }
 
     public EItemStatus getStatus() {

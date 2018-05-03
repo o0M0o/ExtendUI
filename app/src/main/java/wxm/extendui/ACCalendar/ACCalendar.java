@@ -48,7 +48,7 @@ public class ACCalendar extends AppCompatActivity {
         Toast tt = Toast.makeText(getApplicationContext(), "selected : ", Toast.LENGTH_SHORT);
         mHGVDays.setDateChangeListener(new ICalendarListener() {
             @Override
-            public void onDayChanged(View view, String day) {
+            public void onDayChanged(String day) {
                 tt.setText("selected : " + day);
                 tt.setDuration(Toast.LENGTH_SHORT);
                 tt.show();

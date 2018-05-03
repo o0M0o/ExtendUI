@@ -10,12 +10,13 @@ import wxm.androidutil.util.UiUtil;
 import wxm.extendui.R;
 import wxm.uilib.FrgCalendar.CalendarItem.EItemStatus;
 import wxm.uilib.FrgCalendar.CalendarItem.BaseItemAdapter;
+import wxm.uilib.FrgCalendar.Month.MothItemAdapter;
 
 /**
  * 日历节点
  * Created by xiaoming wang on 2017/07/03.
  */
-public class CalendarItemAdapter extends BaseItemAdapter<CalendarItemModel> {
+public class CalendarItemAdapter extends MothItemAdapter<CalendarItemModel> {
     private final int mCLToday;
     private final int mCLHoliday;
     private final int mCLDisable;
@@ -53,7 +54,7 @@ public class CalendarItemAdapter extends BaseItemAdapter<CalendarItemModel> {
             dayNum.setTextColor(mCLDisable);
         }
 
-        if (model.isNotCurrentMonth()) {
+        if (!model.isCurrentMonth()) {
             dayNum.setTextColor(mContext.getResources().getColor(wxm.uilib.R.color.gray_bbbbbb));
             view.setClickable(true);
         }

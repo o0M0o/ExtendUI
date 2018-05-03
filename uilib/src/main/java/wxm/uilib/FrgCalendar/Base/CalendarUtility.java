@@ -1,6 +1,5 @@
 package wxm.uilib.FrgCalendar.Base;
 
-import android.app.Application;
 import android.content.Context;
 import android.util.DisplayMetrics;
 
@@ -48,7 +47,7 @@ public final class CalendarUtility {
      * @return          example : "2018-05-01"
      */
     public static String getYearMonthDayStr(Calendar cDay)  {
-        return YEAR_MONTH_DAY_FORMAT.format(cDay.getTime());
+        return YEAR_MONTH_DAY_FORMAT.format(cDay.getTimeInMillis());
     }
 
     /**
@@ -69,19 +68,17 @@ public final class CalendarUtility {
         return YEAR_MONTH_FORMAT.format(cDay.getTime());
     }
 
-    public static long parseYearMonthStr(String yearMonth)    {
-        long ret = 0;
-        try {
-            ret = YEAR_MONTH_FORMAT.parse(yearMonth).getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return ret;
+    /**
+     * check whether in holiday
+     * @param cDay      calendar for day
+     * @return          true if holiday
+     */
+    public static boolean isHoliday(Calendar cDay)  {
+        int day = cDay.get(Calendar.DAY_OF_WEEK);
+        return Calendar.SUNDAY == day || Calendar.SATURDAY == day;
     }
 
-
-    private static Calendar getCalendarByYearMonth(String yearMonth) {
+    public static Calendar getCalendarByYearMonth(String yearMonth) {
         Calendar calendar = Calendar.getInstance();
         try {
             calendar.setTimeInMillis(YEAR_MONTH_FORMAT.parse(yearMonth).getTime());
