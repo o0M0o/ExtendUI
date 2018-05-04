@@ -74,6 +74,13 @@ public abstract class FrgBaseCalendar extends ConstraintLayout {
     public abstract void setSelectedDay(final String date);
 
     /**
+     * set calendar page with selected day & animate
+     *
+     * @param date day for selected, example : "2018-05-01"
+     */
+    public abstract void changePage(final String date);
+
+    /**
      * set current selected day
      * @param szDay     current day, example : "2018-05-04"
      */

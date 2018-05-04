@@ -43,23 +43,20 @@ public class FrgCalendar extends ConstraintLayout {
                 float dif = e1.getX() - e2.getX();
                 if (Math.abs(dif) > CalendarUtility.mItemWidth * 2
                         && Math.abs(velocityY) < Math.abs(velocityX)) {
-                    int offset = dif > 0 ? 1 : -1;
                     Calendar calDay = CalendarUtility.getCalendarByYearMonthDay(mFGWeek.getCurrentDay());
-                    calDay.add(Calendar.WEEK_OF_YEAR, offset);
+                    calDay.add(Calendar.WEEK_OF_YEAR, dif > 0 ? 1 : -1);
 
-                    mFGWeek.changeWeek(offset, CalendarUtility.getYearMonthDayStr(calDay));
+                    mFGWeek.changePage(CalendarUtility.getYearMonthDayStr(calDay));
                     return true;
                 }
             } else {
                 float dif = e1.getY() - e2.getY();
                 if (Math.abs(dif) > CalendarUtility.mItemHeight * 2
                         && Math.abs(velocityY) > Math.abs(velocityX)) {
-                    int offset = dif > 0 ? 1 : -1;
                     Calendar calDay = CalendarUtility.getCalendarByYearMonthDay(mFGMonth.getCurrentDay());
-                    calDay.add(Calendar.MONTH, offset);
+                    calDay.add(Calendar.MONTH, dif > 0 ? 1 : -1);
 
-                    mFGMonth.changeMonth(offset, CalendarUtility.getYearMonthDayStr(calDay),
-                            CalendarStatus.LIST_CLOSE);
+                    mFGMonth.changePage(CalendarUtility.getYearMonthDayStr(calDay));
                     return true;
                 }
             }
@@ -316,11 +313,9 @@ public class FrgCalendar extends ConstraintLayout {
 
                 if (0 != dif) {
                     if(mIsShrinkMode)   {
-                        mFGWeek.changeWeek(dif, CalendarUtility.getYearMonthDayStr(calendar));
+                        mFGWeek.changePage(CalendarUtility.getYearMonthDayStr(calendar));
                     } else {
-                        mFGMonth.changeMonth(dif,
-                                CalendarUtility.getYearMonthDayStr(calendar),
-                                CalendarStatus.LIST_CLOSE);
+                        mFGMonth.changePage(CalendarUtility.getYearMonthDayStr(calendar));
                     }
                 }
             }

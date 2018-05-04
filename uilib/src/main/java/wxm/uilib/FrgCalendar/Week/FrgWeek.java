@@ -64,11 +64,11 @@ public class FrgWeek extends FrgBaseCalendar {
     /**
      * invoke to change week
      *
-     * @param offset offset for month
      * @param date   new date, example : "2018-05-02"
      */
-    public void changeWeek(int offset, final String date) {
-        offset = offset > 0 ? 1 : -1;
+    @Override
+    public void changePage(final String date) {
+        int offset = CalendarUtility.getYearMonthStr(date).compareTo(getCurrentMonth()) > 0 ? 1 : -1;
 
         // old view
         final FrgWeek oldView = copySelf();

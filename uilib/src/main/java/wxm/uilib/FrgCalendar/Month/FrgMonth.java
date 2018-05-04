@@ -57,32 +57,30 @@ public class FrgMonth extends FrgBaseCalendar {
 
     @Override
     public void setSelectedDay(final String date) {
-        setDayModel(getCalendarDataList(date.substring(0, 7)));
-        animateSelectedViewToDate(date, false);
+        doSetSelectedDay(date, false, true);
     }
 
-    /**
-     * invoke to change month
-     *
-     * @param offset offset for month
-     * @param date   new date, example : "2018-05-02"
-     * @param status status for view
-     */
-    public void changeMonth(int offset, final String date, final CalendarStatus status) {
-        offset = offset > 0 ? 1 : -1;
+    @Override
+    public void changePage(final String date) {
+        int offset = CalendarUtility.getYearMonthStr(date).compareTo(getCurrentMonth());
+        if(0 == offset) {
+            animateSelectedToPos(mIAItemAdapter.getPositionForDay(date), true, true);
+        } else {
+            offset = offset > 0 ? 1 : -1;
 
-        // for old view
-        FrgMonth oldCalendarView = copySelf();
-        ConstraintLayout cl = (ConstraintLayout) getParent();
-        cl.addView(oldCalendarView);
-        oldCalendarView.setTranslationY(getTranslationY());
+            // for old view
+            FrgMonth oldCalendarView = copySelf();
+            ConstraintLayout cl = (ConstraintLayout) getParent();
+            cl.addView(oldCalendarView);
+            oldCalendarView.setTranslationY(getTranslationY());
 
-        // for new view
-        setSelectedDay(date);
-        setTranslationY(getTranslationY() + offset * this.getHeight());
+            // for new view
+            doSetSelectedDay(date, false, false);
+            setTranslationY(getTranslationY() + offset * this.getHeight());
 
-        // for animate
-        animateToNewMonth(oldCalendarView, date, offset, oldCalendarView.getTranslationY());
+            // for animate
+            animateToNewMonth(oldCalendarView, date, offset, oldCalendarView.getTranslationY());
+        }
     }
 
     /// PRIVATE START
@@ -98,7 +96,7 @@ public class FrgMonth extends FrgBaseCalendar {
         mGVCalendar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                animateSelectedToPos(position, true);
+                animateSelectedToPos(position, true, true);
             }
         });
 
@@ -125,25 +123,18 @@ public class FrgMonth extends FrgBaseCalendar {
     }
 
     /**
-     * set day-data
-     *
-     * @param dayModelTreeMap day-data for calendar day part
+     * set selected day
+     * @param date              new selected day
+     * @param animate           if true use animate with selected-view
+     * @param callListener       if true will invoke day-change-listener
      */
-    @SuppressWarnings("unchecked")
-    private void setDayModel(TreeMap<String, BaseItemModel> dayModelTreeMap) {
-        mIAItemAdapter.setDayModel(dayModelTreeMap);
+    private void doSetSelectedDay(final String date, final boolean animate, final boolean callListener) {
+        mIAItemAdapter.setDayModel(getCalendarDataList(date));
         mIAItemAdapter.notifyDataSetChanged();
+
+        animateSelectedToPos(mIAItemAdapter.getPositionForDay(date), animate, callListener);
     }
 
-    /**
-     * animate for move 'selected view' to day
-     *
-     * @param date    day
-     * @param animate if true use animate
-     */
-    private void animateSelectedViewToDate(String date, boolean animate) {
-        animateSelectedToPos(mIAItemAdapter.getPositionForDay(date), animate);
-    }
 
     /**
      * get days item-model for month
@@ -181,9 +172,11 @@ public class FrgMonth extends FrgBaseCalendar {
     /**
      * animate selected view to calendar position
      *
-     * @param position position in calendar
+     * @param position          position in calendar
+     * @param animate           if true use animate with selected-view
+     * @param callListener      if true will invoke day-change-listener
      */
-    private void animateSelectedToPos(final int position, boolean animate) {
+    private void animateSelectedToPos(final int position, final boolean animate, final boolean callListener) {
         final String szDay = mIAItemAdapter.getDayInPosition(position);
 
         mVWFloatingSelected.setVisibility(View.VISIBLE);
@@ -202,9 +195,9 @@ public class FrgMonth extends FrgBaseCalendar {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                boolean bMothChanged = !szDay.substring(0, 7).equals(getCurrentMonth());
+                boolean bMothChanged = !CalendarUtility.getYearMonthStr(szDay).equals(getCurrentMonth());
                 setCurrentDay(szDay);
-                if (mDayChangeListener != null) {
+                if (callListener && mDayChangeListener != null) {
                     mDayChangeListener.onDayChanged(getCurrentDay());
 
                     if(bMothChanged)
@@ -251,7 +244,7 @@ public class FrgMonth extends FrgBaseCalendar {
                 ConstraintLayout cl = (ConstraintLayout) getParent();
                 cl.removeView(oldMonthView);
 
-                animateSelectedViewToDate(date, true);
+                animateSelectedToPos(mIAItemAdapter.getPositionForDay(date), true, true);
             }
 
             @Override
