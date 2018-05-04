@@ -46,10 +46,8 @@ public class WeekItemAdapter extends BaseItemAdapter<BaseItemModel> {
 
         if (!model.isCurrentMonth()) {
             tvDayNum.setTextColor(mGrayTxtColor);
-            vwParent.setClickable(true);
         }   else {
             tvDayNum.setTextColor(mNormalTxtColor);
-            vwParent.setClickable(false);
 
             if (model.isToday()) {
                 tvDayNum.setTextColor(mRedTxtColor);

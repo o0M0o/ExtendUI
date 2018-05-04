@@ -75,7 +75,8 @@ public class FrgMonth extends FrgBaseCalendar {
             oldCalendarView.setTranslationY(getTranslationY());
 
             // for new view
-            doSetSelectedDay(date, false, false);
+            mIAItemAdapter.setDayModel(getCalendarDataList(date));
+            mIAItemAdapter.notifyDataSetChanged();
             setTranslationY(getTranslationY() + offset * this.getHeight());
 
             // for animate

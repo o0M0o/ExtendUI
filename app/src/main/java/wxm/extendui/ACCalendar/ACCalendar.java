@@ -53,7 +53,7 @@ public class ACCalendar extends AppCompatActivity {
         mHGVDays.setDateChangeListener(new ICalendarListener() {
             @Override
             public void onDayChanged(String day) {
-                String szLog = "selected : " + day;
+                String szLog = (mHGVDays.isShrinkMode() ? "week-mode" : "moth-mode") + " selected : " + day;
                 Log.i(LOG_TAG, szLog);
 
                 tt.setText(szLog);
@@ -63,7 +63,7 @@ public class ACCalendar extends AppCompatActivity {
 
             @Override
             public void onMonthChanged(String yearMonth) {
-                String szLog = "monthChanged : " + yearMonth;
+                String szLog = (mHGVDays.isShrinkMode() ? "week-mode" : "moth-mode") + " monthChanged : " + yearMonth;
                 Log.i(LOG_TAG, szLog);
 
                 tt.setText(szLog);

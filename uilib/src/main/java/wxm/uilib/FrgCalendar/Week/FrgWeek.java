@@ -68,7 +68,7 @@ public class FrgWeek extends FrgBaseCalendar {
      */
     @Override
     public void changePage(final String date) {
-        int offset = CalendarUtility.getYearMonthStr(date).compareTo(getCurrentMonth()) > 0 ? 1 : -1;
+        int offset = date.compareTo(getCurrentDay()) > 0 ? 1 : -1;
 
         // old view
         final FrgWeek oldView = copySelf();
@@ -77,7 +77,8 @@ public class FrgWeek extends FrgBaseCalendar {
         oldView.setTranslationX(getTranslationX());
 
         // new view
-        doSetSelectedDay(date, false, false);
+        mIAItemAdapter.setDayModel(getCalendarDataList(date));
+        mIAItemAdapter.notifyDataSetChanged();
         setTranslationX(getTranslationX() + offset * this.getWidth());
 
         // animate
