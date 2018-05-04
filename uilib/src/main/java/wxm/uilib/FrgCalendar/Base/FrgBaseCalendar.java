@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 
+import wxm.androidutil.util.UtilFun;
 import wxm.uilib.FrgCalendar.CalendarItem.BaseItemAdapter;
 
 /**
@@ -12,6 +13,7 @@ import wxm.uilib.FrgCalendar.CalendarItem.BaseItemAdapter;
  */
 public abstract class FrgBaseCalendar extends ConstraintLayout {
     protected AttributeSet mASSet;
+    private String mSZSelectedDate;
 
     // listener
     protected ICalendarListener mDayChangeListener;
@@ -72,9 +74,37 @@ public abstract class FrgBaseCalendar extends ConstraintLayout {
     public abstract void setSelectedDay(final String date);
 
     /**
+     * set current selected day
+     * @param szDay     current day, example : "2018-05-04"
+     */
+    protected void setCurrentDay(String szDay)  {
+        mSZSelectedDate = szDay;
+    }
+
+    /**
      * get current selected day
      *
      * @return selected day
      */
-    public abstract String getCurrentDay();
+    public String getCurrentDay()  {
+        return mSZSelectedDate;
+    }
+
+    /**
+     * get current month
+     * @return      current month, example : "2018-05"
+     */
+    public String getCurrentMonth() {
+        return UtilFun.StringIsNullOrEmpty(mSZSelectedDate) ? null
+                : mSZSelectedDate.substring(0, 7);
+    }
+
+    /**
+     * get current year
+     * @return      current year, example : "2018"
+     */
+    public String getCurrentYear() {
+        return UtilFun.StringIsNullOrEmpty(mSZSelectedDate) ? null
+                : mSZSelectedDate.substring(0, 4);
+    }
 }

@@ -34,9 +34,6 @@ public class FrgMonth extends FrgBaseCalendar {
     protected View mVWFloatingSelected;
 
     // data
-    private String mSZCurrentMonth;
-    private String mSZSelectedDate;
-
     private MothItemAdapter mIAItemAdapter;
 
     public FrgMonth(Context context) {
@@ -59,16 +56,9 @@ public class FrgMonth extends FrgBaseCalendar {
     }
 
     @Override
-    public String getCurrentDay() {
-        return mSZSelectedDate;
-    }
-
-    @Override
     public void setSelectedDay(final String date) {
         // set month view
-        mSZCurrentMonth = date.substring(0, 7);
-        setDayModel(getCalendarDataList(mSZCurrentMonth));
-
+        setDayModel(getCalendarDataList(date.substring(0, 7)));
         animateSelectedViewToDate(date, false);
     }
 
@@ -90,7 +80,7 @@ public class FrgMonth extends FrgBaseCalendar {
 
         // for new view
         setSelectedDay(date);
-        setTranslationY(getTranslationY() + offset * this.getHeight() / 2);
+        setTranslationY(getTranslationY() + offset * this.getHeight());
 
         // for animate
         animateToNewMonth(oldCalendarView, date, offset, oldCalendarView.getTranslationY());
@@ -131,7 +121,7 @@ public class FrgMonth extends FrgBaseCalendar {
         }
         LayoutParams lp = (LayoutParams) getLayoutParams();
         fm.setLayoutParams(new ViewGroup.LayoutParams(lp.width, lp.height));
-        fm.setSelectedDay(mSZSelectedDate);
+        fm.setSelectedDay(getCurrentDay());
         return fm;
     }
 
@@ -144,10 +134,6 @@ public class FrgMonth extends FrgBaseCalendar {
     private void setDayModel(TreeMap<String, BaseItemModel> dayModelTreeMap) {
         mIAItemAdapter.setDayModel(dayModelTreeMap);
         mIAItemAdapter.notifyDataSetChanged();
-
-        if (null != mDayChangeListener) {
-            mDayChangeListener.onMonthChanged(mSZCurrentMonth);
-        }
     }
 
     /**
@@ -217,9 +203,13 @@ public class FrgMonth extends FrgBaseCalendar {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                mSZSelectedDate = szDay;
+                boolean bMothChanged = !szDay.substring(0, 7).equals(getCurrentMonth());
+                setCurrentDay(szDay);
                 if (mDayChangeListener != null) {
-                    mDayChangeListener.onDayChanged(szDay);
+                    mDayChangeListener.onDayChanged(getCurrentDay());
+
+                    if(bMothChanged)
+                        mDayChangeListener.onMonthChanged(getCurrentMonth());
                 }
             }
 

@@ -27,6 +27,7 @@ import wxm.uilib.R;
 
 /**
  * use this in your layout files if you use calendar UI
+ *
  * @author WangXM
  * @version create：2018/4/17
  */
@@ -38,14 +39,22 @@ public class FrgCalendar extends ConstraintLayout {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2,
                                float velocityX, float velocityY) {
-            if (!mIsMonthChanging) {
-                if (Math.abs(velocityY) > Math.abs(velocityX)) {
+            if (mIsShrinkMode) {
+                if (Math.abs(velocityY) < Math.abs(velocityX)) {
+                    int offset = velocityX < 0 ? 1 : -1;
                     Calendar calendar = CalendarUtility.getCalendarByYearMonthDay(mFGMonth.getCurrentDay());
-                    calendar.add(Calendar.MONTH, velocityY < 0 ? 1 : -1);
+                    calendar.add(Calendar.WEEK_OF_YEAR, offset);
 
-                    mIsMonthChanging = true;
-                    mFGMonth.changeMonth(velocityY < 0 ? 1 : -1,
-                            CalendarUtility.getYearMonthDayStr(calendar),
+                    mFGMonth.changeMonth(offset, CalendarUtility.getYearMonthDayStr(calendar),
+                            CalendarStatus.LIST_CLOSE);
+                }
+            } else {
+                if (Math.abs(velocityY) > Math.abs(velocityX)) {
+                    int offset = velocityY < 0 ? 1 : -1;
+                    Calendar calendar = CalendarUtility.getCalendarByYearMonthDay(mFGMonth.getCurrentDay());
+                    calendar.add(Calendar.MONTH, offset);
+
+                    mFGMonth.changeMonth(offset, CalendarUtility.getYearMonthDayStr(calendar),
                             CalendarStatus.LIST_CLOSE);
                 }
             }
@@ -60,25 +69,24 @@ public class FrgCalendar extends ConstraintLayout {
     }
 
     // UI component
-    private GestureDetector     mGDDetector;
-    private FrgMonth            mFGMonth;
-    private FrgWeek             mFGWeek;
-    private LinearLayout        mLLWeekBar;
+    private GestureDetector mGDDetector;
+    private FrgMonth mFGMonth;
+    private FrgWeek mFGWeek;
+    private LinearLayout mLLWeekBar;
 
-    private TextView            mTVYear;
-    private TextView            mTVMonth;
+    private TextView mTVYear;
+    private TextView mTVMonth;
 
     // for touch
     private CalendarStatus status = CalendarStatus.LIST_CLOSE;
 
     // other
-    private boolean     mIsMonthChanging = false;
-    private boolean     mIsShrinkMode = false;
+    private boolean mIsShrinkMode = false;
 
     private ICalendarListener mDLSelfDateChangeListener = new ICalendarListener() {
         @Override
         public void onDayChanged(String day) {
-            if(null != mDLOuterListener) {
+            if (null != mDLOuterListener) {
                 mDLOuterListener.onDayChanged(day);
             }
         }
@@ -86,21 +94,20 @@ public class FrgCalendar extends ConstraintLayout {
         @SuppressLint("SetTextI18n")
         @Override
         public void onMonthChanged(String yearMonth) {
-            mIsMonthChanging = false;
             mTVYear.setText(yearMonth.substring(0, 4) + "年");
 
             String monthTag = yearMonth.substring(5, 7) + "月";
-            if(monthTag.startsWith("0"))    {
+            if (monthTag.startsWith("0")) {
                 monthTag = monthTag.substring(1);
             }
             mTVMonth.setText(monthTag);
 
-            if(null != mDLOuterListener) {
+            if (null != mDLOuterListener) {
                 mDLOuterListener.onMonthChanged(yearMonth);
             }
         }
     };
-    private ICalendarListener  mDLOuterListener = null;
+    private ICalendarListener mDLOuterListener = null;
 
 
     public FrgCalendar(Context context) {
@@ -120,23 +127,24 @@ public class FrgCalendar extends ConstraintLayout {
 
     /**
      * set calendar selected day
-     * @param year      year, example : "2018"
-     * @param month     month, range is [0, 11], example : "5"
-     * @param day       day in month, range is [1, 31] example : "1"
+     *
+     * @param year  year, example : "2018"
+     * @param month month, range is [0, 11], example : "5"
+     * @param day   day in month, range is [1, 31] example : "1"
      */
-    public void setCalendarSelectedDay(int year, int month, int day)    {
-        if(day < 1 || day > 31)
+    public void setCalendarSelectedDay(int year, int month, int day) {
+        if (day < 1 || day > 31)
             return;
 
         int maxDay = CalendarUtility.getMonthDays(year, month);
-        if(-1 == maxDay || day > maxDay)
+        if (-1 == maxDay || day > maxDay)
             return;
 
         Calendar cDay = Calendar.getInstance();
         cDay.set(year, month, day);
 
         String szDay = CalendarUtility.getYearMonthDayStr(cDay);
-        if(mIsShrinkMode)
+        if (mIsShrinkMode)
             mFGWeek.setSelectedDay(szDay);
         else
             mFGMonth.setSelectedDay(szDay);
@@ -144,8 +152,9 @@ public class FrgCalendar extends ConstraintLayout {
 
     /**
      * set usr derived adapter in here
-     * @param ciMonth     usr implementation adapter
-     * @param ciWeek      usr implementation adapter
+     *
+     * @param ciMonth usr implementation adapter
+     * @param ciWeek  usr implementation adapter
      */
     public void setCalendarItemAdapter(MothItemAdapter ciMonth, WeekItemAdapter ciWeek) {
         mFGMonth.setCalendarItemAdapter(ciMonth);
@@ -155,9 +164,10 @@ public class FrgCalendar extends ConstraintLayout {
     /**
      * set usr date change listener in here
      * when clicked month or day changed, use this listener tell usr
-     * @param listener      usr listener
+     *
+     * @param listener usr listener
      */
-    public void setDateChangeListener(ICalendarListener listener)   {
+    public void setDateChangeListener(ICalendarListener listener) {
         mDLOuterListener = listener;
     }
 
@@ -165,19 +175,21 @@ public class FrgCalendar extends ConstraintLayout {
      * set shrink mode
      * can save space if use shrink mode
      * but not implementation this mode now
-     * @param flag          true for 'shrink mode', false for 'full mode'
+     *
+     * @param flag true for 'shrink mode', false for 'full mode'
      */
     public void setShrinkMode(boolean flag) {
         mIsShrinkMode = flag;
-        initCalendarDay();
+        loadCalendarDay();
         adjustSelfLayout();
     }
 
     /**
      * check if in 'shrink mode'
-     * @return          true if in 'shrink mode'
+     *
+     * @return true if in 'shrink mode'
      */
-    public boolean isShrinkMode()   {
+    public boolean isShrinkMode() {
         return mIsShrinkMode;
     }
 
@@ -209,18 +221,20 @@ public class FrgCalendar extends ConstraintLayout {
 
 
     /// PRIVATE START
+
     /**
      * derived UI init
-     * @param context   for UI
-     * @param attrs     for UI
+     *
+     * @param context for UI
+     * @param attrs   for UI
      */
-    private void initView(Context context, AttributeSet attrs)    {
+    private void initView(Context context, AttributeSet attrs) {
         View.inflate(context, R.layout.frg_calendar, this);
         CalendarUtility.init(context);
 
         // init UI component
-        ConstraintLayout cl = (ConstraintLayout)findViewById(R.id.cl_holder);
-        mFGMonth = (FrgMonth)cl.findViewById(R.id.fg_month);
+        ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.cl_holder);
+        mFGMonth = (FrgMonth) cl.findViewById(R.id.fg_month);
         mFGWeek = (FrgWeek) cl.findViewById(R.id.fg_week);
         mLLWeekBar = (LinearLayout) findViewById(R.id.week_bar);
 
@@ -228,12 +242,12 @@ public class FrgCalendar extends ConstraintLayout {
         mFGMonth.setDayChangeListener(mDLSelfDateChangeListener);
         mFGWeek.setDayChangeListener(mDLSelfDateChangeListener);
 
-        initFastSelected((ConstraintLayout)findViewById(R.id.cl_header));
+        initFastSelected((ConstraintLayout) findViewById(R.id.cl_header));
         initWeekBar();
-        initCalendarDay1();
+        //loadCalendarDay();
         adjustSelfLayout();
 
-        if(isInEditMode())  {
+        if (isInEditMode()) {
             setCalendarItemAdapter(new MothItemAdapter(context),
                     new WeekItemAdapter(context));
 
@@ -246,41 +260,33 @@ public class FrgCalendar extends ConstraintLayout {
     /**
      * init calendar day part
      */
-    private void initCalendarDay1()  {
-    }
-
-    /**
-     * init calendar day part
-     */
-    private void initCalendarDay()  {
+    private void loadCalendarDay() {
         String szDay = mIsShrinkMode ? mFGWeek.getCurrentDay() : mFGMonth.getCurrentDay();
         mFGMonth.setVisibility(mIsShrinkMode ? View.GONE : View.VISIBLE);
         mFGWeek.setVisibility(mIsShrinkMode ? View.VISIBLE : View.GONE);
 
-        if(!UtilFun.StringIsNullOrEmpty(szDay)) {
-            if (mIsShrinkMode) {
-                mFGWeek.setSelectedDay(szDay);
-            } else {
-                mFGMonth.setSelectedDay(szDay);
-            }
-        }
+        Calendar cDay = UtilFun.StringIsNullOrEmpty(szDay) ? Calendar.getInstance() :
+                CalendarUtility.getCalendarByYearMonthDay(szDay);
+        setCalendarSelectedDay(cDay.get(Calendar.YEAR), cDay.get(Calendar.MONTH),
+                cDay.get(Calendar.DAY_OF_MONTH));
     }
 
     /**
      * adjust self layout
      * NOT IMPLEMENTATION NOW!
      */
-    private void adjustSelfLayout()    {
+    private void adjustSelfLayout() {
     }
 
     /**
      * init fast select header
      * in this header you can direct jump to year or month
-     * @param clHeader      layout holder for header
+     *
+     * @param clHeader layout holder for header
      */
-    private void initFastSelected(ConstraintLayout clHeader)    {
-        mTVMonth = (TextView)clHeader.findViewById(R.id.tv_month);
-        mTVYear = (TextView)clHeader.findViewById(R.id.tv_year);
+    private void initFastSelected(ConstraintLayout clHeader) {
+        mTVMonth = (TextView) clHeader.findViewById(R.id.tv_month);
+        mTVYear = (TextView) clHeader.findViewById(R.id.tv_year);
         ImageView mIVYearLeft = (ImageView) clHeader.findViewById(R.id.iv_year_left);
         ImageView mIVYearRight = (ImageView) clHeader.findViewById(R.id.iv_year_right);
         ImageView mIVMonthLeft = (ImageView) clHeader.findViewById(R.id.iv_month_left);
@@ -292,18 +298,17 @@ public class FrgCalendar extends ConstraintLayout {
                 int id = v.getId();
                 int dif = 0;
                 Calendar calendar = CalendarUtility.getCalendarByYearMonthDay(mFGMonth.getCurrentDay());
-                if(R.id.iv_year_left == id || R.id.iv_year_right == id) {
+                if (R.id.iv_year_left == id || R.id.iv_year_right == id) {
                     dif = R.id.iv_year_right == id ? 1 : -1;
                     calendar.add(Calendar.YEAR, dif);
                 }
 
-                if(R.id.iv_month_left == id || R.id.iv_month_right == id)   {
+                if (R.id.iv_month_left == id || R.id.iv_month_right == id) {
                     dif = R.id.iv_month_right == id ? 1 : -1;
                     calendar.add(Calendar.MONTH, dif);
                 }
 
-                if(0 != dif) {
-                    mIsMonthChanging = true;
+                if (0 != dif) {
                     mFGMonth.changeMonth(dif,
                             CalendarUtility.getYearMonthDayStr(calendar),
                             CalendarStatus.LIST_CLOSE);
@@ -333,7 +338,7 @@ public class FrgCalendar extends ConstraintLayout {
             textView.setText(week);
             textView.setTextSize(WEEK_ITEM_TEXT_SIZE);
             textView.setTextColor(i == weeks.length - 1 || i == weeks.length - 2
-                    ?  RED_FF725F : txt_black);
+                    ? RED_FF725F : txt_black);
             textView.setGravity(Gravity.CENTER);
 
             mLLWeekBar.addView(textView);
