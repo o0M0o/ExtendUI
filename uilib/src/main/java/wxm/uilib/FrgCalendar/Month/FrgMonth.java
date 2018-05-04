@@ -34,7 +34,7 @@ public class FrgMonth extends FrgBaseCalendar {
     protected View mVWFloatingSelected;
 
     // data
-    private MothItemAdapter mIAItemAdapter;
+    private BaseItemAdapter mIAItemAdapter;
 
     public FrgMonth(Context context) {
         super(context);
@@ -51,7 +51,7 @@ public class FrgMonth extends FrgBaseCalendar {
 
     @Override
     public void setCalendarItemAdapter(BaseItemAdapter ciAdapter) {
-        mIAItemAdapter = (MothItemAdapter) ciAdapter;
+        mIAItemAdapter = ciAdapter;
         mGVCalendar.setAdapter(mIAItemAdapter);
     }
 
@@ -199,10 +199,10 @@ public class FrgMonth extends FrgBaseCalendar {
                 boolean bMothChanged = !CalendarUtility.getYearMonthStr(szDay).equals(getCurrentMonth());
                 setCurrentDay(szDay);
                 if (callListener && mDayChangeListener != null) {
-                    mDayChangeListener.onDayChanged(getCurrentDay());
-
                     if(bMothChanged)
                         mDayChangeListener.onMonthChanged(getCurrentMonth());
+
+                    mDayChangeListener.onDayChanged(getCurrentDay());
                 }
             }
 

@@ -19,6 +19,7 @@ import wxm.androidutil.util.UtilFun;
 import wxm.uilib.FrgCalendar.Base.CalendarStatus;
 import wxm.uilib.FrgCalendar.Base.CalendarUtility;
 import wxm.uilib.FrgCalendar.Base.ICalendarListener;
+import wxm.uilib.FrgCalendar.CalendarItem.BaseItemAdapter;
 import wxm.uilib.FrgCalendar.Month.FrgMonth;
 import wxm.uilib.FrgCalendar.Month.MothItemAdapter;
 import wxm.uilib.FrgCalendar.Week.FrgWeek;
@@ -159,7 +160,7 @@ public class FrgCalendar extends ConstraintLayout {
      * @param ciMonth usr implementation adapter
      * @param ciWeek  usr implementation adapter
      */
-    public void setCalendarItemAdapter(MothItemAdapter ciMonth, WeekItemAdapter ciWeek) {
+    public void setCalendarItemAdapter(BaseItemAdapter ciMonth, BaseItemAdapter ciWeek) {
         mFGMonth.setCalendarItemAdapter(ciMonth);
         mFGWeek.setCalendarItemAdapter(ciWeek);
     }
@@ -182,8 +183,12 @@ public class FrgCalendar extends ConstraintLayout {
      * @param flag true for 'shrink mode', false for 'full mode'
      */
     public void setShrinkMode(boolean flag) {
+        if(mIsShrinkMode == flag)
+            return;
+
+        String szDay = mIsShrinkMode ? mFGWeek.getCurrentDay() : mFGMonth.getCurrentDay();
         mIsShrinkMode = flag;
-        loadCalendarDay();
+        loadCalendarDay(szDay);
         adjustSelfLayout();
     }
 
@@ -239,6 +244,8 @@ public class FrgCalendar extends ConstraintLayout {
         mFGMonth = (FrgMonth) cl.findViewById(R.id.fg_month);
         mFGWeek = (FrgWeek) cl.findViewById(R.id.fg_week);
         mLLWeekBar = (LinearLayout) findViewById(R.id.week_bar);
+        mFGMonth.setVisibility(mIsShrinkMode ? View.GONE : View.VISIBLE);
+        mFGWeek.setVisibility(mIsShrinkMode ? View.VISIBLE : View.GONE);
 
         mGDDetector = new GestureDetector(context, new FlingListener());
         mFGMonth.setDayChangeListener(mDLSelfDateChangeListener);
@@ -246,7 +253,6 @@ public class FrgCalendar extends ConstraintLayout {
 
         initFastSelected((ConstraintLayout) findViewById(R.id.cl_header));
         initWeekBar();
-        //loadCalendarDay();
         adjustSelfLayout();
 
         if (isInEditMode()) {
@@ -262,8 +268,7 @@ public class FrgCalendar extends ConstraintLayout {
     /**
      * init calendar day part
      */
-    private void loadCalendarDay() {
-        String szDay = mIsShrinkMode ? mFGWeek.getCurrentDay() : mFGMonth.getCurrentDay();
+    private void loadCalendarDay(String szDay) {
         mFGMonth.setVisibility(mIsShrinkMode ? View.GONE : View.VISIBLE);
         mFGWeek.setVisibility(mIsShrinkMode ? View.VISIBLE : View.GONE);
 

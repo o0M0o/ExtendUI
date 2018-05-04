@@ -32,7 +32,7 @@ public class FrgWeek extends FrgBaseCalendar {
     protected GridView mGVCalendar;
     protected View mVWFloatingSelected;
 
-    private WeekItemAdapter mIAItemAdapter;
+    private BaseItemAdapter mIAItemAdapter;
 
     public FrgWeek(Context context) {
         super(context);
@@ -52,7 +52,7 @@ public class FrgWeek extends FrgBaseCalendar {
      * @param ciAdapter adapter
      */
     public void setCalendarItemAdapter(BaseItemAdapter ciAdapter) {
-        mIAItemAdapter = (WeekItemAdapter) ciAdapter;
+        mIAItemAdapter = ciAdapter;
         mGVCalendar.setAdapter(mIAItemAdapter);
     }
 
@@ -248,10 +248,10 @@ public class FrgWeek extends FrgBaseCalendar {
                 boolean bMothChanged = !CalendarUtility.getYearMonthStr(szDay).equals(getCurrentMonth());
                 setCurrentDay(szDay);
                 if (callListener && mDayChangeListener != null) {
-                    mDayChangeListener.onDayChanged(getCurrentDay());
-
                     if(bMothChanged)
                         mDayChangeListener.onMonthChanged(getCurrentMonth());
+
+                    mDayChangeListener.onDayChanged(getCurrentDay());
                 }
             }
 
