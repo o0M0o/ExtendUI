@@ -2,6 +2,7 @@ package wxm.extendui.ACCalendar;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -26,7 +27,8 @@ public class ACCalendar extends AppCompatActivity {
     @BindView(R.id.but_shrink)
     Button mBTShrink;
 
-    private boolean mIsShrink;
+
+    private final static String LOG_TAG = "ACCalendar";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +53,20 @@ public class ACCalendar extends AppCompatActivity {
         mHGVDays.setDateChangeListener(new ICalendarListener() {
             @Override
             public void onDayChanged(String day) {
-                tt.setText("selected : " + day);
+                String szLog = "selected : " + day;
+                Log.i(LOG_TAG, szLog);
+
+                tt.setText(szLog);
                 tt.setDuration(Toast.LENGTH_SHORT);
                 tt.show();
             }
 
             @Override
             public void onMonthChanged(String yearMonth) {
-                tt.setText(yearMonth);
+                String szLog = "monthChanged : " + yearMonth;
+                Log.i(LOG_TAG, szLog);
+
+                tt.setText(szLog);
                 tt.setDuration(Toast.LENGTH_SHORT);
                 tt.show();
             }

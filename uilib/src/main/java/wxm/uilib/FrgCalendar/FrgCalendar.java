@@ -40,24 +40,30 @@ public class FrgCalendar extends ConstraintLayout {
         public boolean onFling(MotionEvent e1, MotionEvent e2,
                                float velocityX, float velocityY) {
             if (mIsShrinkMode) {
-                if (Math.abs(velocityY) < Math.abs(velocityX)) {
-                    int offset = velocityX < 0 ? 1 : -1;
-                    Calendar calendar = CalendarUtility.getCalendarByYearMonthDay(mFGMonth.getCurrentDay());
-                    calendar.add(Calendar.WEEK_OF_YEAR, offset);
+                float dif = e1.getX() - e2.getX();
+                if (Math.abs(dif) > CalendarUtility.mItemWidth * 2
+                        && Math.abs(velocityY) < Math.abs(velocityX)) {
+                    int offset = dif > 0 ? 1 : -1;
+                    Calendar calDay = CalendarUtility.getCalendarByYearMonthDay(mFGWeek.getCurrentDay());
+                    calDay.add(Calendar.WEEK_OF_YEAR, offset);
 
-                    mFGMonth.changeMonth(offset, CalendarUtility.getYearMonthDayStr(calendar),
-                            CalendarStatus.LIST_CLOSE);
+                    mFGWeek.changeWeek(offset, CalendarUtility.getYearMonthDayStr(calDay));
+                    return true;
                 }
             } else {
-                if (Math.abs(velocityY) > Math.abs(velocityX)) {
-                    int offset = velocityY < 0 ? 1 : -1;
-                    Calendar calendar = CalendarUtility.getCalendarByYearMonthDay(mFGMonth.getCurrentDay());
-                    calendar.add(Calendar.MONTH, offset);
+                float dif = e1.getY() - e2.getY();
+                if (Math.abs(dif) > CalendarUtility.mItemHeight * 2
+                        && Math.abs(velocityY) > Math.abs(velocityX)) {
+                    int offset = dif > 0 ? 1 : -1;
+                    Calendar calDay = CalendarUtility.getCalendarByYearMonthDay(mFGMonth.getCurrentDay());
+                    calDay.add(Calendar.MONTH, offset);
 
-                    mFGMonth.changeMonth(offset, CalendarUtility.getYearMonthDayStr(calendar),
+                    mFGMonth.changeMonth(offset, CalendarUtility.getYearMonthDayStr(calDay),
                             CalendarStatus.LIST_CLOSE);
+                    return true;
                 }
             }
+
             return super.onFling(e1, e2, velocityX, velocityY);
         }
 
@@ -211,9 +217,8 @@ public class FrgCalendar extends ConstraintLayout {
                 }
 
                 mGDDetector.onTouchEvent(ev);
-                if (status == CalendarStatus.ANIMATING) {
-                    return super.dispatchTouchEvent(ev);
-                }
+                status = CalendarStatus.ANIMATING;
+                return super.dispatchTouchEvent(ev);
         }
 
         return super.dispatchTouchEvent(ev);
@@ -297,7 +302,8 @@ public class FrgCalendar extends ConstraintLayout {
             public void onClick(View v) {
                 int id = v.getId();
                 int dif = 0;
-                Calendar calendar = CalendarUtility.getCalendarByYearMonthDay(mFGMonth.getCurrentDay());
+                Calendar calendar = CalendarUtility.getCalendarByYearMonthDay(
+                        mIsShrinkMode ? mFGWeek.getCurrentDay() : mFGMonth.getCurrentDay());
                 if (R.id.iv_year_left == id || R.id.iv_year_right == id) {
                     dif = R.id.iv_year_right == id ? 1 : -1;
                     calendar.add(Calendar.YEAR, dif);
@@ -309,9 +315,13 @@ public class FrgCalendar extends ConstraintLayout {
                 }
 
                 if (0 != dif) {
-                    mFGMonth.changeMonth(dif,
-                            CalendarUtility.getYearMonthDayStr(calendar),
-                            CalendarStatus.LIST_CLOSE);
+                    if(mIsShrinkMode)   {
+                        mFGWeek.changeWeek(dif, CalendarUtility.getYearMonthDayStr(calendar));
+                    } else {
+                        mFGMonth.changeMonth(dif,
+                                CalendarUtility.getYearMonthDayStr(calendar),
+                                CalendarStatus.LIST_CLOSE);
+                    }
                 }
             }
         };

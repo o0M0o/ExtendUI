@@ -57,7 +57,6 @@ public class FrgMonth extends FrgBaseCalendar {
 
     @Override
     public void setSelectedDay(final String date) {
-        // set month view
         setDayModel(getCalendarDataList(date.substring(0, 7)));
         animateSelectedViewToDate(date, false);
     }

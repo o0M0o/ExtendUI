@@ -96,7 +96,7 @@ public abstract class FrgBaseCalendar extends ConstraintLayout {
      */
     public String getCurrentMonth() {
         return UtilFun.StringIsNullOrEmpty(mSZSelectedDate) ? null
-                : mSZSelectedDate.substring(0, 7);
+                : CalendarUtility.getYearMonthStr(mSZSelectedDate);
     }
 
     /**
@@ -105,6 +105,6 @@ public abstract class FrgBaseCalendar extends ConstraintLayout {
      */
     public String getCurrentYear() {
         return UtilFun.StringIsNullOrEmpty(mSZSelectedDate) ? null
-                : mSZSelectedDate.substring(0, 4);
+                : CalendarUtility.getYearStr(mSZSelectedDate);
     }
 }

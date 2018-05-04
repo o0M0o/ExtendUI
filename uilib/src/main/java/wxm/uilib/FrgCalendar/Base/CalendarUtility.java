@@ -13,6 +13,8 @@ import java.util.Locale;
  * Created by kelin on 16-7-20.
  */
 public final class CalendarUtility {
+    private static boolean  bIsInited = false;
+
     // calendar is 7 column * 6 row
     public static final int ROW_COUNT     = 6;
     public static final int COLUMN_COUNT  = 7;
@@ -33,12 +35,34 @@ public final class CalendarUtility {
             new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
 
     public static void init(Context context) {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        width   = metrics.widthPixels;
-        height  = metrics.heightPixels;
+        if(!bIsInited) {
+            bIsInited = true;
 
-        mItemWidth  = width / COLUMN_COUNT;
-        mItemHeight = mItemWidth * 3 / 4;
+            DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+            width = metrics.widthPixels;
+            height = metrics.heightPixels;
+
+            mItemWidth = width / COLUMN_COUNT;
+            mItemHeight = mItemWidth * 3 / 4;
+        }
+    }
+
+    /**
+     * get year-month part from year-month[-day] string
+     * @param szDay         example : "2018-05-01"
+     * @return              example : "2018-05"
+     */
+    public static String getYearMonthStr(String szDay)  {
+        return szDay.substring(0, 7);
+    }
+
+    /**
+     * get year part from year[-month-day] string
+     * @param szDay         example : "2018-05-01"
+     * @return              example : "2018"
+     */
+    public static String getYearStr(String szDay)  {
+        return szDay.substring(0, 4);
     }
 
     /**
@@ -78,6 +102,11 @@ public final class CalendarUtility {
         return Calendar.SUNDAY == day || Calendar.SATURDAY == day;
     }
 
+    /**
+     * use year-moth string get calendar
+     * @param yearMonth     example: "2018-05"
+     * @return              calendar
+     */
     public static Calendar getCalendarByYearMonth(String yearMonth) {
         Calendar calendar = Calendar.getInstance();
         try {
@@ -88,6 +117,11 @@ public final class CalendarUtility {
         return calendar;
     }
 
+    /**
+     * use year-year-day string get calendar
+     * @param yearMonthDay      example: "2018-05-04"
+     * @return                  calendar
+     */
     public static Calendar getCalendarByYearMonthDay(String yearMonthDay) {
         Calendar calendar = Calendar.getInstance();
         try {

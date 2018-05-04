@@ -32,11 +32,6 @@ public class FrgWeek extends FrgBaseCalendar {
     protected GridView mGVCalendar;
     protected View mVWFloatingSelected;
 
-    protected AttributeSet mASSet;
-
-    // data
-
-
     private WeekItemAdapter mIAItemAdapter;
 
     public FrgWeek(Context context) {
@@ -63,11 +58,7 @@ public class FrgWeek extends FrgBaseCalendar {
 
     @Override
     public void setSelectedDay(final String date) {
-        // set month view
-        setDayModel(getCalendarDataList(date));
-
-        // set selected daya
-        animateSelectedViewToDate(date, false);
+        doSetSelectedDay(date, false, true);
     }
 
     /**
@@ -79,18 +70,68 @@ public class FrgWeek extends FrgBaseCalendar {
     public void changeWeek(int offset, final String date) {
         offset = offset > 0 ? 1 : -1;
 
-        // for old view
-        FrgWeek oldView = copySelf();
+        // old view
+        final FrgWeek oldView = copySelf();
         ConstraintLayout cl = (ConstraintLayout) getParent();
         cl.addView(oldView);
         oldView.setTranslationX(getTranslationX());
 
-        // for new view
-        setSelectedDay(date);
-        setTranslationY(getTranslationX() + offset * this.getWidth());
+        // new view
+        doSetSelectedDay(date, false, false);
+        setTranslationX(getTranslationX() + offset * this.getWidth());
 
-        // for animate
-        animateToNewWeek(oldView, date, offset, oldView.getTranslationX());
+        // animate
+        float translationX = oldView.getTranslationX();
+        ObjectAnimator animator1 = ObjectAnimator.ofFloat(this,
+                "translationX", translationX);
+        animator1.setTarget(this);
+        animator1.setDuration(600);
+
+        final ObjectAnimator animator2 = ObjectAnimator.ofFloat(this,
+                "translationX", translationX - offset * this.getWidth());
+        animator2.setTarget(oldView);
+        animator2.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                ConstraintLayout cl = (ConstraintLayout) getParent();
+                cl.removeView(oldView);
+
+                animateSelectedToPos(mIAItemAdapter.getPositionForDay(date), true, true);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        animator2.setDuration(600);
+
+        animator1.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                animator2.start();
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        animator1.start();
     }
 
     /// PRIVATE START
@@ -106,7 +147,7 @@ public class FrgWeek extends FrgBaseCalendar {
         mGVCalendar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                animateSelectedToPos(position, true);
+                animateSelectedToPos(position, true, true);
             }
         });
 
@@ -133,30 +174,16 @@ public class FrgWeek extends FrgBaseCalendar {
     }
 
     /**
-     * set day-data
-     *
-     * @param dayModelTreeMap day-data for calendar day part
+     * set selected day
+     * @param date              new selected day
+     * @param animate           if true use animate with selected-view
+     * @param callListener       if true will invoke day-change-listener
      */
-    @SuppressWarnings("unchecked")
-    private void setDayModel(TreeMap<String, BaseItemModel> dayModelTreeMap) {
-        mIAItemAdapter.setDayModel(dayModelTreeMap);
+    private void doSetSelectedDay(final String date, final boolean animate, final boolean callListener) {
+        mIAItemAdapter.setDayModel(getCalendarDataList(date));
         mIAItemAdapter.notifyDataSetChanged();
 
-        /*
-        if(null != mDayChangeListener)  {
-            mDayChangeListener.onMonthChanged(mSZCurrentMonth);
-        }
-        */
-    }
-
-    /**
-     * animate for move 'selected view' to day
-     *
-     * @param date    day
-     * @param animate if true use animate
-     */
-    private void animateSelectedViewToDate(String date, boolean animate) {
-        animateSelectedToPos(mIAItemAdapter.getPositionForDay(date), animate);
+        animateSelectedToPos(mIAItemAdapter.getPositionForDay(date), animate, callListener);
     }
 
     /**
@@ -194,9 +221,11 @@ public class FrgWeek extends FrgBaseCalendar {
     /**
      * animate selected view to calendar position
      *
-     * @param position position in calendar
+     * @param position          position in calendar
+     * @param animate           if true use animate with selected-view
+     * @param callListener      if true will invoke day-change-listener
      */
-    private void animateSelectedToPos(final int position, boolean animate) {
+    private void animateSelectedToPos(final int position, final boolean animate, final boolean callListener) {
         final String szDay = mIAItemAdapter.getDayInPosition(position);
 
         mVWFloatingSelected.setVisibility(View.VISIBLE);
@@ -215,9 +244,9 @@ public class FrgWeek extends FrgBaseCalendar {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                boolean bMothChanged = !szDay.substring(0, 7).equals(getCurrentMonth());
+                boolean bMothChanged = !CalendarUtility.getYearMonthStr(szDay).equals(getCurrentMonth());
                 setCurrentDay(szDay);
-                if (mDayChangeListener != null) {
+                if (callListener && mDayChangeListener != null) {
                     mDayChangeListener.onDayChanged(getCurrentDay());
 
                     if(bMothChanged)
@@ -234,69 +263,6 @@ public class FrgWeek extends FrgBaseCalendar {
             }
         });
         obj.start();
-    }
-
-    /**
-     * animate for change calendar month
-     *
-     * @param oldMonthView view for old view
-     * @param date         new date for selected
-     * @param offset       offset between new-month to old-month
-     * @param translationX X position
-     */
-    private void animateToNewWeek(final FrgWeek oldMonthView, final String date,
-                                  int offset, float translationX) {
-        ObjectAnimator animator1 = ObjectAnimator
-                .ofFloat(this, "translationX", translationX);
-        animator1.setTarget(this);
-        animator1.setDuration(600);
-
-        final ObjectAnimator animator2 = ObjectAnimator
-                .ofFloat(this, "translationX",
-                        translationX - offset * this.getWidth());
-        animator2.setTarget(oldMonthView);
-        animator2.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                ConstraintLayout cl = (ConstraintLayout) getParent();
-                cl.removeView(oldMonthView);
-
-                animateSelectedViewToDate(date, true);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
-        animator2.setDuration(600);
-
-        animator1.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                animator2.start();
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
-        animator1.start();
     }
     /// PRIVATE END
 }
