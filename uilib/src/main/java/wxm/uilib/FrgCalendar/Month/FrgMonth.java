@@ -15,8 +15,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 import java.util.TreeMap;
 
-import wxm.uilib.FrgCalendar.Base.CalendarStatus;
 import wxm.uilib.FrgCalendar.Base.CalendarUtility;
+import wxm.uilib.FrgCalendar.Base.EDirection;
 import wxm.uilib.FrgCalendar.Base.FrgBaseCalendar;
 import wxm.uilib.FrgCalendar.CalendarItem.BaseItemAdapter;
 import wxm.uilib.FrgCalendar.CalendarItem.BaseItemModel;
@@ -60,13 +60,13 @@ public class FrgMonth extends FrgBaseCalendar {
         doSetSelectedDay(date, false, true);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void changePage(final String date) {
-        int offset = CalendarUtility.getYearMonthStr(date).compareTo(getCurrentMonth());
-        if(0 == offset) {
+    public void changePage(EDirection direction, final String date) {
+        if(0 == CalendarUtility.getYearMonthStr(date).compareTo(getCurrentMonth())) {
             animateSelectedToPos(mIAItemAdapter.getPositionForDay(date), true, true);
         } else {
-            offset = offset > 0 ? 1 : -1;
+            int offset = direction == EDirection.UP ? 1 : -1;
 
             // for old view
             FrgMonth oldCalendarView = copySelf();
@@ -80,7 +80,7 @@ public class FrgMonth extends FrgBaseCalendar {
             setTranslationY(getTranslationY() + offset * this.getHeight());
 
             // for animate
-            animateToNewMonth(oldCalendarView, date, offset, oldCalendarView.getTranslationY());
+            animateToNewMonth(oldCalendarView, date, direction);
         }
     }
 
@@ -129,6 +129,7 @@ public class FrgMonth extends FrgBaseCalendar {
      * @param animate           if true use animate with selected-view
      * @param callListener       if true will invoke day-change-listener
      */
+    @SuppressWarnings("unchecked")
     private void doSetSelectedDay(final String date, final boolean animate, final boolean callListener) {
         mIAItemAdapter.setDayModel(getCalendarDataList(date));
         mIAItemAdapter.notifyDataSetChanged();
@@ -219,23 +220,17 @@ public class FrgMonth extends FrgBaseCalendar {
 
     /**
      * animate for change calendar month
-     *
-     * @param oldMonthView view for old view
-     * @param date         new date for selected
-     * @param offset       offset between new-month to old-month
-     * @param translationY Y position
      */
-    private void animateToNewMonth(final FrgMonth oldMonthView, final String date,
-                                   int offset, float translationY) {
-        ObjectAnimator animator1 = ObjectAnimator
-                .ofFloat(this, "translationY", translationY);
-        animator1.setTarget(this);
-        animator1.setDuration(600);
+    private void animateToNewMonth(final FrgMonth oldMonthView, final String date, EDirection direction) {
+        float oldTY = oldMonthView.getTranslationY();
+        ObjectAnimator oa1 = ObjectAnimator.ofFloat(this, "translationY", oldTY);
+        oa1.setTarget(this);
+        oa1.setDuration(600);
 
-        final ObjectAnimator animator2 = ObjectAnimator
-                .ofFloat(this, "translationY", translationY - offset * this.getHeight());
-        animator2.setTarget(oldMonthView);
-        animator2.addListener(new Animator.AnimatorListener() {
+        final ObjectAnimator oa2 = ObjectAnimator.ofFloat(this, "translationY",
+                        oldTY - (direction == EDirection.UP ? 1 : -1) * this.getHeight());
+        oa2.setTarget(oldMonthView);
+        oa2.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
             }
@@ -256,27 +251,10 @@ public class FrgMonth extends FrgBaseCalendar {
             public void onAnimationRepeat(Animator animation) {
             }
         });
-        animator2.setDuration(600);
+        oa2.setDuration(600);
 
-        animator1.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                animator2.start();
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
-        animator1.start();
+        oa1.start();
+        oa2.start();
     }
     /// PRIVATE END
 }

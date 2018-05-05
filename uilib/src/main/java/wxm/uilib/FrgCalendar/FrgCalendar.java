@@ -16,8 +16,10 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 import wxm.androidutil.util.UtilFun;
-import wxm.uilib.FrgCalendar.Base.CalendarStatus;
+import wxm.uilib.FrgCalendar.Base.ECalendarMode;
+import wxm.uilib.FrgCalendar.Base.ECalendarStatus;
 import wxm.uilib.FrgCalendar.Base.CalendarUtility;
+import wxm.uilib.FrgCalendar.Base.EDirection;
 import wxm.uilib.FrgCalendar.Base.ICalendarListener;
 import wxm.uilib.FrgCalendar.CalendarItem.BaseItemAdapter;
 import wxm.uilib.FrgCalendar.Month.FrgMonth;
@@ -40,14 +42,15 @@ public class FrgCalendar extends ConstraintLayout {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2,
                                float velocityX, float velocityY) {
-            if (mIsShrinkMode) {
+            if (getCalendarMode().isWeekMode()) {
                 float dif = e1.getX() - e2.getX();
                 if (Math.abs(dif) > CalendarUtility.mItemWidth * 2
                         && Math.abs(velocityY) < Math.abs(velocityX)) {
                     Calendar calDay = CalendarUtility.getCalendarByYearMonthDay(mFGWeek.getCurrentDay());
                     calDay.add(Calendar.WEEK_OF_YEAR, dif > 0 ? 1 : -1);
 
-                    mFGWeek.changePage(CalendarUtility.getYearMonthDayStr(calDay));
+                    mFGWeek.changePage(dif > 0? EDirection.LEFT : EDirection.RIGHT,
+                            CalendarUtility.getYearMonthDayStr(calDay));
                     return true;
                 }
             } else {
@@ -57,7 +60,8 @@ public class FrgCalendar extends ConstraintLayout {
                     Calendar calDay = CalendarUtility.getCalendarByYearMonthDay(mFGMonth.getCurrentDay());
                     calDay.add(Calendar.MONTH, dif > 0 ? 1 : -1);
 
-                    mFGMonth.changePage(CalendarUtility.getYearMonthDayStr(calDay));
+                    mFGMonth.changePage(dif > 0? EDirection.UP : EDirection.DOWN,
+                            CalendarUtility.getYearMonthDayStr(calDay));
                     return true;
                 }
             }
@@ -82,11 +86,9 @@ public class FrgCalendar extends ConstraintLayout {
     private TextView mTVMonth;
 
     // for touch
-    private CalendarStatus status = CalendarStatus.LIST_CLOSE;
+    private ECalendarStatus status = ECalendarStatus.LIST_CLOSE;
 
     // other
-    private boolean mIsShrinkMode = false;
-
     private ICalendarListener mDLSelfDateChangeListener = new ICalendarListener() {
         @Override
         public void onDayChanged(String day) {
@@ -148,7 +150,7 @@ public class FrgCalendar extends ConstraintLayout {
         cDay.set(year, month, day);
 
         String szDay = CalendarUtility.getYearMonthDayStr(cDay);
-        if (mIsShrinkMode)
+        if (getCalendarMode().isWeekMode())
             mFGWeek.setSelectedDay(szDay);
         else
             mFGMonth.setSelectedDay(szDay);
@@ -176,20 +178,24 @@ public class FrgCalendar extends ConstraintLayout {
     }
 
     /**
-     * set shrink mode
-     * can save space if use shrink mode
-     * but not implementation this mode now
+     * set calendar mode
+     * can save space if use 'week' mode
      *
-     * @param flag true for 'shrink mode', false for 'full mode'
+     * @param mode      mode param
      */
-    public void setShrinkMode(boolean flag) {
-        if(mIsShrinkMode == flag)
+    public void setCalendarMode(ECalendarMode mode) {
+        ECalendarMode oldMode = getCalendarMode();
+        if(oldMode == mode)
             return;
 
-        String szDay = mIsShrinkMode ? mFGWeek.getCurrentDay() : mFGMonth.getCurrentDay();
-        mIsShrinkMode = flag;
-        loadCalendarDay(szDay);
-        adjustSelfLayout();
+        mFGMonth.setVisibility(mode.isMonthMode() ? View.VISIBLE : View.GONE);
+        mFGWeek.setVisibility(mode.isWeekMode() ? View.VISIBLE : View.GONE);
+
+        String szDay = oldMode.isWeekMode() ? mFGWeek.getCurrentDay() : mFGMonth.getCurrentDay();
+        Calendar cDay = UtilFun.StringIsNullOrEmpty(szDay) ? Calendar.getInstance() :
+                CalendarUtility.getCalendarByYearMonthDay(szDay);
+        setCalendarSelectedDay(cDay.get(Calendar.YEAR), cDay.get(Calendar.MONTH),
+                cDay.get(Calendar.DAY_OF_MONTH));
     }
 
     /**
@@ -197,8 +203,8 @@ public class FrgCalendar extends ConstraintLayout {
      *
      * @return true if in 'shrink mode'
      */
-    public boolean isShrinkMode() {
-        return mIsShrinkMode;
+    public ECalendarMode getCalendarMode() {
+        return mFGMonth.getVisibility() == View.VISIBLE ? ECalendarMode.MONTH : ECalendarMode.WEEK;
     }
 
     @Override
@@ -210,16 +216,16 @@ public class FrgCalendar extends ConstraintLayout {
 
             case MotionEvent.ACTION_MOVE:
                 mGDDetector.onTouchEvent(ev);
-                status = CalendarStatus.DRAGGING;
+                status = ECalendarStatus.DRAGGING;
                 return true;
 
             case MotionEvent.ACTION_UP:
-                if (status != CalendarStatus.DRAGGING) {
+                if (status != ECalendarStatus.DRAGGING) {
                     return super.dispatchTouchEvent(ev);
                 }
 
                 mGDDetector.onTouchEvent(ev);
-                status = CalendarStatus.ANIMATING;
+                status = ECalendarStatus.ANIMATING;
                 return super.dispatchTouchEvent(ev);
         }
 
@@ -244,8 +250,8 @@ public class FrgCalendar extends ConstraintLayout {
         mFGMonth = (FrgMonth) cl.findViewById(R.id.fg_month);
         mFGWeek = (FrgWeek) cl.findViewById(R.id.fg_week);
         mLLWeekBar = (LinearLayout) findViewById(R.id.week_bar);
-        mFGMonth.setVisibility(mIsShrinkMode ? View.GONE : View.VISIBLE);
-        mFGWeek.setVisibility(mIsShrinkMode ? View.VISIBLE : View.GONE);
+        mFGMonth.setVisibility(View.VISIBLE);
+        mFGWeek.setVisibility(View.GONE);
 
         mGDDetector = new GestureDetector(context, new FlingListener());
         mFGMonth.setDayChangeListener(mDLSelfDateChangeListener);
@@ -253,36 +259,14 @@ public class FrgCalendar extends ConstraintLayout {
 
         initFastSelected((ConstraintLayout) findViewById(R.id.cl_header));
         initWeekBar();
-        adjustSelfLayout();
 
         if (isInEditMode()) {
-            setCalendarItemAdapter(new MothItemAdapter(context),
-                    new WeekItemAdapter(context));
+            setCalendarItemAdapter(new MothItemAdapter(context), new WeekItemAdapter(context));
 
             Calendar cDay = Calendar.getInstance();
             setCalendarSelectedDay(cDay.get(Calendar.YEAR), cDay.get(Calendar.MONTH),
                     cDay.get(Calendar.DAY_OF_MONTH));
         }
-    }
-
-    /**
-     * init calendar day part
-     */
-    private void loadCalendarDay(String szDay) {
-        mFGMonth.setVisibility(mIsShrinkMode ? View.GONE : View.VISIBLE);
-        mFGWeek.setVisibility(mIsShrinkMode ? View.VISIBLE : View.GONE);
-
-        Calendar cDay = UtilFun.StringIsNullOrEmpty(szDay) ? Calendar.getInstance() :
-                CalendarUtility.getCalendarByYearMonthDay(szDay);
-        setCalendarSelectedDay(cDay.get(Calendar.YEAR), cDay.get(Calendar.MONTH),
-                cDay.get(Calendar.DAY_OF_MONTH));
-    }
-
-    /**
-     * adjust self layout
-     * NOT IMPLEMENTATION NOW!
-     */
-    private void adjustSelfLayout() {
     }
 
     /**
@@ -305,7 +289,7 @@ public class FrgCalendar extends ConstraintLayout {
                 int id = v.getId();
                 int dif = 0;
                 Calendar calendar = CalendarUtility.getCalendarByYearMonthDay(
-                        mIsShrinkMode ? mFGWeek.getCurrentDay() : mFGMonth.getCurrentDay());
+                        getCalendarMode().isWeekMode() ? mFGWeek.getCurrentDay() : mFGMonth.getCurrentDay());
                 if (R.id.iv_year_left == id || R.id.iv_year_right == id) {
                     dif = R.id.iv_year_right == id ? 1 : -1;
                     calendar.add(Calendar.YEAR, dif);
@@ -317,10 +301,12 @@ public class FrgCalendar extends ConstraintLayout {
                 }
 
                 if (0 != dif) {
-                    if(mIsShrinkMode)   {
-                        mFGWeek.changePage(CalendarUtility.getYearMonthDayStr(calendar));
+                    if(getCalendarMode().isWeekMode())   {
+                        mFGWeek.changePage(dif == 1? EDirection.LEFT : EDirection.RIGHT,
+                                CalendarUtility.getYearMonthDayStr(calendar));
                     } else {
-                        mFGMonth.changePage(CalendarUtility.getYearMonthDayStr(calendar));
+                        mFGMonth.changePage(dif == 1? EDirection.UP : EDirection.DOWN,
+                                CalendarUtility.getYearMonthDayStr(calendar));
                     }
                 }
             }

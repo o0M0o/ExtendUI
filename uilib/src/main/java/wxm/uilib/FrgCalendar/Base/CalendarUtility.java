@@ -13,7 +13,7 @@ import java.util.Locale;
  * Created by kelin on 16-7-20.
  */
 public final class CalendarUtility {
-    private static boolean  bIsInited = false;
+    private static boolean isInit = false;
 
     // calendar is 7 column * 6 row
     public static final int ROW_COUNT     = 6;
@@ -29,14 +29,18 @@ public final class CalendarUtility {
 
     private static final long ONE_DAY_TIME = 24 * 3600 * 1000L;
 
-    private static final SimpleDateFormat YEAR_MONTH_FORMAT =
+    private static final SimpleDateFormat YEAR_MONTH =
             new SimpleDateFormat("yyyy-MM", Locale.CHINA);
-    private static final SimpleDateFormat YEAR_MONTH_DAY_FORMAT =
+    private static final SimpleDateFormat YEAR_MONTH_DAY =
             new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
 
+    /**
+     * invoke this before use this utility
+     * @param context       for activity or fragment
+     */
     public static void init(Context context) {
-        if(!bIsInited) {
-            bIsInited = true;
+        if(!isInit) {
+            isInit = true;
 
             DisplayMetrics metrics = context.getResources().getDisplayMetrics();
             width = metrics.widthPixels;
@@ -71,7 +75,7 @@ public final class CalendarUtility {
      * @return          example : "2018-05-01"
      */
     public static String getYearMonthDayStr(Calendar cDay)  {
-        return YEAR_MONTH_DAY_FORMAT.format(cDay.getTimeInMillis());
+        return YEAR_MONTH_DAY.format(cDay.getTimeInMillis());
     }
 
     /**
@@ -80,7 +84,7 @@ public final class CalendarUtility {
      * @return          example : "2018-05-01"
      */
     public static String getYearMonthDayStr(long cDay)  {
-        return YEAR_MONTH_DAY_FORMAT.format(cDay);
+        return YEAR_MONTH_DAY.format(cDay);
     }
 
     /**
@@ -89,7 +93,7 @@ public final class CalendarUtility {
      * @return          example : "2018-05"
      */
     public static String getYearMonthStr(Calendar cDay)  {
-        return YEAR_MONTH_FORMAT.format(cDay.getTime());
+        return YEAR_MONTH.format(cDay.getTime());
     }
 
     /**
@@ -110,7 +114,7 @@ public final class CalendarUtility {
     public static Calendar getCalendarByYearMonth(String yearMonth) {
         Calendar calendar = Calendar.getInstance();
         try {
-            calendar.setTimeInMillis(YEAR_MONTH_FORMAT.parse(yearMonth).getTime());
+            calendar.setTimeInMillis(YEAR_MONTH.parse(yearMonth).getTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -125,42 +129,65 @@ public final class CalendarUtility {
     public static Calendar getCalendarByYearMonthDay(String yearMonthDay) {
         Calendar calendar = Calendar.getInstance();
         try {
-            calendar.setTimeInMillis(CalendarUtility.YEAR_MONTH_DAY_FORMAT.parse(yearMonthDay).getTime());
+            calendar.setTimeInMillis(CalendarUtility.YEAR_MONTH_DAY.parse(yearMonthDay).getTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return calendar;
     }
 
-    public static boolean areEqualDays(long time1, long time2) {
+    /**
+     * test in one day
+     * @param time1     time 1
+     * @param time2     time 2
+     * @return          true if in one day
+     */
+    public static boolean isEqualDays(long time1, long time2) {
         Calendar c1 = Calendar.getInstance();
         Calendar c2 = Calendar.getInstance();
         c1.setTimeInMillis(time1);
         c2.setTimeInMillis(time2);
 
-        return areEqualDays(c1, c2);
+        return isEqualDays(c1, c2);
     }
 
-
-    public static boolean areEqualDays(Calendar c1, Calendar c2)  {
+    /**
+     * test in one day
+     * @param c1        time 1
+     * @param c2        time 2
+     * @return          true if in one day
+     */
+    public static boolean isEqualDays(Calendar c1, Calendar c2)  {
         return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
                 && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR);
     }
 
-    public static boolean areEqualMonth(Calendar c1, Calendar c2) {
+    /**
+     * test in one month
+     * @param c1        time 1
+     * @param c2        time 2
+     * @return          true if in one month
+     */
+    public static boolean isEqualMonth(Calendar c1, Calendar c2) {
         return (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR))
                     && (c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH));
     }
 
-    public static int getDiffDayByTimeStamp(long startTimeStamp, long endTimeStamp) {
-        return Math.round((endTimeStamp - startTimeStamp) * 1.0f / ONE_DAY_TIME);
-    }
+    /**
+     * test in one week
+     * day1 & day2 example : "2018-05-05"
+     * @param day1      day 1
+     * @param day2      day 2
+     * @return          true if in one week
+     */
+    public static boolean isInOneWeek(String day1, String day2) {
+        if(null == day1 || null == day2)
+            return false;
 
-    public static int getDiffMonthByYearMonth(String startTime, String endTime) {
-        Calendar startCalendar = getCalendarByYearMonth(startTime);
-        Calendar endCalendar = getCalendarByYearMonth(endTime);
-        return (12 * (endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR))) +
-                endCalendar.get(Calendar.MONTH) - startCalendar.get(Calendar.MONTH);
+        Calendar c1 = getCalendarByYearMonthDay(day1);
+        Calendar c2 = getCalendarByYearMonthDay(day2);
+        return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
+                && c1.get(Calendar.WEEK_OF_YEAR) == c2.get(Calendar.WEEK_OF_YEAR);
     }
 
     /**

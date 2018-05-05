@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.TreeMap;
 
 import wxm.uilib.FrgCalendar.Base.CalendarUtility;
+import wxm.uilib.FrgCalendar.Base.EDirection;
 import wxm.uilib.FrgCalendar.Base.FrgBaseCalendar;
 import wxm.uilib.FrgCalendar.CalendarItem.BaseItemAdapter;
 import wxm.uilib.FrgCalendar.CalendarItem.BaseItemModel;
@@ -61,46 +62,45 @@ public class FrgWeek extends FrgBaseCalendar {
         doSetSelectedDay(date, false, true);
     }
 
-    /**
-     * invoke to change week
-     *
-     * @param date   new date, example : "2018-05-02"
-     */
+    @SuppressWarnings("unchecked")
     @Override
-    public void changePage(final String date) {
-        int offset = date.compareTo(getCurrentDay()) > 0 ? 1 : -1;
+    public void changePage(EDirection direction, final String date) {
+        if(CalendarUtility.isInOneWeek(date, getCurrentDay()))  {
+            animateSelectedToPos(mIAItemAdapter.getPositionForDay(date), true, true);
+            return;
+        }
+
+        final ConstraintLayout clHolder = (ConstraintLayout) getParent();
+        int offset = direction == EDirection.LEFT ? 1 : -1;
+        float translationX = getTranslationX();
 
         // old view
         final FrgWeek oldView = copySelf();
-        ConstraintLayout cl = (ConstraintLayout) getParent();
-        cl.addView(oldView);
-        oldView.setTranslationX(getTranslationX());
+        clHolder.addView(oldView);
+        oldView.setTranslationX(translationX);
 
         // new view
         mIAItemAdapter.setDayModel(getCalendarDataList(date));
         mIAItemAdapter.notifyDataSetChanged();
-        setTranslationX(getTranslationX() + offset * this.getWidth());
+        setTranslationX(translationX + offset * this.getWidth());
 
         // animate
-        float translationX = oldView.getTranslationX();
-        ObjectAnimator animator1 = ObjectAnimator.ofFloat(this,
-                "translationX", translationX);
-        animator1.setTarget(this);
-        animator1.setDuration(600);
+        ObjectAnimator oa1 = ObjectAnimator.ofFloat(this, "translationX", translationX);
+        oa1.setTarget(this);
+        oa1.setDuration(600);
 
-        final ObjectAnimator animator2 = ObjectAnimator.ofFloat(this,
+        ObjectAnimator oa2 = ObjectAnimator.ofFloat(this,
                 "translationX", translationX - offset * this.getWidth());
-        animator2.setTarget(oldView);
-        animator2.addListener(new Animator.AnimatorListener() {
+        oa2.setTarget(oldView);
+        oa2.setDuration(600);
+        oa2.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                ConstraintLayout cl = (ConstraintLayout) getParent();
-                cl.removeView(oldView);
-
+                clHolder.removeView(oldView);
                 animateSelectedToPos(mIAItemAdapter.getPositionForDay(date), true, true);
             }
 
@@ -112,27 +112,9 @@ public class FrgWeek extends FrgBaseCalendar {
             public void onAnimationRepeat(Animator animation) {
             }
         });
-        animator2.setDuration(600);
 
-        animator1.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                animator2.start();
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
-        animator1.start();
+        oa1.start();
+        oa2.start();
     }
 
     /// PRIVATE START
@@ -180,6 +162,7 @@ public class FrgWeek extends FrgBaseCalendar {
      * @param animate           if true use animate with selected-view
      * @param callListener       if true will invoke day-change-listener
      */
+    @SuppressWarnings("unchecked")
     private void doSetSelectedDay(final String date, final boolean animate, final boolean callListener) {
         mIAItemAdapter.setDayModel(getCalendarDataList(date));
         mIAItemAdapter.notifyDataSetChanged();

@@ -36,7 +36,7 @@ public class BaseItemModel {
         szDate = CalendarUtility.getYearMonthDayStr(self);
         szDayNumber = String.valueOf(self.get(Calendar.DAY_OF_MONTH));
 
-        isToday = CalendarUtility.areEqualDays(self, today);
+        isToday = CalendarUtility.isEqualDays(self, today);
         isHoliday = CalendarUtility.isHoliday(self);
     }
 
