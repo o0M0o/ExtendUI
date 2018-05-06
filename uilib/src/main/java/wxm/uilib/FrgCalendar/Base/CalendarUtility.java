@@ -26,8 +26,8 @@ public final class CalendarUtility {
     // pixel size for calendar item
     public static int mItemWidth;
     public static int mItemHeight;
+    public static int mItemBigHeight;
 
-    private static final long ONE_DAY_TIME = 24 * 3600 * 1000L;
 
     private static final SimpleDateFormat YEAR_MONTH =
             new SimpleDateFormat("yyyy-MM", Locale.CHINA);
@@ -48,6 +48,7 @@ public final class CalendarUtility {
 
             mItemWidth = width / COLUMN_COUNT;
             mItemHeight = mItemWidth * 3 / 4;
+            mItemBigHeight = mItemWidth;
         }
     }
 

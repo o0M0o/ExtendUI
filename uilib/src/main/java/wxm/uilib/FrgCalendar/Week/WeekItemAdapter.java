@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import wxm.androidutil.ViewHolder.ViewHolder;
+import wxm.uilib.FrgCalendar.Base.CalendarUtility;
 import wxm.uilib.FrgCalendar.CalendarItem.BaseItemAdapter;
 import wxm.uilib.FrgCalendar.CalendarItem.BaseItemModel;
 import wxm.uilib.FrgCalendar.CalendarItem.EItemStatus;
@@ -33,6 +34,8 @@ public class WeekItemAdapter extends BaseItemAdapter<BaseItemModel> {
         mNormalTxtColor = mContext.getColor(R.color.text_fit);
 
         mSZToday = mContext.getString(R.string.today);
+
+        setItemHeight(CalendarUtility.mItemBigHeight);
     }
 
     @Override

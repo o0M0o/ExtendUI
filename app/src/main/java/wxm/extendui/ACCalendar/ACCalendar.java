@@ -49,8 +49,6 @@ public class ACCalendar extends AppCompatActivity {
                 cDay.get(Calendar.DAY_OF_MONTH));
 
         mBTShrink.setText(mHGVDays.getCalendarMode().isWeekMode() ? "WEEK-MODE" : "MONTH-MODE");
-        mHGVDays.setCalendarMode(mHGVDays.getCalendarMode().isWeekMode()
-                ? ECalendarMode.MONTH : ECalendarMode.WEEK);
 
         Toast tt = Toast.makeText(getApplicationContext(), "selected : ", Toast.LENGTH_SHORT);
         mHGVDays.setDateChangeListener(new ICalendarListener() {

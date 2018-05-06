@@ -21,10 +21,19 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:id="@+id/iv_mode"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="24dp"
+                android:src="@drawable/ic_tag_month"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
                 android:id="@+id/iv_year_left"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_marginStart="64dp"
+                android:layout_marginStart="72dp"
                 android:src="@drawable/ic_to_left"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -76,7 +85,7 @@
                 android:id="@+id/iv_month_right"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_marginEnd="64dp"
+                android:layout_marginEnd="48dp"
                 android:src="@drawable/ic_to_right"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

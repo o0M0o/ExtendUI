@@ -36,7 +36,8 @@ import wxm.uilib.R;
  */
 public class FrgCalendar extends ConstraintLayout {
     private static final int WEEK_ITEM_TEXT_SIZE = 12;
-    private static final int RED_FF725F = 0xffff725f;
+    private static final int COLOR_RED = 0xffff725f;
+    private static final int COLOR_NORMAL_TXT = 0xff000000;
 
     private class FlingListener extends GestureDetector.SimpleOnGestureListener {
         @Override
@@ -84,6 +85,7 @@ public class FrgCalendar extends ConstraintLayout {
 
     private TextView mTVYear;
     private TextView mTVMonth;
+    private ImageView mIVMode;
 
     // for touch
     private ECalendarStatus status = ECalendarStatus.LIST_CLOSE;
@@ -196,6 +198,8 @@ public class FrgCalendar extends ConstraintLayout {
                 CalendarUtility.getCalendarByYearMonthDay(szDay);
         setCalendarSelectedDay(cDay.get(Calendar.YEAR), cDay.get(Calendar.MONTH),
                 cDay.get(Calendar.DAY_OF_MONTH));
+
+        mIVMode.setImageResource(mode.isWeekMode() ? R.drawable.ic_tag_week : R.drawable.ic_tag_month);
     }
 
     /**
@@ -246,6 +250,7 @@ public class FrgCalendar extends ConstraintLayout {
         CalendarUtility.init(context);
 
         // init UI component
+        // first use month mode
         ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.cl_holder);
         mFGMonth = (FrgMonth) cl.findViewById(R.id.fg_month);
         mFGWeek = (FrgWeek) cl.findViewById(R.id.fg_week);
@@ -257,7 +262,7 @@ public class FrgCalendar extends ConstraintLayout {
         mFGMonth.setDayChangeListener(mDLSelfDateChangeListener);
         mFGWeek.setDayChangeListener(mDLSelfDateChangeListener);
 
-        initFastSelected((ConstraintLayout) findViewById(R.id.cl_header));
+        initHeader((ConstraintLayout) findViewById(R.id.cl_header));
         initWeekBar();
 
         if (isInEditMode()) {
@@ -275,7 +280,7 @@ public class FrgCalendar extends ConstraintLayout {
      *
      * @param clHeader layout holder for header
      */
-    private void initFastSelected(ConstraintLayout clHeader) {
+    private void initHeader(ConstraintLayout clHeader) {
         mTVMonth = (TextView) clHeader.findViewById(R.id.tv_month);
         mTVYear = (TextView) clHeader.findViewById(R.id.tv_year);
         ImageView mIVYearLeft = (ImageView) clHeader.findViewById(R.id.iv_year_left);
@@ -316,14 +321,24 @@ public class FrgCalendar extends ConstraintLayout {
         mIVYearRight.setOnClickListener(listener);
         mIVMonthLeft.setOnClickListener(listener);
         mIVMonthRight.setOnClickListener(listener);
+
+
+        mIVMode = (ImageView) clHeader.findViewById(R.id.iv_mode);
+        mIVMode.setImageResource(getCalendarMode().isWeekMode() ? R.drawable.ic_tag_week : R.drawable.ic_tag_month);
+        mIVMode.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ECalendarMode emOld = getCalendarMode();
+                setCalendarMode(emOld.isWeekMode() ? ECalendarMode.MONTH : ECalendarMode.WEEK);
+                mIVMode.setImageResource(emOld.isWeekMode() ? R.drawable.ic_tag_month : R.drawable.ic_tag_week);
+            }
+        });
     }
 
     /**
      * init week-bar
      */
     private void initWeekBar() {
-        int txt_black = getResources().getColor(android.R.color.black);
-
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
         String[] weeks = getResources().getStringArray(R.array.week);
         for (int i = 0; i < weeks.length; i++) {
@@ -334,7 +349,7 @@ public class FrgCalendar extends ConstraintLayout {
             textView.setText(week);
             textView.setTextSize(WEEK_ITEM_TEXT_SIZE);
             textView.setTextColor(i == weeks.length - 1 || i == weeks.length - 2
-                    ? RED_FF725F : txt_black);
+                    ? COLOR_RED : COLOR_NORMAL_TXT);
             textView.setGravity(Gravity.CENTER);
 
             mLLWeekBar.addView(textView);

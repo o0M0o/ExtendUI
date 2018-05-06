@@ -55,6 +55,9 @@ public class FrgWeek extends FrgBaseCalendar {
     public void setCalendarItemAdapter(BaseItemAdapter ciAdapter) {
         mIAItemAdapter = ciAdapter;
         mGVCalendar.setAdapter(mIAItemAdapter);
+
+        mVWFloatingSelected.setLayoutParams(
+                new LayoutParams(mIAItemAdapter.getItemWidth(), mIAItemAdapter.getItemHeight()));
     }
 
     @Override

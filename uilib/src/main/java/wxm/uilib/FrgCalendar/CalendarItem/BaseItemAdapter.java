@@ -32,6 +32,9 @@ public abstract class BaseItemAdapter<T extends BaseItemModel> extends BaseAdapt
 
     protected Class<?>   mItemType;
 
+    protected int mItemWidth;
+    protected int mItemHeight;
+
     /**
      * key      : date("yyyy-MM-dd")
      * value    : you ItemModel extended from BaseItemModel
@@ -46,6 +49,9 @@ public abstract class BaseItemAdapter<T extends BaseItemModel> extends BaseAdapt
         mItemType = tp instanceof ParameterizedType ?
                 (Class<?>) ((ParameterizedType) tp).getActualTypeArguments()[0]
                 : BaseItemModel.class;
+
+        setItemHeight(CalendarUtility.mItemHeight);
+        setItemWidth(CalendarUtility.mItemWidth);
     }
 
     @Override
@@ -67,9 +73,24 @@ public abstract class BaseItemAdapter<T extends BaseItemModel> extends BaseAdapt
     public View getView(int position, View convertView, ViewGroup parent) {
         String date = mSZDayArr.get(position);
         View view = getView(date, mTMItemModel.get(date), convertView, parent);
-        view.setLayoutParams(new GridView.LayoutParams(
-                CalendarUtility.mItemWidth, CalendarUtility.mItemHeight));
+        view.setLayoutParams(new GridView.LayoutParams(mItemWidth, mItemHeight));
         return view;
+    }
+
+    public int getItemHeight()  {
+        return mItemHeight;
+    }
+
+    public void setItemHeight(int val)  {
+        mItemHeight = val;
+    }
+
+    public int getItemWidth()  {
+        return mItemWidth;
+    }
+
+    public void setItemWidth(int val)  {
+        mItemWidth = val;
     }
 
     /**
@@ -92,6 +113,7 @@ public abstract class BaseItemAdapter<T extends BaseItemModel> extends BaseAdapt
         return mSZDayArr.get(pos);
     }
 
+    @SuppressWarnings("unchecked")
     public T getNewItem()   {
         try {
             return (T)mItemType.newInstance();
