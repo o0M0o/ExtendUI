@@ -199,7 +199,7 @@ public class FrgCalendar extends ConstraintLayout {
         setCalendarSelectedDay(cDay.get(Calendar.YEAR), cDay.get(Calendar.MONTH),
                 cDay.get(Calendar.DAY_OF_MONTH));
 
-        mIVMode.setImageResource(mode.isWeekMode() ? R.drawable.ic_tag_week : R.drawable.ic_tag_month);
+        mIVMode.setImageResource(mode.isMonthMode() ? R.drawable.ic_tag_week : R.drawable.ic_tag_month);
     }
 
     /**
@@ -324,13 +324,13 @@ public class FrgCalendar extends ConstraintLayout {
 
 
         mIVMode = (ImageView) clHeader.findViewById(R.id.iv_mode);
-        mIVMode.setImageResource(getCalendarMode().isWeekMode() ? R.drawable.ic_tag_week : R.drawable.ic_tag_month);
+        mIVMode.setImageResource(getCalendarMode().isMonthMode() ? R.drawable.ic_tag_week : R.drawable.ic_tag_month);
         mIVMode.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 ECalendarMode emOld = getCalendarMode();
                 setCalendarMode(emOld.isWeekMode() ? ECalendarMode.MONTH : ECalendarMode.WEEK);
-                mIVMode.setImageResource(emOld.isWeekMode() ? R.drawable.ic_tag_month : R.drawable.ic_tag_week);
+                mIVMode.setImageResource(emOld.isMonthMode() ? R.drawable.ic_tag_month : R.drawable.ic_tag_week);
             }
         });
     }
