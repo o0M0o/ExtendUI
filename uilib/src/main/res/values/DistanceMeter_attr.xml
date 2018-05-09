@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="DistanceMeter">
-        <!-- 前后缀信息 -->
+        <!-- 前后缀信息
         <attr name="dmPostUnit" format="string" />
         <attr name="dmPrvUnit" format="string" />
+        -->
 
-        <!-- 长线间模数，长线数 -->
+        <!-- 长\短线间模数-->
         <attr name="dmMainScaleCount" format="integer" />
         <attr name="dmSubScaleCount" format="integer" />
+
+        <!-- 长短线高度 -->
+        <attr name="dmMainScaleHeight" format="dimension" />
+        <attr name="dmSubScaleHeight" format="dimension" />
 
         <!-- 展示的最大/最小值范围 -->
         <attr name="dmMaxValue" format="integer" />
@@ -15,10 +20,6 @@
 
         <!-- 标签字体大小 -->
         <attr name="dmTextSize" format="dimension" />
-
-        <!-- 长短线高度 -->
-        <attr name="dmMainScaleHeight" format="dimension" />
-        <attr name="dmSubScaleHeight" format="dimension" />
 
         <!-- for tag show -->
         <attr name="dmTagHeight" format="dimension" />

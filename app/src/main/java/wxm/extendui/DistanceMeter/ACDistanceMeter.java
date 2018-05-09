@@ -26,17 +26,14 @@ public class ACDistanceMeter extends AppCompatActivity {
     }
 
     private void initUI() {
-        DistanceMeterTag mt_f = new DistanceMeterTag("1");
+        DistanceMeterTag mt_f = new DistanceMeterTag("1", 10);
         mt_f.setMCRTagColor(getColor(R.color.aqua));
-        mt_f.setMTagVal(10);
 
-        DistanceMeterTag mt_od = new DistanceMeterTag("2");
+        DistanceMeterTag mt_od = new DistanceMeterTag("2", 25);
         mt_od.setMCRTagColor(getColor(R.color.aquamarine));
-        mt_od.setMTagVal(25);
 
-        DistanceMeterTag mt_b = new DistanceMeterTag("3");
+        DistanceMeterTag mt_b = new DistanceMeterTag("3", 75);
         mt_b.setMCRTagColor(getColor(R.color.brown));
-        mt_b.setMTagVal(75);
 
         mDMObj.addCursor(mt_f, mt_od, mt_b);
     }

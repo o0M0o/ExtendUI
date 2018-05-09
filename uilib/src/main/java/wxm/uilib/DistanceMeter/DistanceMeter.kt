@@ -1,5 +1,6 @@
 package wxm.uilib.DistanceMeter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -12,7 +13,6 @@ import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 import wxm.androidutil.util.UiUtil
-import wxm.androidutil.util.UtilFun
 import wxm.uilib.R
 import java.util.*
 
@@ -30,8 +30,6 @@ class DistanceMeter constructor(context: Context, attrs: AttributeSet)
     /**
      * attributes
      */
-    private var mAttrSZPostUnit: String? = null
-    private var mAttrSZPrvUnit: String? = null
     private var mAttrMinValue: Int = 0
     private var mAttrMaxValue: Int = 0
 
@@ -43,6 +41,12 @@ class DistanceMeter constructor(context: Context, attrs: AttributeSet)
     private var mAttrTagWidth: Int = 0
     private var mAttrTagHeight: Int = 0
 
+    private var mTotalValue: Int = 0
+    private var mBigUnitWidth: Float = 0f
+    private var mSmallUnitWidth: Float = 0f
+    private var mBigUnitVal: Float = 0f
+    private var mSmallUnitVal: Float = 0f
+
     /**
      * cursors for meter rule
      */
@@ -53,16 +57,9 @@ class DistanceMeter constructor(context: Context, attrs: AttributeSet)
      */
     private var mTTTranslator: TagTranslator = object : TagTranslator {
         override fun translateTWTag(tagVal: Int): String {
-            return mAttrSZPrvUnit + tagVal.toString() + mAttrSZPostUnit
+            return tagVal.toString()
         }
     }
-
-    /**
-     * const value for self use
-     */
-    private val TEXT_COLOR_NORMAL: Int = Color.BLACK
-    private val DISPLAY_DENSITY: Float
-    private var DISPLAY_TEXT_WIDTH: Float = 0.toFloat()
 
     /**
      * translate value to show tag
@@ -75,40 +72,17 @@ class DistanceMeter constructor(context: Context, attrs: AttributeSet)
     }
 
     internal inner class DrawHelper(private val mCanvas: Canvas) {
-        private val mShortLineWidth = 2
-        private val mLongLineWidth = 4
-
-        private val mBigWidthUnit: Float
-        private val mSmallWidthUnit: Float
-
-        private val mBigUnitVal: Float
-        private val mSmallUnitVal: Float
-
-
-        init {
-            // 获得显示值
-            var mTotalValue = mAttrMaxValue - mAttrMinValue
-            mTotalValue = if (0 == mTotalValue % mAttrMainScaleCount)
-                mTotalValue
-            else
-                mTotalValue + mTotalValue % mAttrMainScaleCount
-
-            mBigWidthUnit = ((mVWWidth - paddingStart - paddingEnd) / mAttrMainScaleCount).toFloat()
-            mSmallWidthUnit = mBigWidthUnit / mAttrSubScaleCount
-
-            mBigUnitVal = (mTotalValue / mAttrMainScaleCount).toFloat()
-            mSmallUnitVal = mBigUnitVal / mAttrSubScaleCount
-        }
+        private val ONE_DP_PX = UiUtil.dip2px(context, 1f)
 
         fun drawScales() {
             // for paint
             val subScalePaint = Paint()
-            subScalePaint.strokeWidth = mShortLineWidth.toFloat()
-            subScalePaint.color = TEXT_COLOR_NORMAL
+            subScalePaint.strokeWidth = SHORT_LINE_WIDTH
+            subScalePaint.color = Color.BLACK
 
             val mainScalePaint = Paint()
-            mainScalePaint.strokeWidth = mLongLineWidth.toFloat()
-            mainScalePaint.color = TEXT_COLOR_NORMAL
+            mainScalePaint.strokeWidth = LONG_LINE_WIDTH
+            mainScalePaint.color = Color.BLACK
 
             val tpScaleTag = TextPaint(Paint.ANTI_ALIAS_FLAG)
             tpScaleTag.color = UiUtil.getColor(context, R.color.text_fit)
@@ -122,15 +96,17 @@ class DistanceMeter constructor(context: Context, attrs: AttributeSet)
             val yTextBottom = yMainScaleTop - 8
 
             for (i in 0..mAttrMainScaleCount) {
+                val txtTag = mTTTranslator.translateTWTag(mAttrMinValue + (mBigUnitVal * i).toInt())
+                val txtWidth = Layout.getDesiredWidth(txtTag, tpScaleTag)
+
                 // draw main scale
                 val xMainScale = rulerValToXCoordinate(i, 0, 0f)
                 mCanvas.drawLine(xMainScale, yMainScaleBottom, xMainScale, yMainScaleTop, mainScalePaint)
 
-                val txtTag = mTTTranslator.translateTWTag(mAttrMinValue + (mBigUnitVal * i).toInt())
                 val xText: Float = when {
                     0 == i -> paddingStart.toFloat()
-                    mAttrMainScaleCount == i -> xMainScale - txtTag.length * DISPLAY_TEXT_WIDTH - 4f
-                    else -> xMainScale - txtTag.length * DISPLAY_TEXT_WIDTH / 2
+                    mAttrMainScaleCount == i -> xMainScale - txtWidth - 4f
+                    else -> xMainScale - txtWidth / 2
                 }
                 mCanvas.drawText(txtTag, xText, yTextBottom, tpScaleTag)
 
@@ -144,31 +120,40 @@ class DistanceMeter constructor(context: Context, attrs: AttributeSet)
 
         fun drawCursors() {
             val yMainScaleBottom = (mVWHeight - (mVWHeight - mAttrMainScaleHeight) / 2).toFloat()
-            val yCursorTop = yMainScaleBottom + UiUtil.dip2px(context, 1f)
+            val yMainScaleTop = yMainScaleBottom - mAttrMainScaleHeight + 4 * ONE_DP_PX
+            val yCursorTop = yMainScaleBottom + ONE_DP_PX
             val yCursorBottom = yCursorTop + mAttrTagHeight
-            val yTextBottom = yCursorBottom + DISPLAY_TEXT_WIDTH + UiUtil.dip2px(context, 4f).toFloat()
+
+            val txtPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
+            txtPaint.textSize = mAttrTextSize.toFloat()
+            val fHight = txtPaint.fontMetrics
+                    .let { Math.ceil(it.descent.toDouble() - it.ascent.toDouble())  }.toFloat()
+            val yTextBottom = yCursorBottom + fHight + ONE_DP_PX.toFloat()
 
             val linePaint = Paint()
-            val txtPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
             for (mt in mALTags) {
                 linePaint.color = mt.mCRTagColor
 
                 val xCursorCenter = meterValueToXCoordinate(mt.mTagVal)
+                val xCursorCenterLeft = xCursorCenter - ONE_DP_PX
+                val xCursorCenterRight = xCursorCenter + ONE_DP_PX
                 val xCursorLeft = xCursorCenter - mAttrTagWidth / 2
                 val xCursorRight = xCursorCenter + mAttrTagWidth / 2
 
                 val p = Path().apply {
-                    moveTo(xCursorCenter, yCursorTop)
+                    moveTo(xCursorCenterRight, yMainScaleTop)
+                    lineTo(xCursorCenterLeft, yMainScaleTop)
+                    lineTo(xCursorCenterLeft, yCursorTop)
                     lineTo(xCursorLeft, yCursorBottom)
                     lineTo(xCursorRight, yCursorBottom)
-                    lineTo(xCursorCenter, yCursorTop)
+                    lineTo(xCursorCenterRight, yCursorTop)
+                    lineTo(xCursorCenterRight, yMainScaleTop)
                 }
                 mCanvas.drawPath(p, linePaint)
 
                 txtPaint.color = mt.mCRTagColor
-                txtPaint.textSize = mAttrTextSize.toFloat()
 
-                val xCursorTextLeft = xCursorCenter - mt.mSZTagName.length * DISPLAY_TEXT_WIDTH / 2
+                val xCursorTextLeft = xCursorCenter - Layout.getDesiredWidth(mt.mSZTagName, txtPaint) / 2
                 mCanvas.drawText(mt.mSZTagName, xCursorTextLeft, yTextBottom, txtPaint)
             }
         }
@@ -192,38 +177,27 @@ class DistanceMeter constructor(context: Context, attrs: AttributeSet)
          */
         private fun rulerValToXCoordinate(big: Int, small: Int, left: Float): Float {
             val xBig: Int = when {
-                0 == big -> mLongLineWidth / 2 + paddingStart
-                mAttrMainScaleCount == big -> mVWWidth - mLongLineWidth / 2 - paddingEnd
-                else -> (paddingStart + mBigWidthUnit * big - mLongLineWidth / 2).toInt()
+                0 == big -> LONG_LINE_WIDTH.toInt() / 2 + paddingStart
+                mAttrMainScaleCount == big -> mVWWidth - LONG_LINE_WIDTH.toInt() / 2 - paddingEnd
+                else -> (paddingStart + mBigUnitWidth * big - LONG_LINE_WIDTH.toInt() / 2).toInt()
             }
 
-            val xSmall = mSmallWidthUnit * small
-            val xLeft = mSmallWidthUnit * left / mSmallUnitVal
+            val xSmall = mSmallUnitWidth * small
+            val xLeft = mSmallUnitWidth * left / mSmallUnitVal
             return xBig + xSmall + xLeft
         }
     }
 
     init {
-        // for normal setting
-        val res = context.resources
-        DISPLAY_DENSITY = res.displayMetrics.density
-
-        // for parameter
         val array = context.obtainStyledAttributes(attrs, R.styleable.DistanceMeter)
         try {
-            var szUnit = array.getString(R.styleable.DistanceMeter_dmPostUnit)
-            mAttrSZPostUnit = if (UtilFun.StringIsNullOrEmpty(szUnit)) "" else szUnit
-
-            szUnit = array.getString(R.styleable.DistanceMeter_dmPrvUnit)
-            mAttrSZPrvUnit = if (UtilFun.StringIsNullOrEmpty(szUnit)) "" else szUnit
-
             mAttrMainScaleCount = array.getInt(R.styleable.DistanceMeter_dmMainScaleCount, 5)
             mAttrSubScaleCount = array.getInt(R.styleable.DistanceMeter_dmSubScaleCount, 2)
             mAttrMinValue = array.getInt(R.styleable.DistanceMeter_dmMinValue, 0)
             mAttrMaxValue = array.getInt(R.styleable.DistanceMeter_dmMaxValue, 100)
 
             mAttrTextSize = array.getDimensionPixelSize(R.styleable.DistanceMeter_dmTextSize,
-                    (DISPLAY_DENSITY * 12).toInt())
+                    UiUtil.dip2px(context, 12f))
             mAttrSubScaleHeight = array.getDimensionPixelSize(R.styleable.DistanceMeter_dmSubScaleHeight,
                     UiUtil.dip2px(context, 4f))
             mAttrMainScaleHeight = array.getDimensionPixelSize(R.styleable.DistanceMeter_dmMainScaleHeight,
@@ -233,39 +207,57 @@ class DistanceMeter constructor(context: Context, attrs: AttributeSet)
                     UiUtil.dip2px(context, 8f))
             mAttrTagWidth = array.getDimensionPixelSize(R.styleable.DistanceMeter_dmTagWidth,
                     UiUtil.dip2px(context, 4f))
-
-            // get other
-            TextPaint(Paint.ANTI_ALIAS_FLAG).let {
-                it.textSize = mAttrTextSize.toFloat()
-                DISPLAY_TEXT_WIDTH = Layout.getDesiredWidth("0", it)
-            }
         } finally {
             array.recycle()
         }
 
+        adjustDefine()
         if (isInEditMode) {
-            val tag1 = DistanceMeterTag("1").apply {
+            val tag1 = DistanceMeterTag("1",
+                    (mAttrMinValue + (mAttrMaxValue - mAttrMinValue) / 3).toFloat()).apply {
                 mCRTagColor = getContext().getColor(R.color.teal)
-                mTagVal = (mAttrMinValue + (mAttrMaxValue - mAttrMinValue) / 3).toFloat()
             }
 
-            val tag2 = DistanceMeterTag("2").apply {
+            val tag2 = DistanceMeterTag("2",
+                (mAttrMinValue + (mAttrMaxValue - mAttrMinValue) / 2).toFloat()).apply {
                 mCRTagColor = getContext().getColor(R.color.aquamarine)
                 mTagVal = (mAttrMinValue + (mAttrMaxValue - mAttrMinValue) / 2).toFloat()
             }
 
-            val tag3 = DistanceMeterTag("3").apply {
+            val tag3 = DistanceMeterTag("3",
+                (mAttrMinValue + (mAttrMaxValue - mAttrMinValue) / 3 * 2).toFloat()).apply {
                 mCRTagColor = getContext().getColor(R.color.brown)
-                mTagVal = (mAttrMinValue + (mAttrMaxValue - mAttrMinValue) / 3 * 2).toFloat()
             }
 
             mALTags.addAll(Arrays.asList(tag1, tag2, tag3))
         }
     }
 
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        mVWWidth = width
+        mVWHeight = height
+        adjustDefine()
+        super.onLayout(changed, left, top, right, bottom)
+    }
+
+
+    @SuppressLint("DrawAllocation")
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        DrawHelper(canvas).apply {
+            canvas.save()
+
+            drawScales()
+            drawCursors()
+
+            canvas.restore()
+        }
+    }
+
+
     /**
-     * set scale translator
-     * @param tt    translator
+     * set [tt] as scale translator,
      */
     fun setScaleTranslator(tt: TagTranslator) {
         mTTTranslator = tt
@@ -293,9 +285,9 @@ class DistanceMeter constructor(context: Context, attrs: AttributeSet)
     }
 
     /**
-     * adjust attribute
-     * @param paras      new attributes
+     * adjust attribute by [paras]
      */
+    @Suppress("unused")
     fun adjustAttribute(paras: Map<String, Any>) {
         paras.forEach{
             when(it.key)    {
@@ -304,35 +296,28 @@ class DistanceMeter constructor(context: Context, attrs: AttributeSet)
             }
         }
 
+        adjustDefine()
         invalidate()
     }
 
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        mVWWidth = width
-        mVWHeight = height
-        super.onLayout(changed, left, top, right, bottom)
-    }
+   private fun adjustDefine()   {
+       mTotalValue = mAttrMaxValue - mAttrMinValue
+       if (0 != mTotalValue % mAttrMainScaleCount)  {
+           mTotalValue += mTotalValue % mAttrMainScaleCount
+       }
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-        drawScaleLine(canvas)
-    }
+       mBigUnitWidth = ((mVWWidth - paddingStart - paddingEnd) / mAttrMainScaleCount).toFloat()
+       mSmallUnitWidth = mBigUnitWidth / mAttrSubScaleCount
 
-    /**
-     * draw scale lines
-     * @param canvas    drawer
-     */
-    private fun drawScaleLine(canvas: Canvas) {
-        canvas.save()
-        DrawHelper(canvas).apply {
-            drawScales()
-            drawCursors()
-        }
-        canvas.restore()
-    }
+       mBigUnitVal = (mTotalValue / mAttrMainScaleCount).toFloat()
+       mSmallUnitVal = mBigUnitVal / mAttrSubScaleCount
+   }
 
     companion object {
         const val PARA_VAL_MIN = "val_min"
         const val PARA_VAL_MAX = "val_max"
+
+        private const val SHORT_LINE_WIDTH = 2f
+        private const val LONG_LINE_WIDTH = 4f
     }
 }
