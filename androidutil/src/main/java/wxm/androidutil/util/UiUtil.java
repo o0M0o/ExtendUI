@@ -19,7 +19,7 @@ public class UiUtil {
      * @param dipValue      待转换dp
      * @return              px值
      */
-    public static int dip2px(Context context, float dipValue){
+    public static int dip2px(final Context context, final float dipValue){
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int)(dipValue * scale + 0.5f);
     }
@@ -30,7 +30,7 @@ public class UiUtil {
      * @param pxValue       px值
      * @return              dp值
      */
-    public static int px2dip(Context context, float pxValue){
+    public static int px2dip(final Context context, final float pxValue){
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int)(pxValue / scale + 0.5f);
     }
@@ -46,11 +46,7 @@ public class UiUtil {
     public static int getColor(Context ct, @ColorRes int id)    {
         int ret;
         Resources res = ct.getResources();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ret = res.getColor(id, ct.getTheme());
-        } else {
-            ret = res.getColor(id);
-        }
+        ret = res.getColor(id, ct.getTheme());
 
         return  ret;
     }
@@ -64,11 +60,7 @@ public class UiUtil {
     public static Drawable getDrawable(Context ct, @DrawableRes int id)    {
         Drawable ret;
         Resources res = ct.getResources();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ret = res.getDrawable(id, ct.getTheme());
-        } else {
-            ret = res.getDrawable(id);
-        }
+        ret = res.getDrawable(id, ct.getTheme());
 
         return  ret;
     }

@@ -16,7 +16,6 @@ public class ACDistanceMeter extends AppCompatActivity {
     @BindView(R.id.dm_obj)
     DistanceMeter   mDMObj;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,22 +26,18 @@ public class ACDistanceMeter extends AppCompatActivity {
     }
 
     private void initUI() {
-        DistanceMeterTag mt_f = new DistanceMeterTag();
-        mt_f.mSZTagName = "1";
-        mt_f.mCRTagColor = getColor(R.color.aqua);
-        mt_f.mTagVal = 10;
+        DistanceMeterTag mt_f = new DistanceMeterTag("1");
+        mt_f.setMCRTagColor(getColor(R.color.aqua));
+        mt_f.setMTagVal(10);
 
-        DistanceMeterTag mt_od = new DistanceMeterTag();
-        mt_od.mSZTagName = "2";
-        mt_od.mCRTagColor = getColor(R.color.aquamarine);
-        mt_od.mTagVal = 25;
+        DistanceMeterTag mt_od = new DistanceMeterTag("2");
+        mt_od.setMCRTagColor(getColor(R.color.aquamarine));
+        mt_od.setMTagVal(25);
 
-        DistanceMeterTag mt_b = new DistanceMeterTag();
-        mt_b.mSZTagName = "3";
-        mt_b.mCRTagColor = getColor(R.color.brown);
-        mt_b.mTagVal = 75;
+        DistanceMeterTag mt_b = new DistanceMeterTag("3");
+        mt_b.setMCRTagColor(getColor(R.color.brown));
+        mt_b.setMTagVal(75);
 
-        mDMObj.clearCursor();
         mDMObj.addCursor(mt_f, mt_od, mt_b);
     }
 }
