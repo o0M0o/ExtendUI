@@ -14,15 +14,15 @@
         <attr name="twPostUnit" format="string" />
         <attr name="twPrvUnit" format="string" />
 
-        <!-- 线之间距离，单位px -->
-        <attr name="twLineDivider" format="integer" />
+        <!-- 线之间距离 -->
+        <attr name="twLineDivider" format="dimension" />
 
-        <!-- 线之间距离，单位px -->
+        <!-- 短线数 -->
         <attr name="twShortLineCount" format="integer" />
 
-        <!-- 长短线的长度，单位px -->
-        <attr name="twLongLineLength" format="integer" />
-        <attr name="twShortLineLength" format="integer" />
+        <!-- 长短线的长度 -->
+        <attr name="twLongLineLength" format="dimension" />
+        <attr name="twShortLineLength" format="dimension" />
 
         <!-- 最大值，最小值，当前值 -->
         <attr name="twMaxValue" format="integer" />

@@ -2,8 +2,6 @@ package wxm.uilib.TuneWheel
 
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.text.Layout
-import android.text.TextPaint
 import android.view.MotionEvent
 
 /**
@@ -11,6 +9,7 @@ import android.view.MotionEvent
  * Created by WangXM on 2017/4/22.
  */
 internal class TWHorizontalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
+    private var mVWWidth: Int = 0
     private var mMiddleHeight: Float = 0f
     private var mLongYDif: Float = 0f
     private var mShortYDif: Float = 0F
@@ -28,7 +27,7 @@ internal class TWHorizontalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
         countCoordinate()
     }
 
-    override fun afterLayout()  {
+    override fun afterLayout() {
         countCoordinate()
     }
 
@@ -42,61 +41,25 @@ internal class TWHorizontalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
 
     override fun drawScaleLine(canvas: Canvas) {
         canvas.save()
-
-        var i = 0
-        var drawCount = 0
-        while (drawCount <= 4 * mTWObj.width) {
-            var xPosition = mTWObj.width / 2 - mTWObj.mMove + getDPToPX((i * mTWObj.mAttrLineDivider).toFloat())
-            if (xPosition + mTWObj.paddingRight < mTWObj.width) {
-                val cur_v = mTWObj.curValue + i
-                if (cur_v <= mTWObj.mAttrMaxValue) {
-                    val tw_tag = mTWObj.mTTTranslator.translateTWTag(cur_v)
-                    if ((cur_v - mTWObj.mAttrMinValue) % (mTWObj.mAttrShortLineCount + 1) == 0) {
-                        canvas.drawLine(xPosition, mLongLineYStart, xPosition, mLongLineYEnd, mLinePaint)
-
-                        canvas.drawText(tw_tag, countLeftStart(xPosition, getTextWidth(mTPNormal, tw_tag)),
-                                mTextBottomY, mTPNormal)
-                    } else {
-                        canvas.drawLine(xPosition, mShortLineYStart, xPosition, mShortLineYEnd, mLinePaint)
-                    }
-
-                    if (mTWObj.mAttrUseCurTag && 0 == i)
-                        canvas.drawText(tw_tag, countLeftStart(xPosition, getTextWidth(mTPBig, tw_tag)),
-                                mTextTopY, mTPBig)
-                }
+        for (i in 0..mVWWidth / (2 * mTWObj.mAttrLineDivider)) {
+            if (0 == i) {
+                drawMiddleScale(canvas)
+            } else {
+                drawLeftScale(canvas, i)
+                drawRightScale(canvas, i)
             }
-
-            if (0 != i) {
-                xPosition = mTWObj.width / 2 - mTWObj.mMove - getDPToPX((i * mTWObj.mAttrLineDivider).toFloat())
-                if (xPosition > mTWObj.paddingLeft) {
-                    val cur_v = mTWObj.curValue - i
-                    if (cur_v >= mTWObj.mAttrMinValue) {
-                        if ((cur_v - mTWObj.mAttrMinValue) % (mTWObj.mAttrShortLineCount + 1) == 0) {
-                            val tw_tag = mTWObj.mTTTranslator.translateTWTag(cur_v)
-                            canvas.drawLine(xPosition, mShortLineYStart, xPosition,
-                                    mShortLineYEnd, mLinePaint)
-
-                            canvas.drawText(tw_tag, countLeftStart(xPosition, getTextWidth(mTPNormal, tw_tag)),
-                                    mTextBottomY, mTPNormal)
-                        } else {
-                            canvas.drawLine(xPosition, mShortLineYStart, xPosition, mShortLineYEnd, mLinePaint)
-                        }
-                    }
-                }
-            }
-
-            drawCount += getDPToPX((2 * mTWObj.mAttrLineDivider).toFloat()).toInt()
-            i++
         }
 
-        drawMiddleLine(canvas, mShortLineYStart, mShortLineYEnd)
+        drawMiddleLine(canvas)
         canvas.restore()
     }
 
-    private fun countCoordinate()   {
+    private fun countCoordinate() {
+        mVWWidth = mTWObj.width
+
         mMiddleHeight = (mTWObj.height / 2).toFloat()
-        mLongYDif = getDPToPX((mTWObj.mAttrLongLineHeight / 2).toFloat())
-        mShortYDif = getDPToPX((mTWObj.mAttrShortLineHeight / 2).toFloat())
+        mLongYDif = ((mTWObj.mAttrLongLineHeight / 2).toFloat())
+        mShortYDif = ((mTWObj.mAttrShortLineHeight / 2).toFloat())
 
         mLongLineYStart = mMiddleHeight - mLongYDif
         mLongLineYEnd = mMiddleHeight + mLongYDif
@@ -104,7 +67,54 @@ internal class TWHorizontalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
         mShortLineYEnd = mMiddleHeight + mShortYDif
 
         mTextTopY = mLongLineYStart / 2 + getTxtHeight(mTPBig) / 2
-        mTextBottomY = (mTWObj.height + mLongLineYEnd) / 2 + getTxtHeight(mTPNormal)/ 2
+        mTextBottomY = (mTWObj.height + mLongLineYEnd) / 2 + getTxtHeight(mTPNormal) / 2
+    }
+
+
+    /**
+     * 中间的红色指示线
+     * @param canvas     画布
+     */
+    private fun drawMiddleScale(canvas: Canvas) {
+        val xPosition = (mVWWidth / 2 - mTWObj.mMove).toFloat()
+        drawScale(canvas, mTWObj.curValue, xPosition)
+
+        if (mTWObj.mAttrUseCurTag) {
+            mTWObj.mTTTranslator.translateTWTag(mTWObj.curValue).let {
+                canvas.drawText(it, countLeftStart(xPosition, getTextWidth(mTPBig, it)),
+                        mTextTopY, mTPBig)
+            }
+        }
+    }
+
+    private fun drawLeftScale(canvas: Canvas, pos: Int) {
+        val xPosition = mVWWidth / 2 - mTWObj.mMove - (pos * mTWObj.mAttrLineDivider).toFloat()
+        val curVal = mTWObj.curValue - pos
+        if (curVal >= mTWObj.mAttrMinValue) {
+            drawScale(canvas, curVal, xPosition)
+        }
+    }
+
+    private fun drawRightScale(canvas: Canvas, pos: Int) {
+        val xPosition = mVWWidth / 2 - mTWObj.mMove + (pos * mTWObj.mAttrLineDivider).toFloat()
+        val curVal = mTWObj.curValue + pos
+        if (curVal <= mTWObj.mAttrMaxValue) {
+            drawScale(canvas, curVal, xPosition)
+        }
+    }
+
+    private fun drawScale(canvas: Canvas, curVal: Int, xPosition: Float)  {
+        if ((curVal - mTWObj.mAttrMinValue) % (mTWObj.mAttrShortLineCount + 1) == 0) {
+            mTWObj.mTTTranslator.translateTWTag(curVal).let {
+                canvas.drawLine(xPosition, mLongLineYStart, xPosition,
+                        mLongLineYEnd, mLinePaint)
+
+                canvas.drawText(it, countLeftStart(xPosition, getTextWidth(mTPNormal, it)),
+                        mTextBottomY, mTPNormal)
+            }
+        } else {
+            canvas.drawLine(xPosition, mShortLineYStart, xPosition, mShortLineYEnd, mLinePaint)
+        }
     }
 
     /**
@@ -120,15 +130,13 @@ internal class TWHorizontalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
     /**
      * 中间的红色指示线
      * @param canvas     画布
-     * @param s_y        起始Y坐标
-     * @param e_y        结束Y坐标
      */
-    private fun drawMiddleLine(canvas: Canvas, s_y: Float, e_y: Float) {
-        val indexWidth = 12
-
-        val redPaint = Paint()
-        redPaint.strokeWidth = indexWidth.toFloat()
-        redPaint.color = mTWObj.LINE_COLOR_CURSOR
-        canvas.drawLine((mTWObj.width / 2).toFloat(), s_y, (mTWObj.width / 2).toFloat(), e_y, redPaint)
+    private fun drawMiddleLine(canvas: Canvas) {
+        val xPosition = ((mTWObj.width) / 2).toFloat()
+        Paint().let {
+            it.strokeWidth = getDPToPX(8)
+            it.color = mTWObj.LINE_COLOR_CURSOR
+            canvas.drawLine(xPosition, mLongLineYStart, xPosition, mLongLineYEnd, it)
+        }
     }
 }

@@ -11,9 +11,7 @@ import android.view.VelocityTracker
 import android.view.View
 import android.view.ViewConfiguration
 import android.widget.Scroller
-
 import wxm.androidutil.util.UiUtil
-import wxm.androidutil.util.UtilFun
 import wxm.uilib.R
 
 /**
@@ -59,7 +57,7 @@ class TuneWheel(context: Context, attrs: AttributeSet) : View(context, attrs) {
      * default translate for tag
      */
     internal var mTTTranslator: TagTranslate = object : TagTranslate {
-        override fun translateTWTag(tagVal : Int): String {
+        override fun translateTWTag(tagVal: Int): String {
             return tagVal.toString()
         }
     }
@@ -115,7 +113,8 @@ class TuneWheel(context: Context, attrs: AttributeSet) : View(context, attrs) {
             // for helper
             mAttrOrientation = array.getInt(R.styleable.TuneWheel_twOrientation, EM_HORIZONTAL)
 
-            mAttrLineDivider = array.getInt(R.styleable.TuneWheel_twLineDivider, 20)
+            mAttrLineDivider = array.getDimensionPixelSize(R.styleable.TuneWheel_twLineDivider,
+                    UiUtil.dip2px(getContext(), 20f))
             mAttrShortLineCount = array.getInt(R.styleable.TuneWheel_twShortLineCount, 1)
             mAttrMinValue = array.getInt(R.styleable.TuneWheel_twMinValue, 0)
             mAttrMaxValue = array.getInt(R.styleable.TuneWheel_twMaxValue, 100)
@@ -123,8 +122,10 @@ class TuneWheel(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
             mAttrTextSize = array.getDimensionPixelSize(R.styleable.TuneWheel_twTextSize,
                     (resources.displayMetrics.scaledDensity * 12).toInt())
-            mAttrLongLineHeight = array.getInt(R.styleable.TuneWheel_twLongLineLength, 24)
-            mAttrShortLineHeight = array.getInt(R.styleable.TuneWheel_twShortLineLength, 16)
+            mAttrLongLineHeight = array.getDimensionPixelSize(R.styleable.TuneWheel_twLongLineLength,
+                    UiUtil.dip2px(getContext(), 24f))
+            mAttrShortLineHeight = array.getDimensionPixelSize(R.styleable.TuneWheel_twShortLineLength,
+                    UiUtil.dip2px(getContext(), 16f))
 
             mAttrUseCurTag = array.getBoolean(R.styleable.TuneWheel_twUseCurTag, true)
         } finally {
