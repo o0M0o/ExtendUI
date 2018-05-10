@@ -1,7 +1,6 @@
 package wxm.uilib.TuneWheel
 
 import android.graphics.Canvas
-import android.graphics.Paint
 import android.view.MotionEvent
 
 /**
@@ -106,6 +105,7 @@ internal class TWHorizontalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
     private fun drawScale(canvas: Canvas, curVal: Int, xPosition: Float)  {
         if ((curVal - mTWObj.mAttrMinValue) % (mTWObj.mAttrShortLineCount + 1) == 0) {
             mTWObj.mTTTranslator.translateTWTag(curVal).let {
+                mLinePaint.strokeWidth = LONG_SCALE_WIDTH
                 canvas.drawLine(xPosition, mLongLineYStart, xPosition,
                         mLongLineYEnd, mLinePaint)
 
@@ -113,6 +113,7 @@ internal class TWHorizontalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
                         mTextBottomY, mTPNormal)
             }
         } else {
+            mLinePaint.strokeWidth = SHORT_SCALE_WIDTH
             canvas.drawLine(xPosition, mShortLineYStart, xPosition, mShortLineYEnd, mLinePaint)
         }
     }
@@ -132,11 +133,8 @@ internal class TWHorizontalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
      * @param canvas     画布
      */
     private fun drawMiddleLine(canvas: Canvas) {
-        val xPosition = ((mTWObj.width) / 2).toFloat()
-        Paint().let {
-            it.strokeWidth = getDPToPX(8)
-            it.color = mTWObj.LINE_COLOR_CURSOR
-            canvas.drawLine(xPosition, mLongLineYStart, xPosition, mLongLineYEnd, it)
+        ((mTWObj.width) / 2).toFloat().let {
+            canvas.drawLine(it, mLongLineYStart, it, mLongLineYEnd, mMiddleLinePaint)
         }
     }
 }

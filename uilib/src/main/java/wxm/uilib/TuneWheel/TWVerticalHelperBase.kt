@@ -102,6 +102,7 @@ internal class TWVerticalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
     private fun drawScale(canvas: Canvas, curVal: Int, yPosition: Float)  {
         if ((curVal - mTWObj.mAttrMinValue) % (mTWObj.mAttrShortLineCount + 1) == 0) {
             mTWObj.mTTTranslator.translateTWTag(curVal).let {
+                mLinePaint.strokeWidth = LONG_SCALE_WIDTH
                 canvas.drawLine(mLongLineXStart, yPosition, mLongLineXEnd,
                         yPosition, mLinePaint)
 
@@ -110,6 +111,7 @@ internal class TWVerticalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
                         yPosition + tw/2, mTPNormal)
             }
         } else {
+            mLinePaint.strokeWidth = SHORT_SCALE_WIDTH
             canvas.drawLine(mShortLineXStart, yPosition, mShortLineXEnd, yPosition, mLinePaint)
         }
     }
@@ -130,11 +132,8 @@ internal class TWVerticalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
      * @param canvas     画布
      */
     private fun drawMiddleLine(canvas: Canvas) {
-        val yPosition = (mVWHeight / 2).toFloat()
-        Paint().let {
-            it.strokeWidth = getDPToPX(8)
-            it.color = mTWObj.LINE_COLOR_CURSOR
-            canvas.drawLine(mLongLineXStart, yPosition, mLongLineXEnd, yPosition, it)
+        (mVWHeight / 2).toFloat().let {
+            canvas.drawLine(mLongLineXStart, it, mLongLineXEnd, it, mMiddleLinePaint)
         }
     }
 }

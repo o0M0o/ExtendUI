@@ -13,9 +13,16 @@ import wxm.androidutil.util.UiUtil
  */
 @Suppress("MemberVisibilityCanBePrivate")
 internal abstract class TWHelperBase(protected var mTWObj: TuneWheel) {
+    protected val LONG_SCALE_WIDTH = getDPToPX(1.5f)
+    protected val SHORT_SCALE_WIDTH = getDPToPX(1)
+
     protected val mLinePaint: Paint = Paint().apply {
-        strokeWidth = 2f
         color = mTWObj.TEXT_COLOR_NORMAL
+    }
+
+    protected val mMiddleLinePaint: Paint = Paint().apply {
+        strokeWidth = getDPToPX(6)
+        color = mTWObj.LINE_COLOR_CURSOR
     }
 
     protected val mTPNormal: TextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
