@@ -15,7 +15,6 @@ import wxm.uilib.TuneWheel.TuneWheel;
  * 展示TuneWheel
  */
 public class ACTuneWheel extends AppCompatActivity {
-
     @BindView(R.id.tv_org_v_val)
     TextView mTVValV1;
 
@@ -54,20 +53,10 @@ public class ACTuneWheel extends AppCompatActivity {
      */
     private void initUI()   {
         //
-        mTWH1.setValueChangeListener(new TuneWheel.OnValueChangeListener() {
-            @Override
-            public void onValueChange(int value, String valTag) {
-                mTVValH1.setText(valTag);
-            }
-        });
+        mTWH1.setValueChangeListener((value, valTag) -> mTVValH1.setText(valTag));
 
         //
-        mTWH2.setValueChangeListener(new TuneWheel.OnValueChangeListener() {
-            @Override
-            public void onValueChange(int value, String valTag) {
-                mTVValH2.setText(valTag);
-            }
-        });
+        mTWH2.setValueChangeListener((value, valTag) -> mTVValH2.setText(valTag));
 
         //
         final ArrayList<String> al_sz = new ArrayList<>();
@@ -80,26 +69,11 @@ public class ACTuneWheel extends AppCompatActivity {
         al_sz.add("星期七");
 
         mTVValH3.setText(al_sz.get(mTWH3.getCurValue()));
-        mTWH3.setTranslateTag(new TuneWheel.TagTranslate() {
-            @Override
-            public String translateTWTag(int val) {
-                return al_sz.get(val);
-            }
-        });
+        mTWH3.setTranslateTag(val -> al_sz.get(val));
 
-        mTWH3.setValueChangeListener(new TuneWheel.OnValueChangeListener() {
-            @Override
-            public void onValueChange(int value, String valTag) {
-                mTVValH3.setText(valTag);
-            }
-        });
+        mTWH3.setValueChangeListener((value, valTag) -> mTVValH3.setText(valTag));
 
         //
-        mTWV1.setValueChangeListener(new TuneWheel.OnValueChangeListener() {
-            @Override
-            public void onValueChange(int value, String valTag) {
-                mTVValV1.setText(valTag);
-            }
-        });
+        mTWV1.setValueChangeListener((value, valTag) -> mTVValV1.setText(valTag));
     }
 }

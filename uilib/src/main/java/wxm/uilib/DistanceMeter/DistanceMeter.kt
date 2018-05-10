@@ -97,7 +97,7 @@ class DistanceMeter constructor(context: Context, attrs: AttributeSet)
 
             for (i in 0..mAttrMainScaleCount) {
                 val txtTag = mTTTranslator.translateTWTag(mAttrMinValue + (mBigUnitVal * i).toInt())
-                val txtWidth = Layout.getDesiredWidth(txtTag, tpScaleTag)
+                val txtWidth = getTxtWidth(tpScaleTag, txtTag)
 
                 // draw main scale
                 val xMainScale = rulerValToXCoordinate(i, 0, 0f)
@@ -126,13 +126,12 @@ class DistanceMeter constructor(context: Context, attrs: AttributeSet)
 
             val txtPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
             txtPaint.textSize = mAttrTextSize.toFloat()
-            val fHight = txtPaint.fontMetrics
-                    .let { Math.ceil(it.descent.toDouble() - it.ascent.toDouble())  }.toFloat()
-            val yTextBottom = yCursorBottom + fHight + ONE_DP_PX.toFloat()
+            val yTextBottom = yCursorBottom + getTxtHeight(txtPaint)
 
             val linePaint = Paint()
             for (mt in mALTags) {
                 linePaint.color = mt.mCRTagColor
+                txtPaint.color = mt.mCRTagColor
 
                 val xCursorCenter = meterValueToXCoordinate(mt.mTagVal)
                 val xCursorCenterLeft = xCursorCenter - ONE_DP_PX
@@ -151,11 +150,18 @@ class DistanceMeter constructor(context: Context, attrs: AttributeSet)
                 }
                 mCanvas.drawPath(p, linePaint)
 
-                txtPaint.color = mt.mCRTagColor
-
-                val xCursorTextLeft = xCursorCenter - Layout.getDesiredWidth(mt.mSZTagName, txtPaint) / 2
+                val xCursorTextLeft = xCursorCenter - getTxtWidth(txtPaint, mt.mSZTagName) / 2
                 mCanvas.drawText(mt.mSZTagName, xCursorTextLeft, yTextBottom, txtPaint)
             }
+        }
+
+        private fun getTxtWidth(tp: TextPaint, txt: String): Float    {
+            return Layout.getDesiredWidth(txt, tp)
+        }
+
+        private fun getTxtHeight(tp: TextPaint): Float    {
+            return tp.fontMetrics.let {
+                Math.ceil(it.descent.toDouble() - it.ascent.toDouble())  }.toFloat()
         }
 
         /**
@@ -169,13 +175,10 @@ class DistanceMeter constructor(context: Context, attrs: AttributeSet)
         }
 
         /**
-         * translate ruler value to x coordinate
-         * @param big       big unit value
-         * @param small     small unit value
-         * @param left      left value
-         * @return          x coordinate in view
+         * translate ruler value(at main scale [big], sub scale [small] with [remainder])
+         * to x coordinate
          */
-        private fun rulerValToXCoordinate(big: Int, small: Int, left: Float): Float {
+        private fun rulerValToXCoordinate(big: Int, small: Int, remainder: Float): Float {
             val xBig: Int = when {
                 0 == big -> LONG_LINE_WIDTH.toInt() / 2 + paddingStart
                 mAttrMainScaleCount == big -> mVWWidth - LONG_LINE_WIDTH.toInt() / 2 - paddingEnd
@@ -183,7 +186,7 @@ class DistanceMeter constructor(context: Context, attrs: AttributeSet)
             }
 
             val xSmall = mSmallUnitWidth * small
-            val xLeft = mSmallUnitWidth * left / mSmallUnitVal
+            val xLeft = mSmallUnitWidth * remainder / mSmallUnitVal
             return xBig + xSmall + xLeft
         }
     }
