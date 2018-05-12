@@ -71,6 +71,12 @@ class TuneWheel(context: Context, attrs: AttributeSet) : View(context, attrs) {
     var curValue: Int = 0
         internal set
 
+    val attrMinValue
+        get() = mAttrMinValue
+
+    val attrMaxValue
+        get() = mAttrMaxValue
+
     /**
      * get current tag string
      */

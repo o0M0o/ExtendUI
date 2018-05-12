@@ -9,6 +9,7 @@ import android.view.MotionEvent
  */
 internal class TWHorizontalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
     private var mVWWidth: Int = 0
+    private var mVWHeight: Int = 0
     private var mMiddleHeight: Float = 0f
     private var mLongYDif: Float = 0f
     private var mShortYDif: Float = 0F
@@ -55,8 +56,9 @@ internal class TWHorizontalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
 
     private fun countCoordinate() {
         mVWWidth = mTWObj.width
+        mVWHeight = mTWObj.height
 
-        mMiddleHeight = (mTWObj.height / 2).toFloat()
+        mMiddleHeight = (mVWHeight / 2).toFloat()
         mLongYDif = ((mTWObj.mAttrLongLineHeight / 2).toFloat())
         mShortYDif = ((mTWObj.mAttrShortLineHeight / 2).toFloat())
 
@@ -66,7 +68,7 @@ internal class TWHorizontalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
         mShortLineYEnd = mMiddleHeight + mShortYDif
 
         mTextTopY = mLongLineYStart / 2 + getTxtHeight(mTPBig) / 2
-        mTextBottomY = (mTWObj.height + mLongLineYEnd) / 2 + getTxtHeight(mTPNormal) / 2
+        mTextBottomY = (mVWHeight + mLongLineYEnd) / 2 + getTxtHeight(mTPNormal) / 2
     }
 
 
@@ -134,7 +136,7 @@ internal class TWHorizontalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
      */
     private fun drawMiddleLine(canvas: Canvas) {
         ((mTWObj.width) / 2).toFloat().let {
-            canvas.drawLine(it, mLongLineYStart, it, mLongLineYEnd, mMiddleLinePaint)
+            canvas.drawLine(it, 0f, it, mVWHeight.toFloat(), mMiddleLinePaint)
         }
     }
 }

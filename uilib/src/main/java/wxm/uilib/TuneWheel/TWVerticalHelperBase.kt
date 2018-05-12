@@ -11,6 +11,7 @@ import android.view.MotionEvent
  * Created by WangXM on 2017/4/22.
  */
 internal class TWVerticalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
+    private var mVWWidth: Int = 0
     private var mVWHeight: Int = 0
     private var mMiddleWidth: Float = 0f
     private var mLongXDif: Float = 0f
@@ -20,6 +21,8 @@ internal class TWVerticalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
     private var mLongLineXEnd: Float = 0f
     private var mShortLineXStart: Float = 0f
     private var mShortLineXEnd: Float = 0f
+
+    private val mNormalTxtHeight: Float = getTxtHeight(mTPNormal)
 
     init {
         countCoordinate()
@@ -54,8 +57,9 @@ internal class TWVerticalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
     }
 
     private fun countCoordinate()   {
+        mVWWidth = mTWObj.width
         mVWHeight = mTWObj.height
-        mMiddleWidth = (mTWObj.width / 2).toFloat()
+        mMiddleWidth = (mVWWidth / 2).toFloat()
         mLongXDif =  (mTWObj.mAttrLongLineHeight / 2).toFloat()
         mShortXDif = (mTWObj.mAttrShortLineHeight / 2).toFloat()
 
@@ -106,25 +110,14 @@ internal class TWVerticalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
                 canvas.drawLine(mLongLineXStart, yPosition, mLongLineXEnd,
                         yPosition, mLinePaint)
 
-                val tw = getTextWidth(mTPNormal, it)
-                canvas.drawText(it, countLeftStart(mLongLineXStart / 2, tw),
-                        yPosition + tw/2, mTPNormal)
+                val txtWidth = getTextWidth(mTPNormal, it)
+                val txtXStart = if(mLongLineXStart > txtWidth)  (mLongLineXStart - txtWidth) / 2 else 0f
+                canvas.drawText(it, txtXStart, yPosition + mNormalTxtHeight / 2, mTPNormal)
             }
         } else {
             mLinePaint.strokeWidth = SHORT_SCALE_WIDTH
             canvas.drawLine(mShortLineXStart, yPosition, mShortLineXEnd, yPosition, mLinePaint)
         }
-    }
-
-
-    /**
-     * 计算显示位置
-     * @param xPosition     起始x坐标
-     * @param textWidth     字体宽度
-     * @return 偏移坐标
-     */
-    private fun countLeftStart(xPosition: Float, textWidth: Float): Float {
-        return xPosition - textWidth / 2
     }
 
     /**
@@ -133,7 +126,7 @@ internal class TWVerticalHelperBase(tw: TuneWheel) : TWHelperBase(tw) {
      */
     private fun drawMiddleLine(canvas: Canvas) {
         (mVWHeight / 2).toFloat().let {
-            canvas.drawLine(mLongLineXStart, it, mLongLineXEnd, it, mMiddleLinePaint)
+            canvas.drawLine(0f, it, mVWWidth.toFloat(), it, mMiddleLinePaint)
         }
     }
 }

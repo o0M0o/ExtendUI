@@ -21,7 +21,7 @@ internal abstract class TWHelperBase(protected var mTWObj: TuneWheel) {
     }
 
     protected val mMiddleLinePaint: Paint = Paint().apply {
-        strokeWidth = getDPToPX(6)
+        strokeWidth = getDPToPX(8)
         color = mTWObj.LINE_COLOR_CURSOR
     }
 
