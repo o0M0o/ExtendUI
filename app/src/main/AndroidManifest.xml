@@ -24,6 +24,10 @@
         <activity
             android:name=".DistanceMeter.ACDistanceMeter"
             android:exported="true" />
+        <activity
+            android:name=".ListView.ACListView"
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".IconButton.ACIconButton"
             android:theme="@style/AppTheme.NoActionBar"
             android:exported="true" />

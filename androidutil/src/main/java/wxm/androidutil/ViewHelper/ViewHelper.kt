@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.TextView
 
 /**
+ * fast use parent-view's child view
  * @author WangXM
  * @version create：2018/4/11
  */

@@ -1,4 +1,4 @@
-package wxm.dofcalculator.ui.base
+package wxm.androidutil.MoreAdapter
 
 import android.content.Context
 import android.support.annotation.LayoutRes
@@ -15,7 +15,8 @@ import wxm.androidutil.ViewHolder.ViewHolder
  * @version create：2018/5/8
  */
 abstract class MoreAdapter(protected val context: Context, data: List<Map<String, *>>,
-                           @param:LayoutRes @field:LayoutRes private val mLRSelfDef: Int)
+                           @Suppress("MemberVisibilityCanBePrivate") @param:LayoutRes @field:LayoutRes
+                           protected val mLRSelfDef: Int)
     : SimpleAdapter(context, data, mLRSelfDef, arrayOfNulls(0), IntArray(0)) {
     private val mVWChild : Array<View?> = arrayOfNulls(data.size)
 
@@ -56,13 +57,14 @@ abstract class MoreAdapter(protected val context: Context, data: List<Map<String
      */
     @Suppress("MemberVisibilityCanBePrivate", "UNUSED_PARAMETER")
     @LayoutRes
-    protected fun getChildViewLayout(pos: Int): Int {
+    protected open fun getChildViewLayout(pos: Int): Int {
         return mLRSelfDef
     }
 
     /**
      * do [funOperator] for each childView until it return false
      */
+    @Suppress("unused")
     protected fun forEachChildView(funOperator: (view:View, pos:Int) -> Boolean)    {
         mVWChild.filterNotNull().forEach{
             if(!funOperator(it, mVWChild.indexOf(it)))

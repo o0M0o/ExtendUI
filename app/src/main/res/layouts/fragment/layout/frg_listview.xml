@@ -4,46 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="wxm.extendui.DistanceMeter.ACDistanceMeter">
+    tools:context="wxm.extendui.ListView.ACListView">
 
-    <wxm.uilib.DistanceMeter.DistanceMeter
-        android:id="@+id/dm_obj"
+    <ListView
+        android:id="@+id/lv_item"
         android:layout_width="0dp"
-        android:layout_height="108dp"
-        android:paddingEnd="4dp"
-        android:paddingStart="4dp"
-        app:dmMainScaleCount="6"
-        app:dmMainScaleHeight="38dp"
-        app:dmSubScaleCount="8"
-        app:dmSubScaleHeight="28dp"
-        app:dmTagWidth="12dp"
-        app:dmTagHeight="10dp"
-        app:dmTextSize="12sp"
-        app:dmMaxValue="120"
-        app:dmMinValue="0"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
-    <wxm.uilib.DistanceMeter.DistanceMeter
-        android:id="@+id/dm_obj1"
-        android:layout_width="0dp"
-        android:layout_height="108dp"
-        android:layout_marginTop="4dp"
-        android:paddingEnd="4dp"
-        android:paddingStart="4dp"
-        app:dmMainScaleCount="6"
-        app:dmMainScaleHeight="38dp"
-        app:dmSubScaleCount="8"
-        app:dmSubScaleHeight="28dp"
-        app:dmTagWidth="12dp"
-        app:dmTagHeight="10dp"
-        app:dmTextSize="12sp"
-        app:dmMaxValue="120"
-        app:dmMinValue="0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dm_obj"/>
 
 </android.support.constraint.ConstraintLayout>

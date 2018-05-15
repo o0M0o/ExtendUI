@@ -6,6 +6,7 @@ package wxm.androidutil.ViewHolder;
  * @author WangXM
  * @version create：2018/4/20
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class ViewDataHolder<T, D> {
     private T   mTag;
     private D   mData;
