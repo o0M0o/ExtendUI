@@ -1,7 +1,6 @@
 package wxm.androidutil.ImageUtility
 
 import android.content.Context
-import android.content.res.AssetManager
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -9,17 +8,14 @@ import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.media.ExifInterface
-
-import java.io.FileInputStream
-import java.io.FileNotFoundException
-import java.io.IOException
-
 import wxm.androidutil.type.MySize
+import java.io.*
 
 /**
  * 处理图像的辅助类
  * Created by 123 on 2016/8/17.
  */
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 object ImageUtil {
     /**
      * 加载本地图片
@@ -27,14 +23,12 @@ object ImageUtil {
      * @return 结果
      */
     fun getLocalBitmap(url: String): Bitmap? {
-        try {
-            val fis = FileInputStream(url)
-            return BitmapFactory.decodeStream(fis)
+        return try {
+            BitmapFactory.decodeStream(FileInputStream(url))
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
-            return null
+            null
         }
-
     }
 
 
@@ -45,7 +39,12 @@ object ImageUtil {
      * @return 结果
      */
     fun getRotatedLocalBitmap(url: String, wsz: MySize): Bitmap? {
-        return rotateBitmap(getLocalBitmap(url), readPictureDegree(url), wsz)
+        return getLocalBitmap(url).let {
+            if (null != it)
+                rotateBitmap(it, readPictureDegree(url), wsz)
+
+            it
+        }
     }
 
 
@@ -56,28 +55,32 @@ object ImageUtil {
      * @param wantSZ  想要的bitmap尺寸（可以为null)
      * @return Bitmap 旋转后的图片
      */
-    fun rotateBitmap(bitmap: Bitmap?, degrees: Int, wantSZ: MySize?): Bitmap? {
-        if (degrees == 0 || null == bitmap) {
+    fun rotateBitmap(bitmap: Bitmap, degrees: Int, wantSZ: MySize?): Bitmap? {
+        if (degrees == 0) {
             return bitmap
         }
 
-        val matrix = Matrix()
-        val w = bitmap.width
-        val h = bitmap.height
-        matrix.setRotate(degrees.toFloat(), (w / 2).toFloat(), (h / 2).toFloat())
+        return Matrix().let {
+            val w = bitmap.width
+            val h = bitmap.height
+            it.setRotate(degrees.toFloat(), (w / 2).toFloat(), (h / 2).toFloat())
 
-        if (null != wantSZ) {
-            if (w > wantSZ.width && h > wantSZ.height) {
-                val scaleWidth = wantSZ.width.toFloat() / w
-                val scaleHeight = wantSZ.height.toFloat() / h
-                val gscale = if (scaleWidth > scaleHeight) scaleWidth else scaleHeight
-                matrix.postScale(gscale, gscale)
+            val parentIt = it
+            wantSZ?.let {
+                if (w > it.width && h > it.height) {
+                    val scaleWidth = it.width.toFloat() / w
+                    val scaleHeight = it.height.toFloat() / h
+                    (if (scaleWidth > scaleHeight) scaleWidth else scaleHeight).let {
+                        parentIt.postScale(it, it)
+                    }
+                }
             }
-        }
 
-        val bmp = Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix, true)
-        bitmap.recycle()
-        return bmp
+            val bmp = Bitmap.createBitmap(bitmap, 0, 0, w, h, it, true)
+            bitmap.recycle()
+
+            bmp
+        }
     }
 
     /**
@@ -86,22 +89,20 @@ object ImageUtil {
      * @return degree旋转的角度
      */
     fun readPictureDegree(path: String): Int {
-        var degree = 0
-        try {
-            val exifInterface = ExifInterface(path)
-            val orientation = exifInterface.getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-            when (orientation) {
-                ExifInterface.ORIENTATION_ROTATE_90 -> degree = 90
-                ExifInterface.ORIENTATION_ROTATE_180 -> degree = 180
-                ExifInterface.ORIENTATION_ROTATE_270 -> degree = 270
+        return try {
+            ExifInterface(path).getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL).let {
+                when (it) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> 90
+                    ExifInterface.ORIENTATION_ROTATE_180 -> 180
+                    ExifInterface.ORIENTATION_ROTATE_270 -> 270
+                    else -> 0
+                }
             }
         } catch (e: IOException) {
             e.printStackTrace()
-            return degree
+            0
         }
-
-        return degree
     }
 
 
@@ -113,7 +114,6 @@ object ImageUtil {
      */
     fun getLocalDrawable(res: Resources, url: String): Drawable? {
         val bm = getLocalBitmap(url) ?: return null
-
         return BitmapDrawable(res, bm)
     }
 
@@ -158,15 +158,35 @@ object ImageUtil {
      * @return          转换成功返回drawable,否则返回null
      */
     fun getAssetsPic(ct: Context, ppath: String): Drawable? {
-        val res = ct.resources
-        val assetManager = ct.assets
-        var ret: Drawable?
-        try {
-            val bitmap = BitmapFactory.decodeStream(assetManager.open(ppath))
-            ret = BitmapDrawable(res, bitmap)
+        return try {
+            BitmapFactory.decodeStream(ct.assets.open(ppath)).let {
+                BitmapDrawable(ct.resources, it)
+            }
         } catch (e: IOException) {
             e.printStackTrace()
-            ret = null
+            null
+        }
+    }
+
+
+    /**
+     * save bitmap as jpg file
+     * @param bm            bitmap data
+     * @param fileDir       jpg file dir
+     * @param fileName      jpg filename
+     * @return              true if success
+     */
+    fun saveBitmapToJPGFile(bm: Bitmap, fileDir: String, fileName: String): Boolean {
+        var ret = false
+        FileOutputStream(File(fileDir, fileName)).let {
+            try {
+                it.use { f ->
+                    ret = bm.compress(Bitmap.CompressFormat.JPEG, 85, f)
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                return false
+            }
         }
 
         return ret

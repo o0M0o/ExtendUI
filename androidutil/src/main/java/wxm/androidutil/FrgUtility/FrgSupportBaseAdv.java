@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
  * @version create：2018/4/7
  */
 public abstract class FrgSupportBaseAdv extends Fragment {
+    @SuppressWarnings("unused")
     protected final String LOG_TAG = getClass().getSimpleName();
 
     @Override

@@ -1,6 +1,9 @@
 package wxm.androidutil.util;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 
 /**
@@ -18,11 +21,12 @@ public class SIMCardUtil {
      * 应用程序也可以注册一个监听器到电话收状态的变化。不需要直接实例化这个类
      * 使用Context.getSystemService(Context.TELEPHONY_SERVICE)来获取这个类的实例。
      */
-    private TelephonyManager telephonyManager;
+    private TelephonyManager    mTelephonyManager;
+    private Context             mContext;
 
     public SIMCardUtil(Context context) {
-        telephonyManager = (TelephonyManager) context
-                .getSystemService(Context.TELEPHONY_SERVICE);
+        mContext = context;
+        mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
     }
 
     /**
@@ -31,7 +35,8 @@ public class SIMCardUtil {
      * <BR>@author CODYY)peijiangping
      */
     public String getNativePhoneNumber() {
-        return (null == telephonyManager) ? null : telephonyManager.getLine1Number();
+        return (null == mTelephonyManager || !checkSelfPermission()) ? null
+                : mTelephonyManager.getLine1Number();
     }
 
     /**
@@ -43,11 +48,13 @@ public class SIMCardUtil {
      * @author CODYY)peijiangping
      */
     public String getProvidersName() {
+        if(!checkSelfPermission())
+            return null;
+
         String ProvidersName = null;
-        // 返回唯一的用户ID;就是这张卡的编号神马的
-        String IMSI = telephonyManager.getSubscriberId();
+        // 返回唯一的用户ID
         // IMSI号前面3位460是国家，紧接着后面2位00 02是中国移动，01是中国联通，03是中国电信。
-        System.out.println(IMSI);
+        String IMSI = mTelephonyManager.getSubscriberId();
         if (IMSI.startsWith("46000") || IMSI.startsWith("46002")) {
             ProvidersName = "中国移动";
         } else if (IMSI.startsWith("46001")) {
@@ -56,5 +63,10 @@ public class SIMCardUtil {
             ProvidersName = "中国电信";
         }
         return ProvidersName;
+    }
+
+    private boolean checkSelfPermission()   {
+        return ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_PHONE_STATE) ==
+                PackageManager.PERMISSION_GRANTED;
     }
 }
