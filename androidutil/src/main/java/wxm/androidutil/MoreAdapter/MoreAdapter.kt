@@ -1,6 +1,7 @@
 package wxm.androidutil.MoreAdapter
 
 import android.content.Context
+import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
 import android.util.SparseArray
 import android.view.View
@@ -16,8 +17,10 @@ import wxm.androidutil.ViewHolder.ViewHolder
  */
 abstract class MoreAdapter(protected val context: Context, data: List<Map<String, *>>,
                            @Suppress("MemberVisibilityCanBePrivate") @param:LayoutRes @field:LayoutRes
-                           protected val mLRSelfDef: Int)
-    : SimpleAdapter(context, data, mLRSelfDef, arrayOfNulls(0), IntArray(0)) {
+                           protected val mLRSelfDef: Int,
+                           from: Array<String?> = arrayOfNulls(0),
+                           to: IntArray = IntArray(0))
+    : SimpleAdapter(context, data, mLRSelfDef, from, to) {
     private val mVWChild : Array<View?> = arrayOfNulls(data.size)
 
     override fun getViewTypeCount(): Int {

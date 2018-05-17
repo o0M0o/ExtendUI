@@ -68,7 +68,7 @@ public class FrgListView extends FrgSupportBaseAdv {
 
     class ItemAdapter extends MoreAdapter {
         public ItemAdapter(Context context, List<? extends Map<String, ?>> data, int mLRSelfDef) {
-            super(context, data, mLRSelfDef);
+            super(context, data, mLRSelfDef, new String[0], new int[0]);
         }
 
         @Override
