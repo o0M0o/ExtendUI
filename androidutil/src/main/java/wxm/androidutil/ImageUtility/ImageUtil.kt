@@ -38,12 +38,10 @@ object ImageUtil {
      * @param wsz  想要的bitmap尺寸（可以为null)
      * @return 结果
      */
-    fun getRotatedLocalBitmap(url: String, wsz: MySize): Bitmap? {
+    fun getRotatedLocalBitmap(url: String, wsz: MySize? = null): Bitmap? {
         return getLocalBitmap(url).let {
-            if (null != it)
-                rotateBitmap(it, readPictureDegree(url), wsz)
-
-            it
+            if (null != it) rotateBitmap(it, readPictureDegree(url), wsz)
+            else it
         }
     }
 
