@@ -1,4 +1,4 @@
-package wxm.androidutil.FrgWebView;
+package wxm.androidutil.frgUtil;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -13,14 +13,12 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import butterknife.BindView;
-import wxm.androidutil.FrgUtility.FrgSupportBaseAdv;
 import wxm.androidutil.R;
 import wxm.androidutil.util.UtilFun;
 
 /**
  * fragment for webView
- * Created by ookoo on 2017/2/15.
+ * Created by WangXM on 2017/2/15.
  */
 public abstract class FrgSupportWebView extends FrgSupportBaseAdv {
     WebView mWVPage;

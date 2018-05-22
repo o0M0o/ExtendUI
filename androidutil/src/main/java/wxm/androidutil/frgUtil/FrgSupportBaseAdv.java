@@ -1,9 +1,8 @@
-package wxm.androidutil.FrgUtility;
+package wxm.androidutil.frgUtil;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -83,9 +82,12 @@ public abstract class FrgSupportBaseAdv extends Fragment {
 
     /**
      * realize this to setup event-bus
+     * default not use event-bus
      * @return      true if use event-bus
      */
-    protected abstract boolean isUseEventBus();
+    protected boolean isUseEventBus()   {
+        return false;
+    }
 
     /**
      * derive it do ui load work

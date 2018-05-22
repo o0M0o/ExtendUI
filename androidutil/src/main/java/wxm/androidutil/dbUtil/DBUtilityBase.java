@@ -1,4 +1,4 @@
-package wxm.androidutil.DBHelper;
+package wxm.androidutil.dbUtil;
 
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 
@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * 数据工具基类
- * -- D   数据类型
- * -- T   数据主键类型
- * Created by 123 on 2016/10/31.
+ * base class for db
+ * -- D   db data
+ * -- T   db data row primary key
+ * Created by WangXM on 2016/10/31.
  */
 public abstract class DBUtilityBase<D extends IDBRow<T>, T> {
     Timestamp mTSLastModifyData;

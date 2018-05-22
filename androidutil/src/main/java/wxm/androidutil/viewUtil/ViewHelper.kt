@@ -1,7 +1,6 @@
-package wxm.androidutil.ViewHelper
+package wxm.androidutil.viewUtil
 
 import android.annotation.TargetApi
-import android.content.res.Resources
 import android.os.Build
 import android.support.annotation.ColorRes
 import android.support.annotation.IdRes

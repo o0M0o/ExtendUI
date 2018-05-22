@@ -1,4 +1,4 @@
-package wxm.androidutil.ViewHolder;
+package wxm.androidutil.viewUtil;
 
 import android.annotation.TargetApi;
 import android.content.Context;

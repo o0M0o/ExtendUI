@@ -1,8 +1,8 @@
-package wxm.androidutil.DBHelper;
+package wxm.androidutil.dbUtil;
 
 /**
- * DB行数据接口
- * Created by ookoo on 2016/11/16.
+ * DB row implementation this
+ * Created by WangXM on 2016/11/16.
  */
 public interface IDBRow<T> {
     /**
