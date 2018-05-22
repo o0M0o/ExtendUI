@@ -65,6 +65,10 @@ public class SIMCardUtil {
         return ProvidersName;
     }
 
+    /**
+     * check permission for this util
+     * @return
+     */
     private boolean checkSelfPermission()   {
         return ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_PHONE_STATE) ==
                 PackageManager.PERMISSION_GRANTED;

@@ -3,8 +3,8 @@ package wxm.androidutil.util;
 import java.security.MessageDigest;
 
 /**
- * 采用MD5加密解密
- * Created by 123 on 2016/6/3.
+ * MD5 util
+ * Created by WangXM on 2016/6/3.
  */
 public class MD5Util {
     /***
@@ -39,7 +39,6 @@ public class MD5Util {
      * 加密解密算法 执行一次加密，两次解密
      */
     public static String convertMD5(String inStr){
-
         char[] a = inStr.toCharArray();
         for (int i = 0; i < a.length; i++){
             a[i] = (char) (a[i] ^ 't');

@@ -8,16 +8,15 @@ import java.io.InputStream;
 
 /**
  * util class for asset
- * Created by ookoo on 2017/2/21.
+ * Created by WangXM on 2017/2/21.
  */
 public class AssetUtil {
-
     /**
-     * 从asset中读取文件并转化为字符串
-     * @param res       resources类
-     * @param fileName  asset中文件名
-     * @param encode    asset中文件编码
-     * @return          文件内容字符串
+     * read file for asset and translate to string
+     * @param res       resources object
+     * @param fileName  asset file name
+     * @param encode    encode for file
+     * @return          String for asset file
      */
     public static String getFromAssets(Resources res, String fileName, String encode){
         String result = "";

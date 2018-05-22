@@ -10,7 +10,7 @@ import android.support.annotation.DrawableRes;
 
 /**
  * 依赖context的辅助类
- * Created by ookoo on 2017/7/4.
+ * Created by WangXM on 2017/7/4.
  */
 public class UiUtil {
     /**

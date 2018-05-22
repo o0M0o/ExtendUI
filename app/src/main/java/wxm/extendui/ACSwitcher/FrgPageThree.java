@@ -3,13 +3,13 @@ package wxm.extendui.ACSwitcher;
 import android.os.Bundle;
 
 import butterknife.OnClick;
-import wxm.androidutil.FrgUtility.FrgSupportBaseAdv;
-import wxm.androidutil.FrgUtility.FrgSupportSwitcher;
+import wxm.androidutil.frgUtil.FrgSupportBaseAdv;
+import wxm.androidutil.frgUtil.FrgSupportSwitcher;
 import wxm.extendui.R;
 
 /**
  * for webview
- * Created by ookoo on 2016/11/29.
+ * Created by WangXM on 2016/11/29.
  */
 public class FrgPageThree extends FrgSupportSwitcher<FrgSupportBaseAdv> {
     public FrgPageThree()   {

@@ -2,10 +2,9 @@ package wxm.extendui.ACSwipe;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import butterknife.BindView;
-import wxm.androidutil.FrgUtility.FrgSupportBaseAdv;
+import wxm.androidutil.frgUtil.FrgSupportBaseAdv;
 import wxm.extendui.R;
 import wxm.uilib.SwipeLayout.SwipeLayout;
 

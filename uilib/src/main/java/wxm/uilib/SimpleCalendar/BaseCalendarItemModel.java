@@ -2,7 +2,7 @@ package wxm.uilib.SimpleCalendar;
 
 /**
  * class for Calendar Item
- * Created by ookoo on 2017/07/07
+ * Created by WangXM on 2017/07/07
  */
 public class BaseCalendarItemModel {
     /**

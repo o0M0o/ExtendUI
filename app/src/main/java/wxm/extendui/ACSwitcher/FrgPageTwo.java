@@ -2,9 +2,6 @@ package wxm.extendui.ACSwitcher;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -13,12 +10,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.BindView;
-import wxm.androidutil.FrgUtility.FrgSupportBaseAdv;
+import wxm.androidutil.frgUtil.FrgSupportBaseAdv;
 import wxm.extendui.R;
 
 /**
  * for webview
- * Created by ookoo on 2016/11/29.
+ * Created by WangXM on 2016/11/29.
  */
 public class FrgPageTwo extends FrgSupportBaseAdv {
     @BindView(R.id.tw_tag)

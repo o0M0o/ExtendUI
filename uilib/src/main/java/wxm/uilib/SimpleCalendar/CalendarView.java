@@ -24,7 +24,7 @@ import wxm.uilib.R;
 
 /**
  * class for calendar
- * Created by ookoo on 2017/07/06
+ * Created by WangXM on 2017/07/06
  */
 public class CalendarView extends FrameLayout {
     static class SelectedRowColumn {

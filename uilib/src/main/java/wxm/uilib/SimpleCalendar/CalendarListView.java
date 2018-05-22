@@ -18,7 +18,7 @@ import wxm.uilib.R;
 
 /**
  * for calendar
- * Created by ookoo on 2017/07/06.
+ * Created by WangXM on 2017/07/06.
  */
 public class CalendarListView extends FrameLayout {
     private static final int WEEK_ITEM_TEXT_SIZE = 12;

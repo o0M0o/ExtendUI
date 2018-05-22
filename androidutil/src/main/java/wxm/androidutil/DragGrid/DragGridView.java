@@ -1,4 +1,4 @@
-package wxm.androidutil.DragGrid;
+package wxm.androidutil.dragGrid;
 
 import android.app.Activity;
 import android.content.Context;

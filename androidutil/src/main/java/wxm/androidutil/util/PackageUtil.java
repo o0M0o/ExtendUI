@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import wxm.androidutil.log.TagLog;
+
 /**
  * 包辅助类
- * Created by ookoo on 2017/2/21.
+ * Created by WangXM on 2017/2/21.
  */
 public class PackageUtil {
-    private final static String LOG_TAG = "PackageUtil";
-
     /**
      * 获取包版本号
      * @param context           包上下文
@@ -23,7 +23,7 @@ public class PackageUtil {
             verCode = context.getPackageManager()
                             .getPackageInfo(package_name, 0).versionCode;
         } catch (PackageManager.NameNotFoundException e) {
-            Log.e(LOG_TAG, e.getMessage());
+            TagLog.INSTANCE.e("failure", e);
         }
 
         return verCode;
@@ -42,7 +42,7 @@ public class PackageUtil {
             verName = context.getPackageManager()
                             .getPackageInfo(package_name, 0).versionName;
         } catch (PackageManager.NameNotFoundException | NullPointerException e) {
-            Log.e(LOG_TAG, e.getMessage());
+            TagLog.INSTANCE.e("failure", e);
         }
 
         return verName;

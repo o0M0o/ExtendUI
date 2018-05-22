@@ -15,7 +15,7 @@ import wxm.androidutil.type.MySize;
 
 /**
  * 工具类
- * Created by 123 on 2016/8/17.
+ * Created by WangXM on 2016/8/17.
  */
 public class UtilFun {
     /**
@@ -208,53 +208,5 @@ public class UtilFun {
         }
 
         return  ts;
-    }
-
-
-    /**
-     * Size转换到字符串
-     * @param sz 待转换Size
-     * @return 结果
-     */
-    public static String SizeToString(MySize sz) {
-        return Integer.toString(sz.getWidth())
-                + " X " + Integer.toString(sz.getHeight());
-    }
-
-    /**
-     * 字符串转换到Size
-     * @param str 待转换字符串
-     * @return 结果
-     */
-    public static MySize StringToSize(String str)     {
-        String[] sz = str.split(" X ");
-        if(2 != sz.length)
-            return new MySize(0, 0);
-
-
-        return new MySize(Integer.parseInt(sz[0]), Integer.parseInt(sz[1]));
-    }
-
-    /**
-     * 打印调用堆栈
-     * @param max_lv 打印最大调用层数
-     * @return 调用堆栈
-     */
-    public static String[] getCallStack(int max_lv) {
-        StackTraceElement st[] = Thread.currentThread().getStackTrace();
-        int val_lv = st.length - 3;
-        if (0 < val_lv) {
-            int real_lv = max_lv > val_lv ? val_lv : max_lv;
-            String[] ret_ar = new String[real_lv];
-
-            int lv_end = real_lv + 3;
-            for (int i = 3; i < lv_end; i++) {
-                ret_ar[i - 3] = st[i].toString();
-            }
-
-            return ret_ar;
-        }
-
-        return new String[0];
     }
 }

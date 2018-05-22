@@ -5,18 +5,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.TextView;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeMap;
-import java.util.function.Supplier;
 
-import wxm.androidutil.ViewHolder.ViewHolder;
 import wxm.uilib.FrgCalendar.Base.CalendarUtility;
-import wxm.uilib.R;
 
 /**
  * adapter for calendar-item-ui

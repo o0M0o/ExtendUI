@@ -1,4 +1,4 @@
-package wxm.androidutil.Dialog;
+package wxm.androidutil.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -15,7 +15,7 @@ import wxm.androidutil.util.UtilFun;
 
 /**
  * 提供"OK"和"NO"的对话框基类
- * Created by 123 on 2016/11/1.
+ * Created by WangXM on 2016/11/1.
  */
 @SuppressWarnings("unused")
 public abstract class DlgOKOrNOBase extends DialogFragment {

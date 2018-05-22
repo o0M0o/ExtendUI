@@ -1,4 +1,4 @@
-package wxm.androidutil.Switcher;
+package wxm.androidutil.switcher;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;

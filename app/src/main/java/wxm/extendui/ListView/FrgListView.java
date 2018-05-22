@@ -5,17 +5,15 @@ import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import wxm.androidutil.FrgUtility.FrgSupportBaseAdv;
-import wxm.androidutil.MoreAdapter.MoreAdapter;
-import wxm.androidutil.ViewHolder.ViewHolder;
+import wxm.androidutil.frgUtil.FrgSupportBaseAdv;
+import wxm.androidutil.moreAdapter.MoreAdapter;
+import wxm.androidutil.viewUtil.ViewHolder;
 import wxm.extendui.R;
 
 /**

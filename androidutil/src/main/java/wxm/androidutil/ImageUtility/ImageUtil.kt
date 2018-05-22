@@ -13,7 +13,7 @@ import java.io.*
 
 /**
  * 处理图像的辅助类
- * Created by 123 on 2016/8/17.
+ * Created by WangXM on 2016/8/17.
  */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 object ImageUtil {

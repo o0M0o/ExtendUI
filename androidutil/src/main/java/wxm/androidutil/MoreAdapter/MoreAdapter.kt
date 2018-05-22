@@ -1,4 +1,4 @@
-package wxm.androidutil.MoreAdapter
+package wxm.androidutil.moreAdapter
 
 import android.content.Context
 import android.support.annotation.LayoutRes
@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.SimpleAdapter
 import android.widget.TextView
 
-import wxm.androidutil.ViewHolder.ViewHolder
+import wxm.androidutil.viewUtil.ViewHolder
 
 /**
  * fix some issues when use SimpleAdapter
@@ -23,6 +23,10 @@ abstract class MoreAdapter(protected val context: Context, data: List<Map<String
                            private val mToId: IntArray = IntArray(0))
     : SimpleAdapter(context, data, mLRSelfDef, mFromKey, mToId) {
     private val mVWChild : Array<View?> = arrayOfNulls(data.size)
+
+    /**
+     * default view binder
+     */
     private val mDefaultViewBinder = ViewBinder { v, d, text ->
         when (v) {
             is Checkable -> {
@@ -105,6 +109,9 @@ abstract class MoreAdapter(protected val context: Context, data: List<Map<String
         return mLRSelfDef
     }
 
+    /**
+     * self view bind
+     */
     @Suppress("UNCHECKED_CAST")
     private fun selfBindView(position: Int, view: View): Boolean {
         val bind = viewBinder

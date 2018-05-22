@@ -5,8 +5,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import wxm.androidutil.FrgUtility.FrgSupportBaseAdv;
-import wxm.androidutil.Switcher.ACSwitcherActivity;
+import wxm.androidutil.frgUtil.FrgSupportBaseAdv;
+import wxm.androidutil.switcher.ACSwitcherActivity;
 import wxm.extendui.R;
 
 

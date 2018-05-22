@@ -1,4 +1,4 @@
-package wxm.androidutil.Dialog;
+package wxm.androidutil.dialog;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import wxm.androidutil.util.UtilFun;
 
 /**
  * 日期选择对话框
- * Created by 123 on 2016/11/1.
+ * Created by WangXM on 2016/11/1.
  */
 @SuppressWarnings("deprecation")
 public class DlgDatePicker extends DlgOKOrNOBase {

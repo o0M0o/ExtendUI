@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 /**
  * 文件操作辅助类
- * Created by 123 on 2016/8/17.
+ * Created by WangXM on 2016/8/17.
  */
 public class FileUtil {
 

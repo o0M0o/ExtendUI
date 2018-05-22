@@ -7,7 +7,7 @@ import java.lang.ref.WeakReference;
 
 /**
  * 使用弱引用避免内存泄漏的消息处理器
- * Created by ookoo on 2016/11/16.
+ * Created by WangXM on 2016/11/16.
  */
 public abstract class WRMsgHandler<T>
                         extends Handler {

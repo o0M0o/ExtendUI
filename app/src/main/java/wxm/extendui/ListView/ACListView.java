@@ -3,8 +3,8 @@ package wxm.extendui.ListView;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import wxm.androidutil.FrgUtility.FrgSupportBaseAdv;
-import wxm.androidutil.Switcher.ACSwitcherActivity;
+import wxm.androidutil.frgUtil.FrgSupportBaseAdv;
+import wxm.androidutil.switcher.ACSwitcherActivity;
 
 public class ACListView extends ACSwitcherActivity<FrgSupportBaseAdv> {
     @Override
