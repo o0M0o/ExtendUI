@@ -1,4 +1,4 @@
-package wxm.androidutil.viewUtil
+package wxm.androidutil.ui.viewUtil
 
 import android.support.annotation.IdRes
 import android.view.View

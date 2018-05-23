@@ -1,4 +1,4 @@
-package wxm.androidutil.viewUtil;
+package wxm.androidutil.ui.viewUtil;
 
 /**
  * use tag get it's translate data
