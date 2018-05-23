@@ -3,6 +3,9 @@ package wxm.androidutil.app
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Resources
+import android.graphics.drawable.Drawable
+import android.support.annotation.*
 import android.support.v4.content.ContextCompat
 import wxm.androidutil.log.TagLog
 
@@ -74,6 +77,44 @@ abstract class AppBase : Application() {
             }
 
             return verName
+        }
+
+        /**
+         * get app resources
+         */
+        fun getResources(): Resources = instance.resources
+
+        /**
+         * get res string
+         */
+        fun getString(@StringRes resId: Int, vararg args:Any): String {
+            return instance.getString(resId, args)
+        }
+
+        fun getString(@StringRes resId: Int): String {
+            return instance.getString(resId)
+        }
+
+        /**
+         * get res color
+         */
+        @ColorInt
+        fun getColor(@ColorRes resId: Int): Int {
+            return instance.getColor(resId)
+        }
+
+        /**
+         * get res drawable
+         */
+        fun getDrawable(@DrawableRes resId: Int): Drawable {
+            return instance.getDrawable(resId)
+        }
+
+        /**
+         * get dimension by pixel
+         */
+        fun getDimension(@DimenRes resId: Int): Float {
+            return getResources().getDimension(resId)
         }
     }
 }

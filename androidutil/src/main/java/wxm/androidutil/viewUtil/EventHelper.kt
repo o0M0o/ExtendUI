@@ -1,4 +1,4 @@
-package wxm.KeepAccount.utility
+package wxm.androidutil.viewUtil
 
 import android.support.annotation.IdRes
 import android.view.View
