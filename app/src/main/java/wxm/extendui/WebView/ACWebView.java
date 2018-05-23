@@ -3,7 +3,7 @@ package wxm.extendui.WebView;
 
 import android.os.Bundle;
 
-import wxm.androidutil.switcher.ACSwitcherActivity;
+import wxm.androidutil.ui.activity.ACSwitcherActivity;
 
 /**
  * test webview frg

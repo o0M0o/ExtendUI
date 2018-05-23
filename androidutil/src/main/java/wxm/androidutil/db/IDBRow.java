@@ -1,4 +1,4 @@
-package wxm.androidutil.dbUtil;
+package wxm.androidutil.db;
 
 /**
  * DB row implementation this

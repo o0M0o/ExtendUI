@@ -1,4 +1,4 @@
-package wxm.androidutil.ui.viewUtil;
+package wxm.androidutil.ui.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;

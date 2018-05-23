@@ -1,4 +1,4 @@
-package wxm.androidutil.dbUtil;
+package wxm.androidutil.db;
 
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 

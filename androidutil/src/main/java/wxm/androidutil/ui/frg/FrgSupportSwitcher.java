@@ -1,4 +1,4 @@
-package wxm.androidutil.frgUtil;
+package wxm.androidutil.ui.frg;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;

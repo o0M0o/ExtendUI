@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import wxm.androidutil.frgUtil.FrgSupportBaseAdv;
-import wxm.androidutil.moreAdapter.MoreAdapter;
-import wxm.androidutil.viewUtil.ViewHolder;
+import wxm.androidutil.ui.frg.FrgSupportBaseAdv;
+import wxm.androidutil.ui.moreAdapter.MoreAdapter;
+import wxm.androidutil.ui.view.ViewHolder;
 import wxm.extendui.R;
 
 /**

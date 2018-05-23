@@ -1,4 +1,4 @@
-package wxm.androidutil.moreAdapter
+package wxm.androidutil.ui.moreAdapter
 
 import android.content.Context
 import android.support.annotation.LayoutRes
@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.SimpleAdapter
 import android.widget.TextView
 
-import wxm.androidutil.ui.viewUtil.ViewHolder
+import wxm.androidutil.ui.view.ViewHolder
 
 /**
  * fix some issues when use SimpleAdapter

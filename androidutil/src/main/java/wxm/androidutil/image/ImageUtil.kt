@@ -1,4 +1,4 @@
-package wxm.androidutil.ImageUtility
+package wxm.androidutil.image
 
 import android.content.Context
 import android.content.res.Resources

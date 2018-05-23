@@ -47,14 +47,12 @@ abstract class AppBase : Application() {
         }
 
         /**
-         * get version number for package
-         * @param context       for package
-         * @return              version number
+         * get version code for package
          */
-        fun getVerCode(context: Context): Int {
+        fun getVerCode(): Int {
             var verCode = -1
             try {
-                verCode = context.packageManager.getPackageInfo(instance.packageName, 0).versionCode
+                verCode = appContext().packageManager.getPackageInfo(instance.packageName, 0).versionCode
             } catch (e: PackageManager.NameNotFoundException) {
                 TagLog.e("", e)
             }
@@ -62,16 +60,13 @@ abstract class AppBase : Application() {
             return verCode
         }
 
-
         /**
-         * get version paraName for package
-         * @param context       context for package
-         * @return              version paraName
+         * get version name for package
          */
-        fun getVerName(context: Context): String {
+        fun getVerName(): String {
             var verName = ""
             try {
-                verName = context.packageManager.getPackageInfo(instance.packageName, 0).versionName
+                verName = appContext().packageManager.getPackageInfo(instance.packageName, 0).versionName
             } catch (e: PackageManager.NameNotFoundException) {
                 TagLog.e("", e)
             }

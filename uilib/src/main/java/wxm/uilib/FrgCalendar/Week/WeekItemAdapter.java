@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import wxm.androidutil.viewUtil.ViewHolder;
+import wxm.androidutil.ui.view.ViewHolder;
 import wxm.uilib.FrgCalendar.Base.CalendarUtility;
 import wxm.uilib.FrgCalendar.CalendarItem.BaseItemAdapter;
 import wxm.uilib.FrgCalendar.CalendarItem.BaseItemModel;

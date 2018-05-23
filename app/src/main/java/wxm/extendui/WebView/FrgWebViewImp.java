@@ -2,7 +2,7 @@ package wxm.extendui.WebView;
 
 import android.os.Bundle;
 
-import wxm.androidutil.frgUtil.FrgSupportWebView;
+import wxm.androidutil.ui.frg.FrgSupportWebView;
 
 /**
  * for webview

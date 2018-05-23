@@ -1,4 +1,4 @@
-package wxm.androidutil.frgUtil;
+package wxm.androidutil.ui.frg;
 
 import android.content.Context;
 import android.os.Bundle;

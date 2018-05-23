@@ -2,8 +2,8 @@ package wxm.extendui.ACSwipe;
 
 import android.os.Bundle;
 
-import wxm.androidutil.frgUtil.FrgSupportBaseAdv;
-import wxm.androidutil.switcher.ACSwitcherActivity;
+import wxm.androidutil.ui.frg.FrgSupportBaseAdv;
+import wxm.androidutil.ui.activity.ACSwitcherActivity;
 
 /**
  * @author WangXM

@@ -3,8 +3,8 @@ package wxm.extendui.ACSwitcher;
 import android.os.Bundle;
 
 import butterknife.OnClick;
-import wxm.androidutil.frgUtil.FrgSupportBaseAdv;
-import wxm.androidutil.frgUtil.FrgSupportSwitcher;
+import wxm.androidutil.ui.frg.FrgSupportBaseAdv;
+import wxm.androidutil.ui.frg.FrgSupportSwitcher;
 import wxm.extendui.R;
 
 /**

@@ -1,4 +1,4 @@
-package wxm.androidutil.dialog
+package wxm.androidutil.ui.dialog
 
 import android.app.AlertDialog
 import android.content.Context

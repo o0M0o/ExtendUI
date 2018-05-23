@@ -11,7 +11,7 @@ import java.lang.ref.WeakReference;
  */
 public abstract class WRMsgHandler<T>
                         extends Handler {
-    protected String TAG = "WRMsgHandler";
+    protected String LOG_TAG = getClass().getSimpleName();
     private WeakReference<T> mWRHome;
 
     protected WRMsgHandler(T ac) {
@@ -22,10 +22,9 @@ public abstract class WRMsgHandler<T>
     @Override
     public void handleMessage(Message msg) {
         T home = mWRHome.get();
-        if(null == home)
-            return;
-
-        processMsg(msg, home);
+        if(null != home) {
+            processMsg(msg, home);
+        }
     }
 
     /**

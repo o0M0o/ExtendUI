@@ -10,7 +10,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.BindView;
-import wxm.androidutil.frgUtil.FrgSupportBaseAdv;
+import wxm.androidutil.ui.frg.FrgSupportBaseAdv;
 import wxm.extendui.R;
 
 /**

@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import butterknife.BindView;
-import wxm.androidutil.frgUtil.FrgSupportBaseAdv;
+import wxm.androidutil.ui.frg.FrgSupportBaseAdv;
 import wxm.extendui.R;
 import wxm.uilib.SwipeLayout.SwipeLayout;
 
