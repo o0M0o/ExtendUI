@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.Checkable
 import android.widget.ImageView
 import android.widget.SimpleAdapter
+import android.widget.SimpleAdapter.ViewBinder
 import android.widget.TextView
-
 import wxm.androidutil.ui.view.ViewHolder
 
 /**
@@ -22,7 +22,7 @@ abstract class MoreAdapter(protected val context: Context, data: List<Map<String
                            private val mFromKey: Array<String?> = arrayOfNulls(0),
                            private val mToId: IntArray = IntArray(0))
     : SimpleAdapter(context, data, mLRSelfDef, mFromKey, mToId) {
-    private val mVWChild : Array<View?> = arrayOfNulls(data.size)
+    private val mVWChild: Array<View?> = arrayOfNulls(data.size)
 
     /**
      * default view binder
@@ -114,23 +114,25 @@ abstract class MoreAdapter(protected val context: Context, data: List<Map<String
      */
     @Suppress("UNCHECKED_CAST")
     private fun selfBindView(position: Int, view: View): Boolean {
-        val bind = viewBinder
-        val map = getItem(position) as Map<String, *>
-        for(i in 0 until mToId.size)    {
-            view.findViewById<View>(mToId[i])?.let {
-                val data = map[mFromKey[i]]
-                val txt = data?.toString() ?: ""
+        if (mToId.isNotEmpty()) {
+            val bind = viewBinder
+            val map = getItem(position) as Map<String, *>
+            for (i in 0 until mToId.size) {
+                view.findViewById<View>(mToId[i])?.let {
+                    val data = map[mFromKey[i]]
+                    val txt = data?.toString() ?: ""
 
-                var bound = false
-                if(null != bind) {
-                    bound = bind.setViewValue(it, data, txt)
+                    var bound = false
+                    if (null != bind) {
+                        bound = bind.setViewValue(it, data, txt)
+                    }
+
+                    if (!bound) {
+                        mDefaultViewBinder.setViewValue(it, data, txt)
+                    }
+
+                    Unit
                 }
-
-                if(!bound)  {
-                    mDefaultViewBinder.setViewValue(it, data, txt)
-                }
-
-                Unit
             }
         }
 
@@ -141,9 +143,9 @@ abstract class MoreAdapter(protected val context: Context, data: List<Map<String
      * do [funOperator] for each childView until it return false
      */
     @Suppress("unused")
-    protected fun forEachChildView(funOperator: (view:View, pos:Int) -> Boolean)    {
-        mVWChild.filterNotNull().forEach{
-            if(!funOperator(it, mVWChild.indexOf(it)))
+    protected fun forEachChildView(funOperator: (view: View, pos: Int) -> Boolean) {
+        mVWChild.filterNotNull().forEach {
+            if (!funOperator(it, mVWChild.indexOf(it)))
                 return@forEach
         }
     }

@@ -15,6 +15,12 @@ class EasyOperatorUT   {
     fun testDoJude()   {
         Assert.assertTrue({1 == 1}.doJudge({true}, {false}))
         Assert.assertFalse({1 == 2}.doJudge({true}, {false}))
+
+        Assert.assertTrue(true.doJudge({true}, {false}))
+        Assert.assertFalse(false.doJudge({true}, {false}))
+
+        Assert.assertTrue(true.doJudge(true, false))
+        Assert.assertFalse(false.doJudge(true, false))
     }
 
     @Test
@@ -22,5 +28,9 @@ class EasyOperatorUT   {
         Assert.assertEquals("abc", "abc".forObj({t -> t}, {"false"}))
         Assert.assertEquals(1, 1.forObj({t -> t}, {0}))
         Assert.assertEquals(0, null.forObj({t -> t}, {0}))
+
+        Assert.assertEquals("abc", "abc".forObj("abc", "false"))
+        Assert.assertEquals(1, 1.forObj(1, 0))
+        Assert.assertEquals(0, null.forObj(1, 0))
     }
 }
