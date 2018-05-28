@@ -22,10 +22,13 @@
             android:layout_height="wrap_content"
             android:background="@drawable/rl_action_shape"
             app:ibActName="删除"
-            app:ibActNameColor="@color/text_fit"
             app:ibIcon="@drawable/ic_delete"
             app:ibIconHeight="24dp"
             app:ibIconWidth="24dp"
+            app:ibColorHot="@color/red"
+            app:ibColorCold="@color/text_fit"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ib_show1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,11 +43,12 @@
             android:paddingRight="6dp"
             android:paddingTop="4dp"
             app:ibActName="删除1"
-            app:ibActNameColor="@color/text_fit"
             app:ibIcon="@drawable/ic_delete"
             app:ibIconHeight="24dp"
             app:ibIconWidth="24dp"
             app:ibOrientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ib_show"
             app:layout_constraintTop_toTopOf="parent" />
 

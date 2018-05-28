@@ -16,12 +16,12 @@ import wxm.androidutil.ui.view.ViewHolder
  * @author WangXM
  * @version create：2018/5/8
  */
-abstract class MoreAdapter(protected val context: Context, data: List<Map<String, *>>,
+abstract class MoreAdapter(@Suppress("MemberVisibilityCanBePrivate") protected val mContext: Context, data: List<Map<String, *>>,
                            @Suppress("MemberVisibilityCanBePrivate") @param:LayoutRes @field:LayoutRes
                            protected val mLRSelfDef: Int,
                            private val mFromKey: Array<String?> = arrayOfNulls(0),
                            private val mToId: IntArray = IntArray(0))
-    : SimpleAdapter(context, data, mLRSelfDef, mFromKey, mToId) {
+    : SimpleAdapter(mContext, data, mLRSelfDef, mFromKey, mToId) {
     private val mVWChild: Array<View?> = arrayOfNulls(data.size)
 
     /**
@@ -76,7 +76,7 @@ abstract class MoreAdapter(protected val context: Context, data: List<Map<String
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        return ViewHolder.get(context, convertView, getChildViewLayout(position)).let {
+        return ViewHolder.get(mContext, convertView, getChildViewLayout(position)).let {
             loadView(position, it)
             mVWChild[position] = it.convertView
             selfBindView(position, it.convertView)
