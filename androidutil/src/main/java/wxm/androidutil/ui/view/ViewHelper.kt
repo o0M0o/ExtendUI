@@ -1,6 +1,7 @@
 package wxm.androidutil.ui.view
 
 import android.annotation.TargetApi
+import android.content.Context
 import android.os.Build
 import android.support.annotation.ColorRes
 import android.support.annotation.IdRes
@@ -13,6 +14,16 @@ import android.widget.TextView
  * @version create：2018/4/11
  */
 class ViewHelper(private val parentView: View) {
+    /**
+     * get root view
+     */
+    fun getRootView(): View = parentView
+
+    /**
+     * get context
+     */
+    fun getContext(): Context = parentView.context
+
     /**
      * get child view
      * @param vId       id for child view

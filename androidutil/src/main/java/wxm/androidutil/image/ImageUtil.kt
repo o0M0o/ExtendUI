@@ -189,4 +189,24 @@ object ImageUtil {
 
         return ret
     }
+
+    /**
+     * save [bm] to [fn] as [cf] type
+     */
+    fun saveBitmapToJPGFile(bm: Bitmap, fn: String,
+                            cf: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG): Boolean {
+        var ret = false
+        FileOutputStream(File(fn)).let {
+            try {
+                it.use { f ->
+                    ret = bm.compress(cf, 100, f)
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                return false
+            }
+        }
+
+        return ret
+    }
 }
