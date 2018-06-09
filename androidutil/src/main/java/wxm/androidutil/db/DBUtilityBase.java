@@ -16,10 +16,10 @@ import java.util.Locale;
  * Created by WangXM on 2016/10/31.
  */
 public abstract class DBUtilityBase<D extends IDBRow<T>, T> {
-    Timestamp mTSLastModifyData;
+    protected Timestamp mTSLastModifyData;
 
     public DBUtilityBase() {
-        mTSLastModifyData = new Timestamp(Calendar.getInstance().getTimeInMillis());
+        mTSLastModifyData = new Timestamp(System.currentTimeMillis());
     }
 
     /**
@@ -41,7 +41,7 @@ public abstract class DBUtilityBase<D extends IDBRow<T>, T> {
     public boolean createData(D nr) {
         boolean ret = 1 == getDBHelper().create(nr);
         if (ret) {
-            mTSLastModifyData.setTime(Calendar.getInstance(Locale.CHINA).getTimeInMillis());
+            mTSLastModifyData.setTime(System.currentTimeMillis());
             onDataCreate(Collections.singletonList(nr.getID()));
         }
 
@@ -65,7 +65,7 @@ public abstract class DBUtilityBase<D extends IDBRow<T>, T> {
         }
 
         if (0 < ret) {
-            mTSLastModifyData.setTime(Calendar.getInstance(Locale.CHINA).getTimeInMillis());
+            mTSLastModifyData.setTime(System.currentTimeMillis());
             onDataCreate(ls_ret);
         }
 
@@ -92,7 +92,7 @@ public abstract class DBUtilityBase<D extends IDBRow<T>, T> {
     public boolean removeData(T id) {
         boolean ret = 1 == getDBHelper().deleteById(id);
         if (ret) {
-            mTSLastModifyData.setTime(Calendar.getInstance(Locale.CHINA).getTimeInMillis());
+            mTSLastModifyData.setTime(System.currentTimeMillis());
             onDataRemove(Collections.singletonList(id));
         }
 
@@ -116,7 +116,7 @@ public abstract class DBUtilityBase<D extends IDBRow<T>, T> {
         }
 
         if (0 < ret) {
-            mTSLastModifyData.setTime(Calendar.getInstance(Locale.CHINA).getTimeInMillis());
+            mTSLastModifyData.setTime(System.currentTimeMillis());
             onDataRemove(ls_ret);
         }
 
@@ -133,7 +133,7 @@ public abstract class DBUtilityBase<D extends IDBRow<T>, T> {
     public boolean modifyData(D np) {
         boolean ret = 1 == getDBHelper().update(np);
         if (ret) {
-            mTSLastModifyData.setTime(Calendar.getInstance(Locale.CHINA).getTimeInMillis());
+            mTSLastModifyData.setTime(System.currentTimeMillis());
             onDataModify(Collections.singletonList(np.getID()));
         }
 
@@ -157,7 +157,7 @@ public abstract class DBUtilityBase<D extends IDBRow<T>, T> {
         }
 
         if (0 < ret) {
-            mTSLastModifyData.setTime(Calendar.getInstance(Locale.CHINA).getTimeInMillis());
+            mTSLastModifyData.setTime(System.currentTimeMillis());
             onDataModify(ls_ret);
         }
 

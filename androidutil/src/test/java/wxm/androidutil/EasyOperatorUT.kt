@@ -2,8 +2,10 @@ package com.wxm.KeepAccountJavaTest
 
 import junit.framework.Assert
 import org.junit.Test
+import wxm.androidutil.tightUUID.tightUUID
 import wxm.androidutil.util.doJudge
 import wxm.androidutil.util.forObj
+import java.util.*
 
 
 /**
@@ -32,5 +34,13 @@ class EasyOperatorUT   {
         Assert.assertEquals("abc", "abc".forObj("abc", "false"))
         Assert.assertEquals(1, 1.forObj(1, 0))
         Assert.assertEquals(0, null.forObj(1, 0))
+    }
+
+    @Test
+    fun testTightUUID() {
+        for(i in 0 until 10) {
+            val org = UUID.randomUUID().toString().replace("-", "")
+            System.out.println("$org - ${tightUUID.translateUUID(org)}")
+        }
     }
 }
