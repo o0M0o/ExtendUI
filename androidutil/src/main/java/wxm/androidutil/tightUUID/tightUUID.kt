@@ -1,5 +1,6 @@
 package wxm.androidutil.tightUUID
 
+import android.support.annotation.IntegerRes
 import java.math.BigInteger
 import java.util.*
 
@@ -19,6 +20,7 @@ object tightUUID {
     }
 
     fun translateUUID(org:String): String   {
+        /*
         var ret = ""
 
         var startPos = 0
@@ -28,6 +30,38 @@ object tightUUID {
             ret += toStr(bi)
 
             startPos += PARSE_CHAR_LEN
+        }
+
+        return ret
+        */
+        var ret = ""
+        var lastPos = 0
+        var lastLeft = 0
+        for(i in 0 until org.length)    {
+            if(org[i].toString() == "-") {
+                ret += NEW_CHAR[lastLeft % NEW_CHAR_LEN]
+                ret += "-"
+
+                lastPos = i + 1
+                lastLeft = 0
+            } else {
+                val posVal = org[i].toString().toInt(16)
+
+                val pow = Math.pow(16.toDouble(), (i - lastPos).toDouble()).toInt()
+                val totalVal = (posVal * pow + lastLeft)
+                if (totalVal >= NEW_CHAR_LEN) {
+                    ret += NEW_CHAR[totalVal % NEW_CHAR_LEN]
+
+                    lastPos = i + 1
+                    lastLeft = (totalVal / NEW_CHAR_LEN)
+                } else {
+                    lastLeft = totalVal
+                }
+            }
+        }
+
+        if(lastLeft != 0)   {
+            ret += NEW_CHAR[lastLeft % NEW_CHAR_LEN]
         }
 
         return ret
