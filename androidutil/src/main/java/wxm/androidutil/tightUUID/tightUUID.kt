@@ -11,8 +11,8 @@ import java.util.*
 object tightUUID {
     private const val NEW_CHAR = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     private const val NEW_CHAR_LEN = NEW_CHAR.length
-    private const val PARSE_CHAR_LEN = 6
-    private val NEW_POW = BigInteger(NEW_CHAR_LEN.toString(10))
+    private val NEW_POW_ARR = Array(5,
+            { Math.pow(16.toDouble(), it.toDouble()).toInt() })
 
     fun getTUUID(): String  {
         val org = UUID.randomUUID().toString().replace("-", "")
@@ -20,35 +20,19 @@ object tightUUID {
     }
 
     fun translateUUID(org:String): String   {
-        /*
-        var ret = ""
-
-        var startPos = 0
-        val endPos = org.length - 1
-        while (startPos <= endPos)  {
-            val bi = parse(org, startPos, Math.min(endPos, startPos + PARSE_CHAR_LEN))
-            ret += toStr(bi)
-
-            startPos += PARSE_CHAR_LEN
-        }
-
-        return ret
-        */
         var ret = ""
         var lastPos = 0
         var lastLeft = 0
         for(i in 0 until org.length)    {
-            if(org[i].toString() == "-") {
+            val curStr = org[i].toString()
+            if(curStr == "-") {
                 ret += NEW_CHAR[lastLeft % NEW_CHAR_LEN]
                 ret += "-"
 
                 lastPos = i + 1
                 lastLeft = 0
             } else {
-                val posVal = org[i].toString().toInt(16)
-
-                val pow = Math.pow(16.toDouble(), (i - lastPos).toDouble()).toInt()
-                val totalVal = (posVal * pow + lastLeft)
+                val totalVal = (curStr.toInt(16) * NEW_POW_ARR[i - lastPos] + lastLeft)
                 if (totalVal >= NEW_CHAR_LEN) {
                     ret += NEW_CHAR[totalVal % NEW_CHAR_LEN]
 
@@ -62,33 +46,6 @@ object tightUUID {
 
         if(lastLeft != 0)   {
             ret += NEW_CHAR[lastLeft % NEW_CHAR_LEN]
-        }
-
-        return ret
-    }
-
-    private fun parse(org:String, startPos:Int, endPos:Int) : BigInteger    {
-        var bi = BigInteger.ZERO
-
-        for(i in startPos until endPos) {
-            val pow = Math.pow(16.toDouble(), (i - startPos).toDouble()).toLong()
-            bi = bi.add(BigInteger.valueOf(Integer.valueOf(org[i].toString(), 16).toLong() * pow))
-        }
-
-        return bi
-    }
-
-    private fun toStr(bi:BigInteger): String    {
-        var ret = ""
-
-        var newBi = bi
-        while (newBi > NEW_POW) {
-            ret += NEW_CHAR[newBi.mod(NEW_POW).toInt()]
-            newBi = newBi.divide(NEW_POW)
-        }
-
-        if(newBi != BigInteger.ZERO)   {
-            ret += NEW_CHAR[newBi.mod(NEW_POW).toInt()]
         }
 
         return ret

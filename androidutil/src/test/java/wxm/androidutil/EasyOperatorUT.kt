@@ -41,7 +41,10 @@ class EasyOperatorUT   {
         for(i in 0 until 20) {
             //val org = UUID.randomUUID().toString().replace("-", "")
             val org = UUID.randomUUID().toString()
-            System.out.println("$org : ${tightUUID.translateUUID(org)}")
+            val trans = tightUUID.translateUUID(org)
+            System.out.println("$org : $trans")
+            //val orgTrans = tightUUID.translateTUUID(trans)
+            //System.out.println("$org : $trans : $orgTrans")
         }
     }
 }
