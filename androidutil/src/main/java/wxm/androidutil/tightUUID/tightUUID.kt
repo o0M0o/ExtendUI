@@ -1,7 +1,5 @@
 package wxm.androidutil.tightUUID
 
-import android.support.annotation.IntegerRes
-import java.math.BigInteger
 import java.util.*
 
 /**
@@ -11,8 +9,8 @@ import java.util.*
 object tightUUID {
     private const val NEW_CHAR = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     private const val NEW_CHAR_LEN = NEW_CHAR.length
-    private val NEW_POW_ARR = Array(5,
-            { Math.pow(16.toDouble(), it.toDouble()).toInt() })
+    private val NEW_POW_ARR = Array(12,
+            { Math.pow(NEW_CHAR_LEN.toDouble(), it.toDouble()).toLong() })
 
     fun getTUUID(): String  {
         val org = UUID.randomUUID().toString().replace("-", "")
@@ -21,31 +19,69 @@ object tightUUID {
 
     fun translateUUID(org:String): String   {
         var ret = ""
-        var lastPos = 0
-        var lastLeft = 0
-        for(i in 0 until org.length)    {
-            val curStr = org[i].toString()
-            if(curStr == "-") {
-                ret += NEW_CHAR[lastLeft % NEW_CHAR_LEN]
-                ret += "-"
-
-                lastPos = i + 1
-                lastLeft = 0
-            } else {
-                val totalVal = (curStr.toInt(16) * NEW_POW_ARR[i - lastPos] + lastLeft)
-                if (totalVal >= NEW_CHAR_LEN) {
-                    ret += NEW_CHAR[totalVal % NEW_CHAR_LEN]
-
-                    lastPos = i + 1
-                    lastLeft = (totalVal / NEW_CHAR_LEN)
-                } else {
-                    lastLeft = totalVal
+        org.split("-").let {
+            it.forEach {
+                val sz = dataToNewStr(it.toLong(16))
+                var tag = ""
+                for(i in 0 until it.length - 1) {
+                    if('0' == it[i])    {
+                        tag += "0"
+                    } else  {
+                        break
+                    }
                 }
+
+                ret += (if(tag.isNotEmpty())  "$tag$sz"
+                        else sz) + "-"
             }
         }
 
-        if(lastLeft != 0)   {
-            ret += NEW_CHAR[lastLeft % NEW_CHAR_LEN]
+        return ret.removeSuffix("-")
+    }
+
+    fun translateTUUID(org:String): String   {
+        var ret = ""
+        org.split("-").let {
+            it.forEach {
+                var tag = ""
+                for(i in 0  until it.length -1) {
+                    if('0' == it[i])    {
+                        tag += "0"
+                    } else  {
+                        break
+                    }
+                }
+                val sz = strToData(it).toString(16)
+
+
+                ret += (if(tag.isNotEmpty())  "$tag$sz"
+                        else sz) + "-"
+            }
+        }
+
+        return ret.removeSuffix("-")
+    }
+
+    private fun dataToNewStr(data:Long): String     {
+        var ret = ""
+        var vd = data
+        while (vd >= NEW_CHAR_LEN)  {
+            ret = NEW_CHAR[(vd % NEW_CHAR_LEN).toInt()] + ret
+            vd /= NEW_CHAR_LEN
+        }
+
+        if(vd.toInt() != 0) {
+            ret = NEW_CHAR[(vd % NEW_CHAR_LEN).toInt()] + ret
+        }
+
+        return ret
+    }
+
+    private fun strToData(sz:String): Long  {
+        var ret = 0L
+        val maxPos = sz.length - 1
+        for(i in maxPos downTo 0)    {
+            ret += NEW_CHAR.indexOf(sz[i]) * NEW_POW_ARR[maxPos - i]
         }
 
         return ret

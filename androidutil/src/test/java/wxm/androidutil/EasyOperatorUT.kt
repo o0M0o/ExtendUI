@@ -38,13 +38,14 @@ class EasyOperatorUT   {
 
     @Test
     fun testTightUUID() {
-        for(i in 0 until 20) {
-            //val org = UUID.randomUUID().toString().replace("-", "")
+        for(i in 0 until 5000) {
             val org = UUID.randomUUID().toString()
             val trans = tightUUID.translateUUID(org)
-            System.out.println("$org : $trans")
-            //val orgTrans = tightUUID.translateTUUID(trans)
-            //System.out.println("$org : $trans : $orgTrans")
+            val orgTrans = tightUUID.translateTUUID(trans)
+            System.out.println("$org : $trans : $orgTrans")
+
+            Assert.assertEquals(org, orgTrans)
+            Assert.assertTrue(org.length > trans.length)
         }
     }
 }
