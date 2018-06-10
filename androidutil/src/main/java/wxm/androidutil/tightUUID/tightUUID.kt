@@ -1,6 +1,7 @@
 package wxm.androidutil.tightUUID
 
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * @author      WangXM
@@ -12,78 +13,136 @@ object tightUUID {
     private val NEW_POW_ARR = Array(12,
             { Math.pow(NEW_CHAR_LEN.toDouble(), it.toDouble()).toLong() })
 
-    fun getTUUID(): String  {
-        val org = UUID.randomUUID().toString().replace("-", "")
-        return translateUUID(org)
+    private val IDX_MAP = HashMap<Char, Int>().apply {
+        for(i in 0 until NEW_CHAR_LEN)  {
+            put(NEW_CHAR[i], i)
+        }
     }
 
-    fun translateUUID(org:String): String   {
-        var ret = ""
-        org.split("-").let {
+    private const val DELIMITER_CHAR = '-'
+
+    /**
+     * get tightUUID can revert to UUID
+     * example : '0f04803e-502a-4f90-8012-db98b6efccb0' -> '0h3axw-5l0-5iw-8wO-16yQl101G'
+     */
+    fun getTUUID(): String {
+        return toTUUID(UUID.randomUUID().toString())
+    }
+
+    /**
+     * get fined tightUUID
+     * fined tightUUID with smaller length but can not revert to UUID
+     * example : '0f04803e-502a-4f90-8012-db98b6efccb0' -> 'h3axw5l05iw8wO16yQl101G'
+     */
+    fun getFineTUUID(): String {
+        val sb = StringBuilder()
+        UUID.randomUUID().toString().forEach {
+            if (DELIMITER_CHAR != it) {
+                sb.append(it)
+            }
+        }
+
+        return toTUUID(sb.toString())
+    }
+
+    /**
+     * translate UUID [org] to TUUID
+     * when [fined] false
+     *      '0f04803e-502a-4f90-8012-db98b6efccb0' -> '0h3axw-5l0-5iw-8wO-16yQl101G'
+     * when [fined] true
+     *      '0f04803e-502a-4f90-8012-db98b6efccb0' -> 'h3axw5l05iw8wO16yQl101G'
+     */
+    fun toTUUID(org: String, fined: Boolean = false): String {
+        val ret = StringBuilder()
+        org.split(DELIMITER_CHAR).let {
             it.forEach {
                 val sz = dataToNewStr(it.toLong(16))
-                var tag = ""
-                for(i in 0 until it.length - 1) {
-                    if('0' == it[i])    {
-                        tag += "0"
-                    } else  {
-                        break
-                    }
-                }
-
-                ret += (if(tag.isNotEmpty())  "$tag$sz"
-                        else sz) + "-"
+                ret.append(if (fined) {
+                    sz
+                } else {
+                    val tag = getZeroTag(it)
+                    (if (tag.isNotEmpty()) "$tag$sz" else sz) + DELIMITER_CHAR
+                })
             }
         }
 
-        return ret.removeSuffix("-")
+        return if (fined) ret.toString() else ret.removeSuffix(DELIMITER_CHAR.toString()).toString()
     }
 
-    fun translateTUUID(org:String): String   {
-        var ret = ""
-        org.split("-").let {
+    /**
+     * translate TUUID [org] to UUID
+     * [org] must get from [toTUUID] with 'fined' is false
+     */
+    fun toUUID(org: String): String {
+        val ret = StringBuilder()
+        org.split(DELIMITER_CHAR).let {
             it.forEach {
-                var tag = ""
-                for(i in 0  until it.length -1) {
-                    if('0' == it[i])    {
-                        tag += "0"
-                    } else  {
-                        break
+                strToData(it).toString(16).let { sz ->
+                    getZeroTag(it).let { tag ->
+                        (if (tag.isNotEmpty()) "$tag$sz" else sz) + DELIMITER_CHAR
+                    }.let {
+                        ret.append(it)
                     }
                 }
-                val sz = strToData(it).toString(16)
-
-
-                ret += (if(tag.isNotEmpty())  "$tag$sz"
-                        else sz) + "-"
             }
         }
 
-        return ret.removeSuffix("-")
+        return ret.removeSuffix(DELIMITER_CHAR.toString()).toString()
     }
 
-    private fun dataToNewStr(data:Long): String     {
-        var ret = ""
+    /**
+     * use [NEW_CHAR] get str from [data]
+     */
+    private fun dataToNewStr(data: Long): String {
+        val ret = StringBuilder()
+        val toSZ = {idx:Int ->
+            ret.insert(0, NEW_CHAR[idx])
+        }
+
         var vd = data
-        while (vd >= NEW_CHAR_LEN)  {
-            ret = NEW_CHAR[(vd % NEW_CHAR_LEN).toInt()] + ret
+        while (vd >= NEW_CHAR_LEN) {
+            toSZ((vd % NEW_CHAR_LEN).toInt())
             vd /= NEW_CHAR_LEN
         }
 
-        if(vd.toInt() != 0) {
-            ret = NEW_CHAR[(vd % NEW_CHAR_LEN).toInt()] + ret
+        if (vd.toInt() != 0) {
+            toSZ((vd % NEW_CHAR_LEN).toInt())
+        } else {
+            if(ret.isEmpty())   {
+                toSZ((vd % NEW_CHAR_LEN).toInt())
+            }
+        }
+
+        return ret.toString()
+    }
+
+    /**
+     * translate str from [NEW_CHAR] to Long
+     */
+    private fun strToData(sz: String): Long {
+        var ret = 0L
+        val maxPos = sz.length - 1
+        for (i in maxPos downTo 0) {
+            ret += IDX_MAP[sz[i]]!! * NEW_POW_ARR[maxPos - i]
         }
 
         return ret
     }
 
-    private fun strToData(sz:String): Long  {
-        var ret = 0L
-        val maxPos = sz.length - 1
-        for(i in maxPos downTo 0)    {
-            ret += NEW_CHAR.indexOf(sz[i]) * NEW_POW_ARR[maxPos - i]
+    /**
+     * get '0' tag in HEX str
+     */
+    private fun getZeroTag(org: String): String {
+        val tag = StringBuilder()
+        // 避免'0000'字符串情况，不检查org最后一位
+        for (i in 0 until org.length - 1) {
+            if ('0' == org[i]) {
+                tag.append("0")
+            } else {
+                return tag.toString()
+            }
         }
 
-        return ret
+        return tag.toString()
     }
 }

@@ -35,17 +35,4 @@ class EasyOperatorUT   {
         Assert.assertEquals(1, 1.forObj(1, 0))
         Assert.assertEquals(0, null.forObj(1, 0))
     }
-
-    @Test
-    fun testTightUUID() {
-        for(i in 0 until 5000) {
-            val org = UUID.randomUUID().toString()
-            val trans = tightUUID.translateUUID(org)
-            val orgTrans = tightUUID.translateTUUID(trans)
-            System.out.println("$org : $trans : $orgTrans")
-
-            Assert.assertEquals(org, orgTrans)
-            Assert.assertTrue(org.length > trans.length)
-        }
-    }
 }
