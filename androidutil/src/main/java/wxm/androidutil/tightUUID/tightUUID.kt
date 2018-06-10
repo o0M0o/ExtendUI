@@ -12,13 +12,7 @@ object tightUUID {
     private const val NEW_CHAR_LEN = NEW_CHAR.length
     private val NEW_POW_ARR = Array(12,
             { Math.pow(NEW_CHAR_LEN.toDouble(), it.toDouble()).toLong() })
-
-    private val IDX_MAP = HashMap<Char, Int>().apply {
-        for(i in 0 until NEW_CHAR_LEN)  {
-            put(NEW_CHAR[i], i)
-        }
-    }
-
+    private val IDX_ARR = Array(260, { NEW_CHAR.indexOf(it.toChar())})
     private const val DELIMITER_CHAR = '-'
 
     /**
@@ -123,7 +117,7 @@ object tightUUID {
         var ret = 0L
         val maxPos = sz.length - 1
         for (i in maxPos downTo 0) {
-            ret += IDX_MAP[sz[i]]!! * NEW_POW_ARR[maxPos - i]
+            ret += IDX_ARR[sz[i].toInt()] * NEW_POW_ARR[maxPos - i]
         }
 
         return ret
