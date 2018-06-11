@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="wxm.extendui.banner.ACBanner">
+
+    <wxm.uilib.lbanners.LMBanners
+        android:id="@+id/banners"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/banner_height"
+        app:auto_play="false"
+        app:canLoop="true"
+        app:durtion="5000"
+        app:horizontal_transitionEffect="accordion"
+        app:indicator_position="bottom_mid"
+        app:indicator_select="@drawable/page_indicator_select"
+        app:indicator_unselect="@drawable/page_indicator_unselect"
+        app:indicator_width="5"
+        app:isVertical="false"
+        app:scroll_duration="1000" />
+
+</android.support.constraint.ConstraintLayout>
