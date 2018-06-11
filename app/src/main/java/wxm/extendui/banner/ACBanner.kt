@@ -1,10 +1,9 @@
-package wxm.extendui.ACBanner
+package wxm.extendui.banner
 
 import android.os.Bundle
 
 import wxm.androidutil.ui.activity.ACSwitcherActivity
 import wxm.androidutil.ui.frg.FrgSupportBaseAdv
-import wxm.extendui.ACSwipe.FrgSwipe
 
 /**
  * @author WangXM

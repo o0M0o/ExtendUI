@@ -1,4 +1,4 @@
-package com.allure.lbanners.utils;
+package wxm.uilib.lbanners.utils;
 
 import android.content.Context;
 

@@ -1,8 +1,7 @@
-package com.allure.lbanners.transformer.vertical;
+package wxm.uilib.lbanners.transformer.vertical;
 
 import android.support.v4.view.ViewPager;
 import android.view.View;
-
 import com.nineoldandroids.view.ViewHelper;
 
 /**

@@ -1,4 +1,4 @@
-package com.allure.lbanners.utils;
+package wxm.uilib.lbanners.utils;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

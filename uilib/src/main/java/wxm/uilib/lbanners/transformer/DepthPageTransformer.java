@@ -1,4 +1,4 @@
-package com.allure.lbanners.transformer;
+package wxm.uilib.lbanners.transformer;
 
 import android.annotation.SuppressLint;
 import android.view.View;

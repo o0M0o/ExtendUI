@@ -3,23 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="wxm.extendui.banner.ACBanner">
+    android:layout_height="@dimen/banner_height"
+    android:background="@color/white"
+    tools:context="wxm.extendui.banner.ACBanner"
+    tools:ignore="HardcodedText">
 
-    <wxm.uilib.lbanners.LMBanners
-        android:id="@+id/banners"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/banner_height"
-        app:auto_play="false"
-        app:canLoop="true"
-        app:durtion="5000"
-        app:horizontal_transitionEffect="accordion"
-        app:indicator_position="bottom_mid"
-        app:indicator_select="@drawable/page_indicator_select"
-        app:indicator_unselect="@drawable/page_indicator_unselect"
-        app:indicator_width="5"
-        app:isVertical="false"
-        app:scroll_duration="1000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Page Two"
+        android:textColor="@color/text_fit"
+        android:textSize="26sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

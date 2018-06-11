@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="wxm.extendui">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -27,24 +27,32 @@
         <activity
             android:name=".ListView.ACListView"
             android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".IconButton.ACIconButton"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="true" />
-        <activity android:name=".SimpleCalendar.ACSimpleCalendar"
-            android:exported="true" />
-        <activity android:name=".ACCalendar.ACCalendar"
-            android:exported="true" />
-        <activity android:name=".WebView.ACWebView"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="true" />
-        <activity android:name=".ACSwitcher.ACPageSwitcher"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".IconButton.ACIconButton"
             android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".ACSwipe.ACSwipe"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SimpleCalendar.ACSimpleCalendar"
+            android:exported="true" />
+        <activity
+            android:name=".ACCalendar.ACCalendar"
+            android:exported="true" />
+        <activity
+            android:name=".WebView.ACWebView"
             android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ACSwitcher.ACPageSwitcher"
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ACSwipe.ACSwipe"
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".banner.ACBanner"
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
-
 </manifest>

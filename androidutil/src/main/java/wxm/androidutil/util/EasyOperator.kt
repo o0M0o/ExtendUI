@@ -11,7 +11,7 @@ package wxm.androidutil.util
  */
 fun <T, R> T?.forObj(term:(t:T)->R, nullTerm:()->R): R {
     return this.let{
-        if(null == it) nullTerm()  else term(it!!)
+        if(null == it) nullTerm()  else term(it)
     }
 }
 

@@ -1,4 +1,4 @@
-package com.allure.lbanners;
+package wxm.uilib.lbanners;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -18,16 +18,17 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.allure.lbanners.adapter.LBaseAdapter;
-import com.allure.lbanners.transformer.LMPageTransformer;
-import com.allure.lbanners.transformer.TransitionEffect;
-import com.allure.lbanners.utils.ScreenUtils;
-import com.allure.lbanners.utils.ViewPagerScroller;
-import com.allure.lbanners.viewpager.HorizonVerticalViewPager;
-import com.allure.lbanners.viewpager.MyViewPager;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import wxm.uilib.R;
+import wxm.uilib.lbanners.adapter.LBaseAdapter;
+import wxm.uilib.lbanners.transformer.LMPageTransformer;
+import wxm.uilib.lbanners.transformer.TransitionEffect;
+import wxm.uilib.lbanners.utils.ScreenUtils;
+import wxm.uilib.lbanners.utils.ViewPagerScroller;
+import wxm.uilib.lbanners.viewpager.HorizonVerticalViewPager;
+import wxm.uilib.lbanners.viewpager.MyViewPager;
 
 
 /**

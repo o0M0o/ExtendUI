@@ -6,11 +6,11 @@
 
     android:layout_height="match_parent">
 
-    <com.allure.lbanners.viewpager.HorizonVerticalViewPager
+    <wxm.uilib.lbanners.viewpager.HorizonVerticalViewPager
         android:id="@+id/gallery"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:unselectedAlpha="1"></com.allure.lbanners.viewpager.HorizonVerticalViewPager>
+        android:unselectedAlpha="1"/>
 
     <LinearLayout
         android:id="@+id/CarouselLayoutPage"
@@ -19,5 +19,5 @@
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="10dip"></LinearLayout>
+        android:padding="10dip" />
 </RelativeLayout>

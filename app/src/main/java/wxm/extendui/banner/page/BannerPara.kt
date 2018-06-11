@@ -1,4 +1,4 @@
-package wxm.KeepAccount.ui.welcome.banner
+package wxm.extendui.banner.page
 
 import android.support.annotation.LayoutRes
 

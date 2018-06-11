@@ -1,7 +1,6 @@
-package com.allure.lbanners.transformer;
+package wxm.uilib.lbanners.transformer;
 
 import android.view.View;
-
 import com.nineoldandroids.view.ViewHelper;
 
 /**

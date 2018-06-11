@@ -1,10 +1,10 @@
-package com.allure.lbanners.viewpager;
+package wxm.uilib.lbanners.viewpager;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-import com.allure.lbanners.transformer.vertical.VerticalPageTransformer;
+import wxm.uilib.lbanners.transformer.vertical.VerticalPageTransformer;
 
 
 public class HorizonVerticalViewPager extends MyViewPager{

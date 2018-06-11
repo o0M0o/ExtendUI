@@ -24,6 +24,7 @@ android {
                             'src/main/res/layouts/frgCalendar',
                             'src/main/res/layouts/swipe',
                             'src/main/res/layouts/other',
+                            'src/main/res/layouts/lbanners',
                             'src/main/res/layouts'
                     ]
         }
@@ -49,13 +50,15 @@ dependencies {
     })
     implementation 'com.android.support:appcompat-v7:26.1.0'
     testImplementation 'junit:junit:4.12'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.1'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     //implementation 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
 
-    implementation 'com.jakewharton:butterknife:8.8.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.0'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    implementation 'com.nineoldandroids:library:2.4.0'
 
     implementation 'io.reactivex:rxandroid:1.1.0'
     implementation 'com.trello:rxlifecycle:0.5.0'
