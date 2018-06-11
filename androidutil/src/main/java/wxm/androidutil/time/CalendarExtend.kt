@@ -30,7 +30,7 @@ fun Calendar.getDayInMonth():Int {
 /**
  * get day in week as string
  */
-fun Calendar.getDayInWeekString():String {
+fun Calendar.getDayInWeekStr():String {
     return when (this.get(Calendar.DAY_OF_WEEK)) {
         Calendar.SUNDAY -> "星期日"
         Calendar.MONDAY -> "星期一"
@@ -46,7 +46,7 @@ fun Calendar.getDayInWeekString():String {
 /**
  * get string for hour&minute
  */
-fun Calendar.getHourMinuteString():String   {
+fun Calendar.getHourMinuteStr():String   {
     return String.format(Locale.CHINA, "%02d:%02d",
             this.get(Calendar.HOUR_OF_DAY), this.get(Calendar.MINUTE))
 }

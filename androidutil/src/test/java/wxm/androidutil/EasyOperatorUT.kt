@@ -2,10 +2,8 @@ package com.wxm.KeepAccountJavaTest
 
 import junit.framework.Assert
 import org.junit.Test
-import wxm.androidutil.tightUUID.tightUUID
-import wxm.androidutil.util.doJudge
-import wxm.androidutil.util.forObj
-import java.util.*
+import wxm.androidutil.improve.doJudge
+import wxm.androidutil.improve.forObj
 
 
 /**

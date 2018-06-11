@@ -1,3 +1,4 @@
+@file:Suppress("unused")
 package wxm.androidutil.ui.view
 
 import android.annotation.TargetApi
@@ -5,6 +6,7 @@ import android.content.Context
 import android.os.Build
 import android.support.annotation.ColorRes
 import android.support.annotation.IdRes
+import android.support.annotation.StringRes
 import android.view.View
 import android.widget.TextView
 
@@ -44,16 +46,28 @@ class ViewHelper(private val parentView: View) {
     }
 
     /**
-     * setup textView text
-     * @param vId       TextView id
-     * @param txt       text for show
-     * @return          self
+     * set text [txt] for textView [vId]
      */
     fun setText(@IdRes vId: Int, txt: String): ViewHelper {
         val v = parentView.findViewById<TextView>(vId)
         v.text = txt
         return this
     }
+
+    /**
+     * set text with [sId] for textView [vId]
+     */
+    fun setText(@IdRes vId: Int, @StringRes sId:Int) {
+        setText(vId, getContext().getString(sId))
+    }
+
+    /**
+     * set text with [sId] for textView [vId]
+     */
+    fun setText(@IdRes vId: Int, @StringRes sId:Int, vararg args:Any) {
+        setText(vId, getContext().getString(sId, args))
+    }
+
 
     /**
      * setup textView text color
@@ -89,4 +103,6 @@ class ViewHelper(private val parentView: View) {
     fun getTag(@IdRes vId: Int): Any? {
         return getChildView<View>(vId)!!.tag
     }
+
+
 }

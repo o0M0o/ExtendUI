@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <wxm.KeepAccount.ui.base.ZoomImageView.ZoomImageView
+    <Button
+        android:id="@+id/bt_set_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        android:text="加载图片"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/red_ff725f"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText" />
+
+    <wxm.uilib.zoomImage.zoomImageView
+        android:layout_marginTop="8dp"
         android:id="@+id/ziv_scale"
-        android:src="@drawable/image_add_pic"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        app:layout_constraintTop_toBottomOf="@id/bt_set_image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:scaleType="matrix" />
 </android.support.constraint.ConstraintLayout>

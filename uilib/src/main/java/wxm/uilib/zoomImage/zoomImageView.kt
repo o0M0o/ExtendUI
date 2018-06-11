@@ -1,4 +1,4 @@
-package wxm.KeepAccount.ui.base.ZoomImageView
+package wxm.uilib.zoomImage
 
 import android.content.Context
 import android.graphics.Matrix
@@ -7,15 +7,14 @@ import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.*
 import android.widget.ImageView
-import wxm.KeepAccount.improve.let1
-import wxm.androidutil.log.TagLog
-import wxm.androidutil.util.doJudge
+import wxm.androidutil.improve.doJudge
+import wxm.androidutil.improve.let1
 
 /**
  * @author WangXM
  * @version create：2018/6/6
  */
-class ZoomImageView
+class zoomImageView
 /**
  * 重写 3个 构造方法
  *

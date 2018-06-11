@@ -1,28 +1,48 @@
-package wxm.extendui.banner
+package wxm.extendui.zoomImage
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import kotterknife.bindView
 import wxm.androidutil.ui.frg.FrgSupportBaseAdv
 import wxm.extendui.R
-import wxm.extendui.banner.page.BannerAp
-import wxm.extendui.banner.page.BannerPara
-import wxm.uilib.lbanners.LMBanners
-import java.util.*
+import wxm.uilib.zoomImage.zoomImageView
+import android.content.Intent.ACTION_PICK
+import wxm.androidutil.improve.let1
 
 /**
  * @author WangXM
  * @version create：2018/4/14
  */
-class FrgBanner : FrgSupportBaseAdv() {
-    private val mLBanners: LMBanners<BannerPara> by bindView(R.id.banners)
+class FrgZoomImage : FrgSupportBaseAdv() {
+    private val REQUEST_CODE_PICK_IMAGE = 1
 
-    override fun getLayoutID(): Int = R.layout.frg_banner
+    private val mZIVImage: zoomImageView  by bindView(R.id.ziv_scale)
+    private val mBTSetImage: Button  by bindView(R.id.bt_set_image)
+
+    override fun getLayoutID(): Int = R.layout.frg_zoom_image
 
     override fun initUI(savedInstanceState: Bundle?) {
-        mLBanners.setAdapter(BannerAp(activity!!, null),
-                ArrayList<BannerPara>().apply {
-                    add(BannerPara(R.layout.pg_banner_one))
-                    add(BannerPara(R.layout.pg_banner_two))
-                })
+        mBTSetImage.setOnClickListener{
+            Intent(ACTION_PICK).let1 {
+                it.type = "image/*"
+                startActivityForResult(it, REQUEST_CODE_PICK_IMAGE)
+            }
+        }
     }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_PICK_IMAGE) {
+            mZIVImage.setImageURI(data!!.data)
+        }
+    }
+
+
+    /**
+     * show image in [fn] in imageView
+    private fun ImageView.setImagePath(fn:String)   {
+        this.setImageURI(Uri.fromFile(File(fn)))
+    }
+     */
 }
