@@ -22,9 +22,6 @@ import wxm.androidutil.R;
 public abstract class ACSwitcherActivity<T>
         extends AppCompatActivity       {
     private final static String CHILD_HOT = "child_hot";
-    protected String LOG_TAG = "ACSwitcherActivity";
-
-    private int       mDIDBack = R.drawable.ic_back;
 
     protected ArrayList<T>  mALFrg;
     protected int           mHotFrgIdx  = -1;
@@ -33,15 +30,12 @@ public abstract class ACSwitcherActivity<T>
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_base);
-
-        LOG_TAG = getClass().getSimpleName();
         ButterKnife.bind(this);
 
         // for left menu(go back)
         Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(getBackIconRID());
-        toolbar.setNavigationOnClickListener(v -> leaveActivity());
+        setupToolbar(toolbar);
 
         // for Fragment
         if (null != mALFrg && savedInstanceState != null) {
@@ -64,28 +58,20 @@ public abstract class ACSwitcherActivity<T>
     }
 
     /**
+     * setup toolbar
+     * @param tb    self toolbar
+     */
+    protected void setupToolbar(Toolbar tb) {
+        tb.setNavigationIcon(R.drawable.ic_back);
+        tb.setNavigationOnClickListener(v -> leaveActivity());
+    }
+
+    /**
      * leave activity
      */
     protected void leaveActivity()   {
         finish();
     }
-
-    /**
-     * get back icon ID
-     * @return      ID
-     */
-    public int getBackIconRID() {
-        return mDIDBack;
-    }
-
-    /**
-     * set back icon id
-     * @param mDIDBack      ID
-     */
-    public void setBackIconRID(@IdRes int mDIDBack) {
-        this.mDIDBack = mDIDBack;
-    }
-
 
     /**
      * switch in pages
