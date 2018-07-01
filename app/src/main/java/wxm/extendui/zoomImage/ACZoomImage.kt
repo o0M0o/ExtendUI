@@ -10,7 +10,7 @@ import wxm.androidutil.ui.frg.FrgSupportBaseAdv
  * @version create：2018/4/14
  */
 class ACZoomImage : ACSwitcherActivity<FrgSupportBaseAdv>() {
-    override fun setupFragment(savedInstanceState: Bundle?) {
-        addFragment(FrgZoomImage())
+    override fun setupFragment(): MutableList<FrgSupportBaseAdv> {
+        return arrayListOf(FrgZoomImage())
     }
 }

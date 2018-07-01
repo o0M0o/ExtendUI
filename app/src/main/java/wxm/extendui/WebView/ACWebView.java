@@ -3,6 +3,9 @@ package wxm.extendui.WebView;
 
 import android.os.Bundle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import wxm.androidutil.ui.activity.ACSwitcherActivity;
 
 /**
@@ -10,7 +13,9 @@ import wxm.androidutil.ui.activity.ACSwitcherActivity;
  */
 public class ACWebView extends ACSwitcherActivity<FrgWebViewImp> {
     @Override
-    protected void setupFragment(Bundle savedInstanceState) {
-        addFragment(new FrgWebViewImp());
+    protected List<FrgWebViewImp> setupFragment() {
+        ArrayList<FrgWebViewImp> ret = new ArrayList<>();
+        ret.add(new FrgWebViewImp());
+        return ret;
     }
 }

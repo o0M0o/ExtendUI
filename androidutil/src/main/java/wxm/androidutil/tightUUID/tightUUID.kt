@@ -29,14 +29,7 @@ object tightUUID {
      * example : '0f04803e-502a-4f90-8012-db98b6efccb0' -> 'h3axw5l05iw8wO16yQl101G'
      */
     fun getFineTUUID(): String {
-        val sb = StringBuilder()
-        UUID.randomUUID().toString().forEach {
-            if (DELIMITER_CHAR != it) {
-                sb.append(it)
-            }
-        }
-
-        return toTUUID(sb.toString())
+        return toTUUID(UUID.randomUUID().toString(), true).replace("-", "")
     }
 
     /**

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import wxm.androidutil.R;
@@ -43,10 +44,25 @@ public abstract class ACSwitcherActivity<T>
         } else  {
             mALFrg = new ArrayList<>();
             mHotFrgIdx = -1;
-        }
 
-        setupFragment(savedInstanceState);
-        if(null == savedInstanceState)  {
+            mALFrg.addAll(setupFragment());
+            for(T child : mALFrg)   {
+                if(child instanceof Fragment) {
+                    FragmentTransaction t = getFragmentManager().beginTransaction();
+                    t.add(R.id.fl_holder, (Fragment)child);
+                    t.hide((Fragment)child);
+                    t.commit();
+                } else  {
+                    if(child instanceof android.support.v4.app.Fragment) {
+                        android.support.v4.app.FragmentTransaction t =
+                                getSupportFragmentManager().beginTransaction();
+                        t.add(R.id.fl_holder, (android.support.v4.app.Fragment)child);
+                        t.hide((android.support.v4.app.Fragment)child);
+                        t.commit();
+                    }
+                }
+            }
+
             loadHotFragment(0);
         }
     }
@@ -70,6 +86,7 @@ public abstract class ACSwitcherActivity<T>
      * leave activity
      */
     protected void leaveActivity()   {
+        removeAllFragment();
         finish();
     }
 
@@ -129,34 +146,9 @@ public abstract class ACSwitcherActivity<T>
     }
 
     /**
-     * add child frg
-     * @param child    all child frg
+     * setup fragment
      */
-    protected void addFragment(T child)  {
-        mALFrg.add(child);
-
-        if(child instanceof Fragment) {
-            FragmentTransaction t = getFragmentManager().beginTransaction();
-            t.add(R.id.fl_holder, (Fragment)child);
-            t.hide((Fragment)child);
-            t.commit();
-        } else  {
-            if(child instanceof android.support.v4.app.Fragment) {
-                android.support.v4.app.FragmentTransaction t =
-                        getSupportFragmentManager().beginTransaction();
-                t.add(R.id.fl_holder, (android.support.v4.app.Fragment)child);
-                t.hide((android.support.v4.app.Fragment)child);
-                t.commit();
-            }
-        }
-    }
-
-    /**
-     * invoke this to load fragment
-     * @param savedInstanceState    If non-null, this fragment is being re-constructed
-     *                              from a previous saved state as given here.
-     */
-    protected abstract void setupFragment(@Nullable Bundle savedInstanceState);
+    protected abstract List<T> setupFragment();
 
     /// PRIVATE START
     /**

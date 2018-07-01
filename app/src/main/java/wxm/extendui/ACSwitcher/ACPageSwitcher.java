@@ -1,9 +1,11 @@
 package wxm.extendui.ACSwitcher;
 
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import wxm.androidutil.ui.frg.FrgSupportBaseAdv;
 import wxm.androidutil.ui.activity.ACSwitcherActivity;
@@ -11,13 +13,6 @@ import wxm.extendui.R;
 
 
 public class ACPageSwitcher extends ACSwitcherActivity<FrgSupportBaseAdv> {
-    @Override
-    protected void setupFragment(Bundle savedInstanceState)    {
-        addFragment(new FrgPageOne());
-        addFragment(new FrgPageTwo());
-        addFragment(new FrgPageThree());
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -35,10 +30,17 @@ public class ACPageSwitcher extends ACSwitcherActivity<FrgSupportBaseAdv> {
 
             default:
                 return super.onOptionsItemSelected(item);
-
         }
 
         return true;
     }
 
+    @Override
+    protected List<FrgSupportBaseAdv> setupFragment() {
+        ArrayList<FrgSupportBaseAdv> ret = new ArrayList<>();
+        ret.add(new FrgPageOne());
+        ret.add(new FrgPageTwo());
+        ret.add(new FrgPageThree());
+        return ret;
+    }
 }

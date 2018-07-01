@@ -2,6 +2,9 @@ package wxm.extendui.ACSwipe;
 
 import android.os.Bundle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import wxm.androidutil.ui.frg.FrgSupportBaseAdv;
 import wxm.androidutil.ui.activity.ACSwitcherActivity;
 
@@ -11,7 +14,9 @@ import wxm.androidutil.ui.activity.ACSwitcherActivity;
  */
 public class ACSwipe extends ACSwitcherActivity<FrgSupportBaseAdv> {
     @Override
-    protected void setupFragment(Bundle savedInstanceState) {
-        addFragment(new FrgSwipe());
+    protected List<FrgSupportBaseAdv> setupFragment() {
+        ArrayList<FrgSupportBaseAdv> ret = new ArrayList<>();
+        ret.add(new FrgSwipe());
+        return ret;
     }
 }
