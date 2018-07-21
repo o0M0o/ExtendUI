@@ -76,7 +76,7 @@ public class BaseCalendarItemAdapter<T extends BaseCalendarItemModel> extends Ba
     public View getView(String date, T model, View convertView, ViewGroup parent) {
         View view = convertView;
         if (view == null) {
-            view = LayoutInflater.from(mContext).inflate(R.layout.gi_calendar_item, null);
+            view = LayoutInflater.from(mContext).inflate(R.layout.uilib_calendar_item, null);
         }
         TextView dayNum = (TextView) view.findViewById(R.id.tv_day_num);
         dayNum.setText(model.getDayNumber());

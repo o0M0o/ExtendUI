@@ -53,7 +53,7 @@ public class DlgDatePicker extends DlgOKOrNOBase {
         if(UtilFun.StringIsNullOrEmpty(mInitDate))
             return null;
 
-        View vw = View.inflate(getActivity(), R.layout.dlg_date, null);
+        View vw = View.inflate(getActivity(), R.layout.au_dlg_date, null);
         mDatePicker = UtilFun.cast_t(vw.findViewById(R.id.date_picker));
         mTimePicker = UtilFun.cast_t(vw.findViewById(R.id.time_picker));
         mTimePicker.setIs24HourView(true);

@@ -103,7 +103,7 @@ public class CalendarView extends FrameLayout {
     }
 
     protected void initView() {
-        View content = LayoutInflater.from(getContext()).inflate(R.layout.calendar_view, this, true);
+        View content = LayoutInflater.from(getContext()).inflate(R.layout.uilib_calendar, this, true);
         calendarGridView = (GridView) content.findViewById(R.id.gridview);
         selectedFloatingView = content.findViewById(R.id.selected_view);
         floatingMonthTips = (TextView) findViewById(R.id.floating_month_tip);

@@ -68,8 +68,8 @@ class IconButton(context: Context, attrs: AttributeSet) : ConstraintLayout(conte
         }
 
         LayoutInflater.from(context)
-                .inflate(if (orientation == HORIZONTAL) R.layout.vw_icon_button_h
-                else R.layout.vw_icon_button_v, this)
+                .inflate(if (orientation == HORIZONTAL) R.layout.uilib_icon_button_h
+                else R.layout.uilib_icon_button_v, this)
 
         mTVName = findViewById(R.id.tv_tag)
         mIVIcon = findViewById(R.id.iv_tag)

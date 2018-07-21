@@ -3,12 +3,14 @@ package wxm.androidutil.ui.activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import wxm.androidutil.R;
@@ -22,9 +24,6 @@ import wxm.androidutil.R;
 public abstract class ACRxSwitcherActivity<T>
         extends RxAppCompatActivity {
     private final static String CHILD_HOT = "child_hot";
-    protected String LOG_TAG = "ACSwitcherActivity";
-
-    private int       mDIDBack = R.drawable.ic_back;
 
     protected ArrayList<T>  mALFrg;
     protected int           mHotFrgIdx  = -1;
@@ -32,16 +31,12 @@ public abstract class ACRxSwitcherActivity<T>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ac_base);
-
-        LOG_TAG = getClass().getSimpleName();
+        setContentView(R.layout.au_ac_base);
         ButterKnife.bind(this);
 
         // for left menu(go back)
         Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(getBackIconRID());
-        toolbar.setNavigationOnClickListener(v -> leaveActivity());
 
         // for Fragment
         if (null != mALFrg && savedInstanceState != null) {
@@ -49,12 +44,27 @@ public abstract class ACRxSwitcherActivity<T>
         } else  {
             mALFrg = new ArrayList<>();
             mHotFrgIdx = -1;
+
+            mALFrg.addAll(setupFragment());
+            for(T child : mALFrg)   {
+                if(child instanceof Fragment) {
+                    FragmentTransaction t = getFragmentManager().beginTransaction();
+                    t.add(R.id.fl_holder, (Fragment)child);
+                    t.hide((Fragment)child);
+                    t.commit();
+                } else  {
+                    if(child instanceof android.support.v4.app.Fragment) {
+                        android.support.v4.app.FragmentTransaction t =
+                                getSupportFragmentManager().beginTransaction();
+                        t.add(R.id.fl_holder, (android.support.v4.app.Fragment)child);
+                        t.hide((android.support.v4.app.Fragment)child);
+                        t.commit();
+                    }
+                }
+            }
         }
 
-        setupFragment(savedInstanceState);
-        if(null == savedInstanceState)  {
-            loadHotFragment(0);
-        }
+        loadHotFragment(0);
     }
 
     @Override
@@ -64,28 +74,21 @@ public abstract class ACRxSwitcherActivity<T>
     }
 
     /**
+     * setup toolbar
+     * @param tb    self toolbar
+     */
+    protected void setupToolbar(Toolbar tb) {
+        tb.setNavigationIcon(R.drawable.ic_back);
+        tb.setNavigationOnClickListener(v -> leaveActivity());
+    }
+
+    /**
      * leave activity
      */
     protected void leaveActivity()   {
+        removeAllFragment();
         finish();
     }
-
-    /**
-     * get back icon ID
-     * @return      ID
-     */
-    public int getBackIconRID() {
-        return mDIDBack;
-    }
-
-    /**
-     * set back icon id
-     * @param mDIDBack      ID
-     */
-    public void setBackIconRID(int mDIDBack) {
-        this.mDIDBack = mDIDBack;
-    }
-
 
     /**
      * switch in pages
@@ -143,34 +146,21 @@ public abstract class ACRxSwitcherActivity<T>
     }
 
     /**
-     * add child frg
-     * @param child    all child frg
+     * setup fragment
      */
-    protected void addFragment(T child)  {
-        mALFrg.add(child);
-
-        if(child instanceof Fragment) {
-            FragmentTransaction t = getFragmentManager().beginTransaction();
-            t.add(R.id.fl_holder, (Fragment)child);
-            t.hide((Fragment)child);
-            t.commit();
-        } else  {
-            if(child instanceof android.support.v4.app.Fragment) {
-                android.support.v4.app.FragmentTransaction t =
-                        getSupportFragmentManager().beginTransaction();
-                t.add(R.id.fl_holder, (android.support.v4.app.Fragment)child);
-                t.hide((android.support.v4.app.Fragment)child);
-                t.commit();
-            }
+    protected List<T> setupFragment()  {
+        Type[] tp = ((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments();
+        ArrayList<T> ret = new ArrayList<>();
+        @SuppressWarnings("unchecked")
+        Class<T> obj = (Class<T>)(tp[0]);
+        try {
+            ret.add(obj.newInstance());
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
         }
-    }
 
-    /**
-     * invoke this to load fragment
-     * @param savedInstanceState    If non-null, this fragment is being re-constructed
-     *                              from a previous saved state as given here.
-     */
-    protected abstract void setupFragment(@Nullable Bundle savedInstanceState);
+        return ret;
+    }
 
     /// PRIVATE START
     /**

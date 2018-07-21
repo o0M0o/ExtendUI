@@ -108,7 +108,7 @@ public class LMBanners<T> extends FrameLayout implements ViewPager.OnPageChangeL
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        View view = LayoutInflater.from(context).inflate(R.layout.banner_layout, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.uilib_banner, null);
         this.mLayout = (RelativeLayout) view.findViewById(R.id.layout);
         this.viewPager = (HorizonVerticalViewPager) view.findViewById(R.id.gallery);
         this.indicatorLayout = (LinearLayout) view.findViewById(R.id.CarouselLayoutPage);

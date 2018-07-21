@@ -34,7 +34,7 @@ public abstract class FrgSupportWebView extends FrgSupportBaseAdv {
     @Override
     @LayoutRes
     protected int getLayoutID() {
-        return R.layout.frg_webview;
+        return R.layout.au_frg_webview;
     }
 
     @Override

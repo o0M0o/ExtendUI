@@ -73,12 +73,12 @@ public class CalendarListView extends FrameLayout {
         super(context, attrs);
         CalendarHelper.init(context);
         gestureDetector = new GestureDetector(context, new FlingListener());
-        LayoutInflater.from(context).inflate(R.layout.calendar_listview, this);
-        final FrameLayout frameLayout = (FrameLayout) findViewById(R.id.calendar_view_container);
+        LayoutInflater.from(context).inflate(R.layout.uilib_calendar_lv, this);
+        final FrameLayout frameLayout = findViewById(R.id.calendar_view_container);
         calendarView = new CalendarView(context);
         frameLayout.addView(calendarView, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-        mFLContent = (FrameLayout) findViewById(R.id.fl_holder);
+        mFLContent = findViewById(R.id.fl_holder);
         initListener();
         initWeekBar();
     }

@@ -246,7 +246,7 @@ public class FrgCalendar extends ConstraintLayout {
      * @param attrs   for UI
      */
     private void initView(Context context, AttributeSet attrs) {
-        View.inflate(context, R.layout.frg_calendar, this);
+        View.inflate(context, R.layout.uilib_frg_calendar, this);
         CalendarUtility.init(context);
 
         // init UI component

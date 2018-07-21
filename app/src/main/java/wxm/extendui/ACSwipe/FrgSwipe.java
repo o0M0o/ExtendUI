@@ -71,7 +71,7 @@ public class FrgSwipe extends FrgSupportBaseAdv {
 
 
     class ItemAdapter extends MoreAdapter {
-        public ItemAdapter(Context context, List<? extends Map<String, ?>> data) {
+        ItemAdapter(Context context, List<? extends Map<String, ?>> data) {
             super(context, data, R.layout.lv_swipe, new String[0], new int[0]);
         }
 

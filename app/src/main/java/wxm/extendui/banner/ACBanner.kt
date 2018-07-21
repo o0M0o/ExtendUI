@@ -9,8 +9,5 @@ import wxm.androidutil.ui.frg.FrgSupportBaseAdv
  * @author WangXM
  * @version create：2018/4/14
  */
-class ACBanner : ACSwitcherActivity<FrgSupportBaseAdv>() {
-    override fun setupFragment(): MutableList<FrgSupportBaseAdv> {
-        return arrayListOf(FrgBanner())
-    }
+class ACBanner : ACSwitcherActivity<FrgBanner>() {
 }

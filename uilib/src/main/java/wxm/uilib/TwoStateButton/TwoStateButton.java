@@ -42,7 +42,7 @@ public class TwoStateButton extends ConstraintLayout {
 
     public TwoStateButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        LayoutInflater.from(context).inflate(R.layout.vw_two_state_button, this);
+        LayoutInflater.from(context).inflate(R.layout.uilib_two_state_button, this);
         mTVTag = (TextView)findViewById(R.id.tv_tag);
         this.setClickable(true);
 

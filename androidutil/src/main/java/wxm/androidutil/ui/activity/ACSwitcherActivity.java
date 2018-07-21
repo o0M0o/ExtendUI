@@ -3,11 +3,11 @@ package wxm.androidutil.ui.activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +30,7 @@ public abstract class ACSwitcherActivity<T>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ac_base);
+        setContentView(R.layout.au_ac_base);
         ButterKnife.bind(this);
 
         // for left menu(go back)
@@ -148,7 +148,19 @@ public abstract class ACSwitcherActivity<T>
     /**
      * setup fragment
      */
-    protected abstract List<T> setupFragment();
+    protected List<T> setupFragment()  {
+        Type[] tp = ((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments();
+        ArrayList<T> ret = new ArrayList<>();
+        @SuppressWarnings("unchecked")
+        Class<T> obj = (Class<T>)(tp[0]);
+        try {
+            ret.add(obj.newInstance());
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return ret;
+    }
 
     /// PRIVATE START
     /**

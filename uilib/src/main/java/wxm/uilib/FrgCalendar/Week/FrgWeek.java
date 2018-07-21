@@ -123,7 +123,7 @@ public class FrgWeek extends FrgBaseCalendar {
     /// PRIVATE START
     @Override
     protected void initSelf(Context context) {
-        View.inflate(context, R.layout.frg_calendar_days, this);
+        View.inflate(context, R.layout.uilib_frg_calendar_days, this);
         CalendarUtility.init(context);
 
         // init UI component

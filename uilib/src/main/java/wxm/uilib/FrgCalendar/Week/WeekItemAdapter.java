@@ -40,7 +40,7 @@ public class WeekItemAdapter extends BaseItemAdapter<BaseItemModel> {
 
     @Override
     protected View getView(String date, BaseItemModel model, View convertView, ViewGroup parent) {
-        ViewHolder vhParent = ViewHolder.get(mContext, convertView, R.layout.gi_calendar_item);
+        ViewHolder vhParent = ViewHolder.get(mContext, convertView, R.layout.uilib_calendar_item);
         View vwParent = vhParent.getConvertView();
         TextView tvDayNum = vhParent.getView(R.id.tv_day_num);
 

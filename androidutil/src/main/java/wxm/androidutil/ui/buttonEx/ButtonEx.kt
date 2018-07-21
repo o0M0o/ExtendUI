@@ -1,12 +1,11 @@
-package wxm.KeepAccount.ui.base.buttonEx
+package wxm.androidutil.ui.buttonEx
 
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.widget.Button
+import wxm.androidutil.R
 import wxm.androidutil.improve.let1
-import wxm.androidutil.log.TagLog
-import wxm.KeepAccount.R
 
 /**
  * this extend for button can set drawable size

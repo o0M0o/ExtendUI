@@ -2,9 +2,7 @@ package wxm.uilib.SwipeLayout;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -15,9 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
 
-import java.util.Locale;
-
-import wxm.androidutil.log.TagLog;
 import wxm.uilib.R;
 
 /**
@@ -373,7 +368,7 @@ public class SwipeLayout extends LinearLayout {
     private void initView(Context context, AttributeSet attrs) {
         mScroller = new Scroller(context);
         setOrientation(LinearLayout.HORIZONTAL);
-        View.inflate(context, R.layout.container_swipelayout, this);
+        View.inflate(context, R.layout.uilib_swipelayout_container, this);
         mContentView = findViewById(R.id.view_content);
         mRightView = findViewById(R.id.view_right);
         mLeftView = findViewById(R.id.view_left);
@@ -382,14 +377,14 @@ public class SwipeLayout extends LinearLayout {
                 TypedValue.COMPLEX_UNIT_DIP, 120,
                 getResources().getDisplayMetrics()));
 
-        @LayoutRes int idContent = R.layout.def_content;
-        @LayoutRes int idRight = R.layout.def_sub;
+        @LayoutRes int idContent = R.layout.uilib_swipelayout_content;
+        @LayoutRes int idRight = R.layout.uilib_swipelayout_sub;
         if (null != attrs) {
             TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.SwipeLayout);
             try {
                 mHolderWidth = array.getDimensionPixelSize(R.styleable.SwipeLayout_dmRightWidth, defPXWidth);
-                idContent = array.getResourceId(R.styleable.SwipeLayout_idContentView, R.layout.def_content);
-                idRight = array.getResourceId(R.styleable.SwipeLayout_idRightView, R.layout.def_sub);
+                idContent = array.getResourceId(R.styleable.SwipeLayout_idContentView, R.layout.uilib_swipelayout_content);
+                idRight = array.getResourceId(R.styleable.SwipeLayout_idRightView, R.layout.uilib_swipelayout_sub);
 
                 mSwipeDirection = array.getInt(R.styleable.SwipeLayout_fgDirection, SWIPE_RIGHT);
             } finally {
@@ -403,7 +398,7 @@ public class SwipeLayout extends LinearLayout {
             case SWIPE_LEFT: {
                 mRightView.setVisibility(View.GONE);
 
-                if (isInEditMode() || idRight != R.layout.def_sub) {
+                if (isInEditMode() || idRight != R.layout.uilib_swipelayout_sub) {
                     setLeftView(LayoutInflater.from(context).inflate(idRight, null));
                 }
                 setLayoutWidth(mLeftView, mHolderWidth);
@@ -413,7 +408,7 @@ public class SwipeLayout extends LinearLayout {
             case SWIPE_RIGHT: {
                 mLeftView.setVisibility(View.GONE);
 
-                if (isInEditMode() || idRight != R.layout.def_sub) {
+                if (isInEditMode() || idRight != R.layout.uilib_swipelayout_sub) {
                     setRightView(LayoutInflater.from(context).inflate(idRight, null));
                 }
                 setLayoutWidth(mRightView, mHolderWidth);
@@ -421,7 +416,7 @@ public class SwipeLayout extends LinearLayout {
             break;
 
             case SWIPE_BOTH: {
-                if (isInEditMode() || idRight != R.layout.def_sub) {
+                if (isInEditMode() || idRight != R.layout.uilib_swipelayout_sub) {
                     setLeftView(LayoutInflater.from(context).inflate(idRight, null));
                     setRightView(LayoutInflater.from(context).inflate(idRight, null));
                 }
@@ -430,7 +425,7 @@ public class SwipeLayout extends LinearLayout {
             }
             break;
         }
-        if (isInEditMode() || idContent != R.layout.def_content) {
+        if (isInEditMode() || idContent != R.layout.uilib_swipelayout_content) {
             setContentView(LayoutInflater.from(context).inflate(idContent, null));
         }
 
